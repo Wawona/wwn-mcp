@@ -926,6 +926,84 @@ platform = ["all"]
 include = ["**/*.md"]
 
 # ---------------------------------------------------------------------------
+# iOS shells / local-terminal App Store compliance.
+# Wawona ports zsh to iOS *in-process* (statically linked libwawona-zsh.a,
+# wawona_zsh_main on a pthread, NO fork/exec/posix_spawn, external commands
+# dispatched in-process to uutils). These projects are the prior art that
+# proves a shell can ship on the App Store, each with a different compliance
+# trick — index them so models reason from real examples, not guesses.
+# ---------------------------------------------------------------------------
+
+# ios_system: the canonical "shell commands as an in-process library" approach.
+# Commands are C functions in a lookup table (no fork/exec) — the technique
+# every compliant iOS shell builds on. Wawona does NOT use ios_system (it runs
+# real zsh + uutils), but the in-process model is the same idea.
+[[source]]
+name = "ios-system"
+project = "ios-shell"
+kind = "git"
+url = "https://github.com/holzschu/ios_system"
+ref = "master"
+description = "ios_system: run unix commands in-process on iOS (function table, no fork/exec) — the foundational App Store-compliant shell technique."
+license = "BSD-3-Clause"
+platform = ["ios", "ipados", "tvos"]
+include = ["**/*.md", "**/*.h", "Documentation/**", "*.podspec"]
+
+# a-shell: an App Store shell built on ios_system that adds WebAssembly
+# (wasm via wasmer/wasm3) to run extra programs WITHOUT shipping native code —
+# the compliant answer to "you can't download/exec native binaries".
+[[source]]
+name = "a-shell"
+project = "ios-shell"
+kind = "git"
+url = "https://github.com/holzschu/a-shell"
+ref = "master"
+description = "a-Shell: App Store terminal on ios_system; uses WebAssembly (wasmer/wasm3) for extra commands so no native code is downloaded/executed (App Store 2.5.2-safe)."
+license = "BSD-3-Clause"
+platform = ["ios", "ipados"]
+include = ["**/*.md"]
+
+# iSH: a usermode x86 emulator running Alpine Linux — so the BusyBox/ash (dash)
+# shell + real Linux binaries run *interpreted* (emulated), never natively
+# fork/exec'd, which is how it stays App Store compliant.
+[[source]]
+name = "ish"
+project = "ios-shell"
+kind = "git"
+url = "https://github.com/ish-app/ish"
+ref = "master"
+description = "iSH: usermode x86 emulator running Alpine Linux (BusyBox ash/dash) on iOS — Linux binaries run emulated/interpreted, not natively executed, to stay App Store compliant."
+license = "see-upstream"
+platform = ["ios", "ipados"]
+include = ["**/*.md", "doc/**", "app/**/*.md"]
+
+# Blink: App Store SSH/mosh terminal — the "compute lives on a remote host,
+# the iOS app is just a compliant terminal/transport" model (contrast to local
+# execution). Useful prior art for the terminal/PTY + remote angle.
+[[source]]
+name = "blink"
+project = "ios-shell"
+kind = "git"
+url = "https://github.com/blinksh/blink"
+ref = "raw"
+description = "Blink Shell: App Store mosh/SSH terminal (remote-compute model) — prior art for compliant terminals/PTY on iOS."
+license = "GPL-3.0"
+platform = ["ios", "ipados"]
+include = ["**/*.md"]
+
+# Curated, in-repo knowledge that ties the landscape to Wawona's actual design
+# (grounded in dependencies/libs/zsh, wawona-pty, ios-rootfs, WWNRootfsManager).
+[[source]]
+name = "wwn-knowledge"
+project = "ios-shell"
+kind = "local"
+path = "knowledge"
+description = "Curated WWN-MCP knowledge: iOS App Store limitations for shells, similar projects (ios_system/a-shell/iSH/Blink, WebAssembly, ash), and how Wawona ports zsh to iOS compliantly (in-process zsh + RootFS + sandbox 'containers')."
+license = "MIT"
+platform = ["ios", "ipados", "tvos", "watchos", "visionos"]
+include = ["**/*.md"]
+
+# ---------------------------------------------------------------------------
 # Store compliance (offline policy mirrors; no upstream git repo).
 # ---------------------------------------------------------------------------
 [[source]]

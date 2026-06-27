@@ -203,6 +203,29 @@ Query with `project=fastlane` (e.g. "upload build to TestFlight with pilot",
 > option exist?" and the RAG corpus for "how do I set up a dev shell / use
 > Determinate Nix in CI / wire a matrix build".
 
+### iOS shells / local-terminal App Store compliance (`project=ios-shell`)
+How to ship a real shell on the App Store, and how Wawona does it. Prior-art
+repos + a curated in-repo guide:
+- `ios-system` — [holzschu/ios_system](https://github.com/holzschu/ios_system):
+  Unix commands as an in-process C function table (no fork/exec) — the
+  foundational compliant technique.
+- `a-shell` — [holzschu/a-shell](https://github.com/holzschu/a-shell): App Store
+  terminal on ios_system + **WebAssembly** (wasm = data, not native code).
+- `ish` — [ish-app/ish](https://github.com/ish-app/ish): usermode x86 emulator
+  running Alpine (BusyBox **ash/dash**) — foreign binaries are *emulated*.
+- `blink` — [blinksh/blink](https://github.com/blinksh/blink): mosh/SSH terminal
+  (remote-compute model).
+- `wwn-knowledge` (local `knowledge/`) — curated guide: iOS limitations for
+  shells (2.5.2, no JIT, no fork/exec/`dlopen`), the prior-art comparison, and
+  **Wawona's actual design** — zsh static-linked as `libwawona-zsh.a` running
+  in-process (`wawona_zsh_main` on a pthread), `patch-zsh-exec.py` killing all
+  fork/exec, in-process uutils dispatch, `wawona-rootfs`, and "iOS containers" =
+  app sandbox + Application Support rootfs (not Containerization.framework).
+
+Query with `project=ios-shell` — e.g. "run zsh on iOS without fork/exec", "how
+does a-Shell use WebAssembly", "Wawona RootFS writable home", "iOS container for
+the shell".
+
 ### Store compliance
 `apple-app-store-policies` (strict), `google-play-policies` (permissive) — both
 web mirrors tagged with `platform` + `stability` so the asymmetry is queryable.

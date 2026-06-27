@@ -37,6 +37,9 @@ the indexed corpus sources.
   developer environments (`nix.dev`, `devenv`, `nix-direnv`).
 - Android Jetpack Compose + Material 3 Expressive (Android 16+), NDK graphics.
 - App Store Review Guidelines + Google Play policies (the strictness asymmetry).
+- iOS shell App Store compliance: prior art (ios_system, a-Shell/WebAssembly,
+  iSH/ash, Blink) + a curated guide to how Wawona ports zsh in-process (no
+  fork/exec), its RootFS, and the sandbox-as-"container" model.
 - Wawona's own `docs/`, `src/`, and the whole patched `dependencies/` tree
   (with a derived patched-software inventory).
 
