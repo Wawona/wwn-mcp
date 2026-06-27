@@ -1,0 +1,30 @@
+# Nix
+result
+result-*
+.direnv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# WWN-MCP runtime data: fetched third-party corpus, embeddings, sqlite index.
+# Per the project's license/ToS stance these are NEVER committed; they are
+# fetched/regenerated at index time into the runtime data dir.
+data/
+corpus-cache/
+*.sqlite
+*.sqlite3
+*.db
+models/
+
+# OS
+.DS_Store

@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wwn-mcp"
+version = "0.1.0"
+description = "Local-embeddings RAG + MCP server for the Wawona stack (Wayland/Smithay/Weston, Apple OS 26, Android, graphics, store compliance)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Alex Spaulding" }]
+keywords = ["mcp", "rag", "wayland", "wawona", "cursor"]
+
+# Core dependency is just the MCP SDK. Embeddings (fastembed) and the sqlite
+# vector extension (sqlite-vec) are optional extras: when absent, wwn-mcp
+# transparently falls back to a deterministic hashing embedder and a
+# brute-force / FTS5 search, so the tool always runs. Production (and the Nix
+# package) install the `all` extra.
+dependencies = [
+  "mcp>=1.2.0",
+]
+
+[project.optional-dependencies]
+embed = ["fastembed>=0.3.0"]
+vec = ["sqlite-vec>=0.1.1"]
+all = ["fastembed>=0.3.0", "sqlite-vec>=0.1.1"]
+dev = ["ruff>=0.5.0", "pytest>=8.0.0"]
+
+[project.scripts]
+wwn-mcp = "wwn_mcp.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Wawona/WWN-MCP"
+Documentation = "https://github.com/Wawona/WWN-MCP/tree/main/docs"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+wwn_mcp = ["py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

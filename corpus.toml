@@ -1,0 +1,957 @@
+# WWN-MCP corpus manifest.
+#
+# Each [[source]] is one indexable corpus. Fields:
+#   name        unique id (also the on-disk dir under the corpus cache)
+#   project     tag used for filtered search (groups related sources)
+#   kind        git | web-mirror | rustdoc | local
+#   url / urls  remote(s) for git/rustdoc/web-mirror
+#   ref         git branch/tag/commit
+#   path        filesystem path for kind = "local" (relative to repo root)
+#   include     glob(s) to index (default: a sensible text/code set)
+#   exclude     glob(s) to skip
+#   platform    ["macos","ios","ipados","tvos","watchos","visionos","android","linux","all"]
+#   stability   wayland family/stability tag (core/stable/staging/.../wlr/kde/...)
+#   license     SPDX-ish tag, surfaced in citations (never redistributed)
+#   enabled     false => fetch skips it (used when the upstream URL is unconfirmed)
+#
+# Nothing fetched here is committed to the repo (see .gitignore): the corpus is
+# regenerated at index time into the runtime data dir.
+
+# ---------------------------------------------------------------------------
+# Wawona itself (local checkout for dev; production uses the git URL below).
+# ---------------------------------------------------------------------------
+[[source]]
+name = "wawona"
+project = "wawona"
+kind = "local"
+path = "../Wawona"
+description = "Wawona source, docs, and the whole patched dependencies/ tree."
+license = "MIT"
+platform = ["all"]
+include = [
+  "docs/**/*.md",
+  "src/**/*.rs",
+  "src/**/*.{c,h,m,mm}",
+  "Sources/**/*.swift",
+  "android/**/*.{kt,java,c,h}",
+  "dependencies/**/*.{nix,sh,py}",
+  "dependencies/**/*.patch",
+  "dependencies/**/*.c",
+  "dependencies/**/*.h",
+  "dependencies/**/*.m",
+  "Cargo.toml",
+  "flake.nix",
+  ".github/scripts/*.py",
+]
+exclude = [
+  "dependencies/generators/gradlegen/output/**",
+  "**/target/**",
+  "**/build/**",
+  "**/.git/**",
+  "inspirational_projects/**",
+]
+
+# Production (deploy) entry for the Wawona repo over git. Disabled locally so we
+# index the working checkout above instead of re-cloning.
+[[source]]
+name = "wawona-git"
+project = "wawona"
+kind = "git"
+url = "https://github.com/aspauldingcode/Wawona"
+ref = "development"
+enabled = false
+license = "MIT"
+platform = ["all"]
+include = ["docs/**/*.md", "src/**/*", "Sources/**/*.swift", "dependencies/**/*.{nix,sh,py,patch,c,h,m}"]
+exclude = ["dependencies/generators/gradlegen/output/**", "**/target/**"]
+
+# ---------------------------------------------------------------------------
+# Wayland protocol corpus (the entire wayland.app / Wayland Explorer set).
+# ---------------------------------------------------------------------------
+[[source]]
+name = "wayland-explorer"
+project = "wayland"
+kind = "git"
+url = "https://github.com/vially/wayland-explorer"
+ref = "main"
+description = "The repo behind wayland.app; aggregates protocol XML + docs."
+license = "MIT"
+stability = "explorer"
+include = ["**/*.md", "**/*.mdx", "**/*.xml", "**/*.json"]
+exclude = ["node_modules/**", "**/.git/**"]
+
+[[source]]
+name = "wayland-core"
+project = "wayland"
+kind = "git"
+url = "https://gitlab.freedesktop.org/wayland/wayland.git"
+ref = "main"
+description = "Core Wayland protocol + library; protocol/wayland.xml."
+license = "MIT"
+stability = "core"
+include = ["**/*.xml", "**/*.md", "doc/**", "README*"]
+
+[[source]]
+name = "wayland-protocols"
+project = "wayland"
+kind = "git"
+url = "https://gitlab.freedesktop.org/wayland/wayland-protocols.git"
+ref = "main"
+description = "Stable/staging/unstable protocol XML (xdg-shell, viewporter, ...)."
+license = "MIT"
+stability = "stable+staging+unstable"
+include = ["**/*.xml", "**/*.md", "README*"]
+
+[[source]]
+name = "wlr-protocols"
+project = "wayland"
+kind = "git"
+url = "https://gitlab.freedesktop.org/wlroots/wlr-protocols.git"
+ref = "master"
+description = "wlroots protocol extensions (layer-shell, screencopy, ...)."
+license = "HPND"
+stability = "wlr"
+include = ["**/*.xml", "**/*.md", "README*"]
+
+[[source]]
+name = "plasma-wayland-protocols"
+project = "wayland"
+kind = "git"
+url = "https://github.com/KDE/plasma-wayland-protocols"
+ref = "master"
+description = "KDE/Plasma protocol extensions."
+license = "LGPL-2.1"
+stability = "kde"
+include = ["**/*.xml", "**/*.md", "README*"]
+
+[[source]]
+name = "hyprland-protocols"
+project = "wayland"
+kind = "git"
+url = "https://github.com/hyprwm/hyprland-protocols"
+ref = "main"
+description = "Hyprland protocol extensions."
+license = "BSD-3-Clause"
+stability = "hyprland"
+include = ["**/*.xml", "**/*.md", "README*"]
+
+[[source]]
+name = "cosmic-protocols"
+project = "wayland"
+kind = "git"
+url = "https://github.com/pop-os/cosmic-protocols"
+ref = "main"
+description = "System76 COSMIC protocol extensions."
+license = "GPL-3.0"
+stability = "cosmic"
+include = ["**/*.xml", "**/*.md", "README*"]
+
+[[source]]
+name = "treeland-protocols"
+project = "wayland"
+kind = "git"
+url = "https://github.com/linuxdeepin/treeland"
+ref = "master"
+description = "Treeland (deepin) protocol extensions."
+license = "GPL-3.0"
+stability = "treeland"
+include = ["**/*.xml", "**/*.md"]
+
+[[source]]
+name = "river-protocols"
+project = "wayland"
+kind = "git"
+url = "https://codeberg.org/river/river"
+ref = "master"
+description = "River compositor protocol extensions."
+license = "GPL-3.0"
+stability = "river"
+include = ["protocol/**/*.xml", "**/*.md"]
+
+# ---------------------------------------------------------------------------
+# Compositors / Wayland implementations (reference).
+# ---------------------------------------------------------------------------
+[[source]]
+name = "weston"
+project = "weston"
+kind = "git"
+url = "https://gitlab.freedesktop.org/wayland/weston.git"
+ref = "main"
+description = "Reference compositor; Wawona bundles + patches it."
+license = "MIT"
+include = ["**/*.{c,h}", "**/*.md", "**/*.xml", "doc/**", "man/**"]
+
+[[source]]
+name = "smithay"
+project = "smithay"
+kind = "git"
+url = "https://github.com/Smithay/smithay"
+ref = "master"
+description = "Rust Wayland compositor toolkit (Wawona uses 0.7, wayland_frontend)."
+license = "MIT"
+include = ["src/**/*.rs", "**/*.md"]
+
+[[source]]
+name = "sway"
+project = "sway"
+kind = "git"
+url = "https://github.com/swaywm/sway"
+ref = "master"
+description = "wlroots compositor, used as a reference implementation."
+license = "MIT"
+include = ["**/*.{c,h}", "**/*.md"]
+
+[[source]]
+name = "cocoa-way"
+project = "cocoa-way"
+kind = "git"
+url = "https://github.com/J-x-Z/cocoa-way"
+ref = "main"
+description = "Cocoa-based Wayland experiment on macOS."
+license = "UNKNOWN"
+platform = ["macos"]
+include = ["**/*.{m,h,c,swift,md}"]
+
+[[source]]
+name = "iland"
+project = "iland"
+kind = "git"
+url = "https://github.com/CoreBedtime/iland"
+ref = "real"
+description = "macOS Wayland compat layer (WindowServer/SkyLight -> DRM/KMS/EGL/GBM). Underpins Wawona's DRM/GL backends; vendored at dependencies/libs/iland/upstream."
+license = "UNKNOWN"
+platform = ["macos", "ios"]
+include = ["**/*.{c,h,m,mm,md}", "shims/**", "README*"]
+
+[[source]]
+name = "pixman"
+project = "pixman"
+kind = "git"
+url = "https://gitlab.freedesktop.org/pixman/pixman.git"
+ref = "master"
+description = "Pixel manipulation library (Weston Pixman renderer path)."
+license = "MIT"
+include = ["pixman/**/*.{c,h}", "**/*.md", "README*"]
+
+# owl ObjC compositor: canonical upstream URL unconfirmed -> shipped disabled.
+[[source]]
+name = "owl"
+project = "owl"
+kind = "git"
+url = "https://github.com/CoreBedtime/owl"
+ref = "main"
+enabled = false
+description = "Owl ObjC compositor (confirm upstream URL before enabling)."
+platform = ["macos"]
+include = ["**/*.{m,h,c,md}"]
+
+# ---------------------------------------------------------------------------
+# Graphics: Vulkan.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "moltenvk"
+project = "vulkan"
+kind = "git"
+url = "https://github.com/KhronosGroup/MoltenVK"
+ref = "main"
+description = "Vulkan-on-Metal for Apple platforms."
+license = "Apache-2.0"
+platform = ["macos", "ios", "tvos", "visionos"]
+include = ["**/*.md", "Docs/**", "**/*.h"]
+
+[[source]]
+name = "vulkan-docs"
+project = "vulkan"
+kind = "git"
+url = "https://github.com/KhronosGroup/Vulkan-Docs"
+ref = "main"
+description = "Vulkan specification (used for the Android native Vulkan path)."
+license = "Apache-2.0"
+platform = ["android", "all"]
+include = ["**/*.adoc", "**/*.txt", "**/*.md"]
+
+# LunarG KosmicKrisp (Vulkan-on-Metal): upstream URL unconfirmed -> disabled.
+[[source]]
+name = "kosmickrisp"
+project = "vulkan"
+kind = "web-mirror"
+url = "https://www.lunarg.com/"
+seeds = ["https://www.lunarg.com/"]
+max_pages = 40
+enabled = false
+description = "LunarG KosmicKrisp Vulkan-on-Metal (confirm docs URL before enabling)."
+platform = ["macos", "ios"]
+
+# ---------------------------------------------------------------------------
+# Graphics: OpenGL / GLES.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "angle"
+project = "angle"
+kind = "git"
+url = "https://github.com/google/angle"
+ref = "main"
+description = "ANGLE (GLES -> Metal/Vulkan/D3D); Wawona's primary GL path."
+license = "BSD-3-Clause"
+platform = ["macos", "ios", "android"]
+include = ["doc/**", "**/*.md", "include/**/*.h"]
+
+# ---------------------------------------------------------------------------
+# Linux display/graphics stack: DRM / KMS / EGL / GBM.
+# This is the OS-level contract a Wayland compositor expects. Wawona reimplements
+# it off-Linux (iland provides DRM/KMS/EGL/GBM on Apple platforms), so the
+# authoritative kernel + userspace API docs are first-class context.
+# ---------------------------------------------------------------------------
+
+# Kernel DRM/KMS internals + UAPI. torvalds/linux is enormous, so shallow
+# (--depth 1) + sparse cone restricts the checkout to Documentation/gpu only.
+[[source]]
+name = "linux-drm-docs"
+project = "drm-kms"
+kind = "git"
+url = "https://github.com/torvalds/linux"
+ref = "master"
+description = "Linux kernel DRM/KMS documentation: drm-kms, drm-uapi (ioctls), atomic modesetting, drm-mm/GEM, KMS properties, planes/CRTCs/connectors, dma-buf."
+license = "GPL-2.0 (docs; reference only)"
+platform = ["linux", "all"]
+include = ["Documentation/gpu/**/*.rst"]
+sparse = ["Documentation/gpu"]
+
+# libdrm: the userspace DRM/KMS API (xf86drm*) + UAPI headers (drm_fourcc, modes).
+[[source]]
+name = "libdrm"
+project = "drm-kms"
+kind = "git"
+url = "https://gitlab.freedesktop.org/mesa/drm"
+ref = "main"
+description = "libdrm userspace API (xf86drm.h / xf86drmMode.h) and DRM UAPI headers (drm.h, drm_mode.h, drm_fourcc.h: fourcc + format modifiers)."
+license = "MIT"
+platform = ["linux", "all"]
+include = [
+  "xf86drm.h",
+  "xf86drmMode.h",
+  "include/drm/**/*.h",
+  "man/**",
+  "*.rst",
+  "README*",
+]
+
+# EGL: Khronos registry (the EGL spec context lives in the per-extension specs +
+# headers). Includes EGL_KHR_platform_gbm, EGL_EXT_image_dma_buf_import, etc.
+[[source]]
+name = "egl-registry"
+project = "egl"
+kind = "git"
+url = "https://github.com/KhronosGroup/EGL-Registry"
+ref = "main"
+description = "Khronos EGL registry: headers (egl.h/eglext.h/eglplatform.h) and extension specs (EGL_KHR_platform_gbm, EGL_EXT_image_dma_buf_import[_modifiers], EGL_KHR_image_base, EGL_ANDROID_*) — the buffer/display glue Wayland compositors use."
+license = "Apache-2.0 / MIT (Khronos)"
+platform = ["linux", "android", "all"]
+include = [
+  "api/EGL/**/*.h",
+  "api/**/*.h",
+  "extensions/**/*.txt",
+  "specs/**",
+  "*.md",
+]
+
+# GBM (Generic Buffer Management) + EGL implementation docs live in Mesa. Mesa is
+# large, so sparse to src/gbm (the documented gbm.h) + docs/ (egl.rst etc.).
+[[source]]
+name = "mesa-gbm"
+project = "gbm"
+kind = "git"
+url = "https://gitlab.freedesktop.org/mesa/mesa"
+ref = "main"
+description = "Mesa GBM (Generic Buffer Management) public API (src/gbm/main/gbm.h: bo, surfaces, formats, modifiers) + Mesa EGL/driconf docs — the buffer allocation layer between KMS scanout and EGL/GLES rendering."
+license = "MIT"
+platform = ["linux", "android", "all"]
+include = [
+  "src/gbm/**/*.h",
+  "docs/**/*.rst",
+]
+exclude = ["docs/relnotes/**"]
+sparse = ["src/gbm", "docs"]
+
+# ---------------------------------------------------------------------------
+# Apple frameworks (web-mirror of developer.apple.com; bounded crawl).
+# Apple docs are a SPA backed by JSON at /tutorials/data/...; the web-mirror
+# fetcher captures the JSON + rendered text where possible.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "apple-appkit"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/appkit"
+seeds = ["https://developer.apple.com/documentation/appkit"]
+max_pages = 400
+platform = ["macos"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-uikit"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/uikit"
+seeds = ["https://developer.apple.com/documentation/uikit"]
+max_pages = 400
+platform = ["ios", "ipados", "tvos"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-watchkit"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/watchkit"
+seeds = ["https://developer.apple.com/documentation/watchkit"]
+max_pages = 150
+platform = ["watchos"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-swiftui"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/swiftui"
+seeds = ["https://developer.apple.com/documentation/swiftui"]
+max_pages = 400
+platform = ["all"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-metal"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/metal"
+seeds = ["https://developer.apple.com/documentation/metal"]
+max_pages = 300
+platform = ["macos", "ios", "tvos", "visionos"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-liquid-glass"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/technologyoverviews/liquid-glass"
+seeds = [
+  "https://developer.apple.com/documentation/technologyoverviews/liquid-glass",
+  "https://developer.apple.com/documentation/swiftui/landmarks-building-an-app-with-liquid-glass",
+]
+max_pages = 80
+platform = ["all"]
+license = "Apple (reference only)"
+description = "Liquid Glass (OS 26) design + APIs."
+
+[[source]]
+name = "apple-virtualization"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/virtualization"
+seeds = ["https://developer.apple.com/documentation/virtualization"]
+max_pages = 150
+platform = ["macos"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-containerization"
+project = "apple"
+kind = "git"
+url = "https://github.com/apple/containerization"
+ref = "main"
+description = "Apple Containerization (macOS containers)."
+license = "Apache-2.0"
+platform = ["macos"]
+include = ["**/*.md", "Sources/**/*.swift", "docs/**"]
+
+# ---------------------------------------------------------------------------
+# macOS internals / reverse-engineering: Mach-O, dyld, Mach, XNU, launchd.
+# iland replaces WindowServer/SkyLight by injecting .dylibs and standing up a
+# custom IOSurface/Metal-backed framebuffer that mimics DRM/KMS, so WWN-MCP must
+# understand the Mach-O binary format, framework/.dylib creation + loading
+# (install names, @rpath, two-level namespace, DYLD_INSERT_LIBRARIES), the Mach
+# microkernel APIs, the XNU kernel, and launchd. Authoritative + offline source:
+# Apple's own open-source distributions.
+# ---------------------------------------------------------------------------
+
+# XNU: the Mach microkernel + BSD. Enormous, so shallow + sparse cone to the Mach
+# APIs, key BSD sys headers, and the Mach-O format headers.
+[[source]]
+name = "xnu"
+project = "macos-internals"
+kind = "git"
+url = "https://github.com/apple-oss-distributions/xnu"
+ref = "main"
+description = "XNU kernel: Mach APIs (osfmk/mach: ports/tasks/threads/vm/messages + MIG .defs), BSD syscalls (bsd/sys), and the canonical Mach-O format header (EXTERNAL_HEADERS/mach-o/loader.h: load commands, segments, dylib/dylinker)."
+license = "APSL-2.0 (reference only)"
+platform = ["macos", "ios"]
+include = [
+  "osfmk/mach/**/*.h",
+  "osfmk/mach/**/*.defs",
+  "osfmk/kern/**/*.h",
+  "bsd/sys/**/*.h",
+  "EXTERNAL_HEADERS/mach-o/**/*.h",
+  "iokit/IOKit/**/*.h",
+  "doc/**/*.md",
+  "**/*.md",
+]
+sparse = ["osfmk/mach", "osfmk/kern", "bsd/sys", "EXTERNAL_HEADERS", "iokit/IOKit", "doc"]
+
+# dyld: the dynamic linker. How frameworks/.dylibs are found, loaded, and bound
+# (dyld_priv.h, dyld_images.h, interposing, the shared cache, @rpath resolution).
+[[source]]
+name = "dyld"
+project = "macos-internals"
+kind = "git"
+url = "https://github.com/apple-oss-distributions/dyld"
+ref = "main"
+description = "Apple dyld dynamic linker: dylib/framework loading + binding, interposing/DYLD_INSERT_LIBRARIES, the dyld shared cache, dyld_images.h/dyld_priv.h, @rpath/@executable_path/@loader_path."
+license = "APSL-2.0 (reference only)"
+platform = ["macos", "ios"]
+include = ["include/**/*.h", "doc/**", "**/*.md"]
+
+# cctools: the Mach-O toolchain. Format headers + the man pages that document
+# building/inspecting/patching dylibs & frameworks (otool, nm, lipo, ld,
+# install_name_tool, codesign-adjacent).
+[[source]]
+name = "cctools"
+project = "macos-internals"
+kind = "git"
+url = "https://github.com/apple-oss-distributions/cctools"
+ref = "main"
+description = "cctools: Mach-O format headers (include/mach-o: loader.h, fat.h, nlist.h, reloc.h) + man pages for otool, nm, lipo, ld, install_name_tool — creating/inspecting/relinking .dylib & .framework Mach-O binaries."
+license = "APSL-2.0 (reference only)"
+platform = ["macos", "ios"]
+include = ["include/mach-o/**/*.h", "man/**", "RelNotes/**", "**/*.md"]
+
+# launchd: the macOS init/service manager (launchd.plist format, launchctl).
+[[source]]
+name = "launchd"
+project = "macos-internals"
+kind = "git"
+url = "https://github.com/apple-oss-distributions/launchd"
+ref = "main"
+description = "launchd init/service manager: launchd.plist(5) keys, launchctl(1), launchd(8), liblaunch — how daemons/agents are declared and started on macOS."
+license = "APSL-2.0 (reference only)"
+platform = ["macos"]
+include = ["**/*.[15]", "man/**", "**/*.md", "**/launch.h"]
+
+# Apple conceptual guides (legacy static archive; bounded crawl) that explain the
+# *intent* the headers above don't: install names, framework bundle layout, the
+# Mach-O runtime/ABI, and kernel/Mach architecture.
+[[source]]
+name = "apple-dynamic-libraries"
+project = "macos-internals"
+kind = "web-mirror"
+url = "https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/"
+seeds = ["https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/"]
+max_pages = 60
+platform = ["macos", "ios"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-macho-format"
+project = "macos-internals"
+kind = "web-mirror"
+url = "https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/MachOTopics/"
+seeds = [
+  "https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/MachOTopics/",
+  "https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/MachORuntime/",
+]
+max_pages = 80
+platform = ["macos", "ios"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-framework-guide"
+project = "macos-internals"
+kind = "web-mirror"
+url = "https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPFrameworks/"
+seeds = ["https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPFrameworks/"]
+max_pages = 60
+platform = ["macos"]
+license = "Apple (reference only)"
+
+[[source]]
+name = "apple-kernel-guide"
+project = "macos-internals"
+kind = "web-mirror"
+url = "https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/"
+seeds = ["https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/"]
+max_pages = 100
+platform = ["macos"]
+license = "Apple (reference only)"
+
+# IOSurface: the shared GPU buffer iland uses to mimic a DRM scanout/framebuffer
+# (paired with Metal/CAMetalLayer). The Metal docs are already indexed separately.
+[[source]]
+name = "apple-iosurface"
+project = "apple"
+kind = "web-mirror"
+url = "https://developer.apple.com/documentation/iosurface"
+seeds = ["https://developer.apple.com/documentation/iosurface"]
+max_pages = 120
+platform = ["macos", "ios", "tvos", "visionos"]
+license = "Apple (reference only)"
+
+# ---------------------------------------------------------------------------
+# Swift language + the official Swift MCP SDK.
+# Note: modelcontextprotocol/swift-sdk is a LIBRARY (Client/Server/Transport
+# for building MCP in Swift), not a runnable server, so it is INDEXED here
+# rather than co-hosted like the MCP-NixOS companion.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "swift-mcp"
+project = "swift-mcp"
+kind = "git"
+url = "https://github.com/modelcontextprotocol/swift-sdk"
+ref = "main"
+description = "Official Swift SDK for MCP (Client/Server/Transport, 2025-11-25 spec); indexed for Swift + MCP-in-Swift understanding."
+license = "Apache-2.0/MIT"
+platform = ["macos", "ios", "ipados", "tvos", "watchos", "visionos"]
+include = ["Sources/**/*.swift", "Tests/**/*.swift", "**/*.md", "Package.swift"]
+
+[[source]]
+name = "swift-book"
+project = "swift-lang"
+kind = "git"
+url = "https://github.com/swiftlang/swift-book"
+ref = "main"
+description = "The Swift Programming Language (TSPL) — authoritative Swift language reference."
+license = "Apache-2.0 / CC-BY-4.0"
+platform = ["all"]
+include = ["TSPL.docc/**/*.md", "**/*.md"]
+
+# ---------------------------------------------------------------------------
+# Rust language + the official Rust MCP SDK (RMCP).
+# Note: modelcontextprotocol/rust-sdk (rmcp) is a LIBRARY/crate for building
+# MCP in Rust, not a runnable server, so it is INDEXED here rather than
+# co-hosted like the MCP-NixOS companion. This complements the version-pinned
+# rustdoc crate sources (smithay, wayland-*, ...) used elsewhere.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "rust-mcp"
+project = "rust-mcp"
+kind = "git"
+url = "https://github.com/modelcontextprotocol/rust-sdk"
+ref = "main"
+description = "Official Rust SDK for MCP (rmcp + rmcp-macros, tokio async); indexed for Rust + MCP-in-Rust understanding."
+license = "Apache-2.0/MIT"
+platform = ["all"]
+include = ["crates/**/*.rs", "examples/**/*.rs", "docs/**/*.md", "**/*.md", "Cargo.toml"]
+exclude = ["**/target/**"]
+
+[[source]]
+name = "rust-book"
+project = "rust-lang"
+kind = "git"
+url = "https://github.com/rust-lang/book"
+ref = "main"
+description = "The Rust Programming Language (the book) — authoritative Rust language reference."
+license = "MIT / Apache-2.0"
+platform = ["all"]
+include = ["src/**/*.md", "**/*.md"]
+exclude = ["listings/**", "ci/**"]
+
+# ---------------------------------------------------------------------------
+# XcodeGen — Wawona generates its Xcode projects from a YAML/JSON spec via Nix
+# (dependencies/generators/xcodegen.nix), so the full Project Spec reference is
+# first-class. Index ALL of XcodeGen: the Docs/ (Project Spec, Usage, FAQ,
+# Examples), the SettingPresets (default build settings per product/platform),
+# README/CHANGELOG, and the Sources for deep reference.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "xcodegen"
+project = "xcodegen"
+kind = "git"
+url = "https://github.com/yonaskolb/XcodeGen"
+ref = "master"
+description = "XcodeGen: generate .xcodeproj from a YAML/JSON project spec (Wawona's Apple project generator)."
+license = "MIT"
+platform = ["macos", "ios", "ipados", "tvos", "watchos", "visionos"]
+include = [
+  "Docs/**/*.md",
+  "*.md",
+  "SettingPresets/**/*.yml",
+  "Sources/**/*.swift",
+  "Package.swift",
+]
+
+# ---------------------------------------------------------------------------
+# Android (web-mirror of developer.android.com + m3.material.io).
+# ---------------------------------------------------------------------------
+[[source]]
+name = "android-compose"
+project = "android"
+kind = "web-mirror"
+url = "https://developer.android.com/develop/ui/compose"
+seeds = [
+  "https://developer.android.com/develop/ui/compose",
+  "https://developer.android.com/develop/ui/compose/documentation",
+]
+max_pages = 400
+platform = ["android"]
+license = "Google (CC-BY / reference only)"
+
+[[source]]
+name = "android-material3-expressive"
+project = "android"
+kind = "web-mirror"
+url = "https://m3.material.io/"
+seeds = [
+  "https://m3.material.io/",
+  "https://developer.android.com/develop/ui/compose/components",
+]
+max_pages = 250
+platform = ["android"]
+license = "Google (CC-BY / reference only)"
+description = "Material 3 Expressive (Android 16+ only)."
+
+[[source]]
+name = "android-ndk-graphics"
+project = "android"
+kind = "web-mirror"
+url = "https://developer.android.com/ndk/guides/graphics"
+seeds = ["https://developer.android.com/ndk/guides/graphics", "https://developer.android.com/ndk/reference"]
+max_pages = 150
+platform = ["android"]
+license = "Google (reference only)"
+description = "Android NDK graphics, ANativeWindow, Choreographer, Vulkan."
+
+# ---------------------------------------------------------------------------
+# Virtualization / remote display.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "utm"
+project = "virtualization"
+kind = "git"
+url = "https://github.com/utmapp/UTM"
+ref = "main"
+description = "QEMU-based VMs on Apple platforms; UTM-SE = JIT-less precedent."
+license = "Apache-2.0"
+platform = ["macos", "ios"]
+include = ["**/*.{swift,m,h,md}", "Documentation/**"]
+
+[[source]]
+name = "waypipe"
+project = "waypipe"
+kind = "git"
+url = "https://gitlab.freedesktop.org/mstoeckl/waypipe.git"
+ref = "main"
+description = "Upstream Rust waypipe; Wawona patches it for Apple/Android."
+license = "MIT"
+include = ["**/*.rs", "**/*.md", "**/*.scd"]
+
+# ---------------------------------------------------------------------------
+# Userland (patched in-process on iOS).
+# ---------------------------------------------------------------------------
+[[source]]
+name = "coreutils"
+project = "coreutils"
+kind = "git"
+url = "https://github.com/uutils/coreutils"
+ref = "main"
+description = "uutils coreutils (Rust), run in-process via wawona-dispatch."
+license = "MIT"
+include = ["src/**/*.rs", "**/*.md"]
+
+# ---------------------------------------------------------------------------
+# Build-system reference: nixpkgs (HUGE; scoped to relevant subtrees only).
+# Pin ref to Wawona's flake.lock rev at deploy time.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "nixpkgs"
+project = "nixpkgs"
+kind = "git"
+url = "https://github.com/NixOS/nixpkgs"
+ref = "nixpkgs-unstable"
+description = "Build-system reference; scoped to lib/doc/build-support + cross infra."
+license = "MIT"
+include = [
+  "lib/**/*.nix",
+  "doc/**/*.md",
+  "doc/**/*.xml",
+  "pkgs/build-support/**/*.nix",
+  "pkgs/development/compilers/llvm/**/*.nix",
+  "pkgs/stdenv/**/*.nix",
+]
+exclude = ["pkgs/applications/**", "pkgs/servers/**", "pkgs/games/**"]
+# Only materialize these subtrees (cone mode) so we don't check out the whole
+# multi-GB tree just to index a few dirs.
+sparse = ["lib", "doc", "pkgs/build-support", "pkgs/stdenv", "pkgs/development/compilers/llvm"]
+
+# ---------------------------------------------------------------------------
+# crate2nix — Wawona's Rust backend is split crate-by-crate into separate Nix
+# derivations with crate2nix, so a single crate failure is isolated and the
+# backend rebuilds incrementally. Index the full repo: docs/ (the mdBook that
+# powers nix-community.github.io/crate2nix), the Nix API (tools.nix, default.nix,
+# nix/, lib/ incl. build-from-json.nix), README/CHANGELOG, and the sample
+# projects/flake templates for end-to-end examples.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "crate2nix"
+project = "crate2nix"
+kind = "git"
+url = "https://github.com/nix-community/crate2nix"
+ref = "master"
+description = "crate2nix: generate per-crate Nix derivations from Cargo.toml/Cargo.lock for incremental Rust builds (Cargo.nix, JSON output, tools.nix generatedCargoNix/appliedCargoNix, crate overrides, IFD vs manual strategies)."
+license = "Apache-2.0 / MIT"
+platform = ["all"]
+include = [
+  "docs/**/*.md",
+  "*.md",
+  "tools.nix",
+  "default.nix",
+  "shell.nix",
+  "nix/**/*.nix",
+  "lib/**/*.nix",
+  "templates/**/*.nix",
+  "sample_projects/**/Cargo.nix",
+  "sample_projects/**/*.md",
+]
+exclude = ["crate2nix/templates/**/Cargo.nix", "**/target/**"]
+
+# ---------------------------------------------------------------------------
+# CI / release automation: Fastlane (TestFlight + Android publishing).
+# Wawona needs Fastlane so testers get prebuilt TestFlight/Play builds instead
+# of compiling from scratch (hours), and so PRs build on GitHub runners.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "fastlane-docs"
+project = "fastlane"
+kind = "git"
+url = "https://github.com/fastlane/docs"
+ref = "master"
+description = "Fastlane documentation (docs.fastlane.tools): pilot=TestFlight, supply=Play Store, deliver, match, gym, scan, snapshot; lanes, Fastfile, Appfile, CI setup."
+license = "MIT"
+platform = ["ios", "ipados", "tvos", "watchos", "visionos", "macos", "android"]
+include = ["**/*.md"]
+
+[[source]]
+name = "fastlane"
+project = "fastlane"
+kind = "git"
+url = "https://github.com/fastlane/fastlane"
+ref = "master"
+description = "Fastlane source: action implementations (pilot/deliver/supply/match/gym/scan) and per-tool READMEs."
+license = "MIT"
+platform = ["ios", "android", "macos", "all"]
+include = ["**/*.md", "fastlane/lib/fastlane/actions/**/*.rb"]
+exclude = ["**/spec/**", "**/test/**"]
+
+# ---------------------------------------------------------------------------
+# GitHub Actions runners (GitHub-hosted + self-hosted + matrix strategy).
+# github/docs is huge -> sparse-checkout content/actions only.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "github-actions-docs"
+project = "github-actions"
+kind = "git"
+url = "https://github.com/github/docs"
+ref = "main"
+description = "GitHub Actions docs: workflow syntax, GitHub-hosted + self-hosted runners, matrix strategy, caching, artifacts, secrets, reusable workflows."
+license = "CC-BY-4.0 / MIT"
+platform = ["all"]
+include = ["content/actions/**/*.md"]
+sparse = ["content/actions", "data/reusables/actions"]
+
+[[source]]
+name = "actions-runner"
+project = "github-actions"
+kind = "git"
+url = "https://github.com/actions/runner"
+ref = "main"
+description = "GitHub Actions self-hosted runner internals + docs."
+license = "MIT"
+platform = ["all"]
+include = ["docs/**/*.md", "**/*.md"]
+
+# ---------------------------------------------------------------------------
+# Determinate Nix (the Nix distribution used for CI + dev) and how to use it.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "determinate-docs"
+project = "determinate-nix"
+kind = "web-mirror"
+url = "https://docs.determinate.systems/"
+seeds = ["https://docs.determinate.systems/"]
+max_pages = 150
+license = "Determinate Systems (reference only)"
+description = "Determinate Nix docs: nix-installer, flakehub, magic-nix-cache, nix.conf, CI usage (nix-installer-action, flake-checker)."
+
+[[source]]
+name = "nix-installer"
+project = "determinate-nix"
+kind = "git"
+url = "https://github.com/DeterminateSystems/nix-installer"
+ref = "main"
+description = "Determinate Nix installer + GitHub Action usage (nix-installer-action), incl. matrix/CI examples."
+license = "see-upstream"
+platform = ["all"]
+include = ["**/*.md", "docs/**"]
+
+# ---------------------------------------------------------------------------
+# Nix development environments (dev shells, devenv, direnv) + official guides.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "nix-dev"
+project = "nix-dev-env"
+kind = "git"
+url = "https://github.com/NixOS/nix.dev"
+ref = "master"
+description = "Official Nix tutorials & guides, incl. declarative/reproducible developer environments and flakes."
+license = "CC-BY-SA-4.0 / MIT"
+platform = ["all"]
+include = ["source/**/*.md", "**/*.md"]
+
+[[source]]
+name = "devenv"
+project = "nix-dev-env"
+kind = "git"
+url = "https://github.com/cachix/devenv"
+ref = "main"
+description = "devenv.sh: fast, declarative, reproducible developer environments built on Nix."
+license = "Apache-2.0"
+platform = ["all"]
+include = ["docs/**/*.md", "**/*.md"]
+
+[[source]]
+name = "nix-direnv"
+project = "nix-dev-env"
+kind = "git"
+url = "https://github.com/nix-community/nix-direnv"
+ref = "master"
+description = "nix-direnv: fast direnv integration for `use flake` dev shells."
+license = "MIT"
+platform = ["all"]
+include = ["**/*.md"]
+
+# ---------------------------------------------------------------------------
+# Store compliance (offline policy mirrors; no upstream git repo).
+# ---------------------------------------------------------------------------
+[[source]]
+name = "apple-app-store-policies"
+project = "store-compliance"
+kind = "web-mirror"
+url = "https://developer.apple.com/app-store/review/guidelines/"
+seeds = [
+  "https://developer.apple.com/app-store/review/guidelines/",
+  "https://developer.apple.com/support/downloads/terms/apple-developer-program/Apple-Developer-Program-License-Agreement-20240610-English.pdf",
+]
+max_pages = 60
+platform = ["ios", "ipados", "tvos", "watchos", "visionos"]
+license = "Apple (reference only)"
+stability = "strict"
+
+[[source]]
+name = "google-play-policies"
+project = "store-compliance"
+kind = "web-mirror"
+url = "https://play.google.com/about/developer-content-policy/"
+seeds = [
+  "https://play.google.com/about/developer-content-policy/",
+  "https://support.google.com/googleplay/android-developer/answer/9888379",
+]
+max_pages = 80
+platform = ["android"]
+license = "Google (reference only)"
+stability = "permissive"
