@@ -27,6 +27,32 @@ def repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
+def default_data_dir() -> Path:
+    """Writable runtime dir.
+
+    Prefer an XDG location so an installed (e.g. Nix-store, read-only) package
+    works out of the box. Fall back to ``./data`` only for an editable checkout
+    whose repo root is actually writable.
+    """
+    rr = repo_root()
+    if (rr / "corpus.toml").exists() and os.access(rr, os.W_OK):
+        return rr / "data"
+    xdg = os.environ.get("XDG_DATA_HOME")
+    base = Path(xdg).expanduser() if xdg else Path.home() / ".local" / "share"
+    return base / "wwn-mcp"
+
+
+def find_manifest() -> Path:
+    """Locate ``corpus.toml``: env override, packaged copy, then dev checkout."""
+    env = os.environ.get("WWN_MCP_CORPUS_TOML")
+    if env:
+        return Path(env).expanduser().resolve()
+    packaged = Path(__file__).resolve().parent / "corpus.toml"
+    if packaged.exists():
+        return packaged
+    return repo_root() / "corpus.toml"
+
+
 @dataclass(frozen=True)
 class Settings:
     data_dir: Path
@@ -41,10 +67,10 @@ class Settings:
 
     @staticmethod
     def load() -> Settings:
-        data_dir = _env_path("WWN_MCP_DATA_DIR", repo_root() / "data")
+        data_dir = _env_path("WWN_MCP_DATA_DIR", default_data_dir())
         corpus_dir = _env_path("WWN_MCP_CORPUS_DIR", data_dir / "corpus")
         db_path = _env_path("WWN_MCP_DB", data_dir / "index.sqlite")
-        manifest = _env_path("WWN_MCP_CORPUS_TOML", repo_root() / "corpus.toml")
+        manifest = find_manifest()
         return Settings(
             data_dir=data_dir,
             corpus_dir=corpus_dir,

@@ -52,6 +52,12 @@
             # Tests need network/model; skip in the sandbox.
             doCheck = false;
             pythonImportsCheck = [ "wwn_mcp" "wwn_mcp.cli" ];
+            # Bundle the corpus manifest next to the package so an installed
+            # (read-only store) wwn-mcp finds it with no WWN_MCP_CORPUS_TOML env.
+            postInstall = ''
+              install -Dm644 corpus.toml \
+                "$out/${py.python.sitePackages}/wwn_mcp/corpus.toml"
+            '';
             meta = {
               description = "Local-embeddings RAG + MCP server for the Wawona stack.";
               homepage = "https://github.com/Wawona/WWN-MCP";
