@@ -38,11 +38,14 @@ Each `[[source]]` entry supports:
 `<interface>`, tagged with its family/stability.
 
 ### Compositors / implementations
-`weston`, `smithay`, `sway`, `cocoa-way`, `iland`, `pixman`, `owl` (disabled
-until its upstream URL is confirmed).
+`weston`, `smithay`, `sway`, `cocoa-way`, `iland`, `pixman`, `owl`
+(`owl-compositor/owl`, branch `tmp` — the portable Wayland compositor in
+Objective-C/Cocoa; prior art for running Wayland clients in macOS Quartz).
 
 ### Graphics
-- Vulkan: `moltenvk`, `vulkan-docs`, `kosmickrisp` (disabled pending URL).
+- Vulkan: `moltenvk`, `vulkan-docs`, `kosmickrisp` (sparse-checkout of Mesa
+  `src/kosmickrisp` + `docs/drivers` — conformant Vulkan-on-Metal for Apple
+  Silicon, macOS 26+/Metal 4).
 - OpenGL/GLES: `angle`.
 
 ### Linux display stack: DRM / KMS / EGL / GBM
@@ -238,6 +241,8 @@ a schedule (default daily) with an atomic DB swap. See
 
 ## Disabled sources
 
-Sources whose canonical upstream URL is not yet confirmed ship with
-`enabled = false` (currently `owl`, `kosmickrisp`, `wawona-git`). Confirm the
-URL/ref, set `enabled = true`, and re-run `wwn-mcp fetch`.
+Only `wawona-git` ships `enabled = false`. It is the deploy-time git mirror of
+the **same** repository as the active local `wawona` source, so enabling both
+would double-index every Wawona file. The NixOS deploy flips `wawona-git` on
+(and the local `wawona` source off) because the server has no working checkout.
+Every other source is enabled.

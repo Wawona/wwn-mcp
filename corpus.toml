@@ -51,19 +51,21 @@ exclude = [
   "inspirational_projects/**",
 ]
 
-# Production (deploy) entry for the Wawona repo over git. Disabled locally so we
-# index the working checkout above instead of re-cloning.
+# Production (deploy) entry for the Wawona repo over git. Kept DISABLED locally
+# on purpose: it is the SAME repo as the `wawona` local source above, so enabling
+# both would double-index every Wawona file. The NixOS deploy flips this on (and
+# the local source off) since there is no working checkout on the server.
 [[source]]
 name = "wawona-git"
 project = "wawona"
 kind = "git"
-url = "https://github.com/aspauldingcode/Wawona"
-ref = "development"
-enabled = false
+url = "https://github.com/Wawona/Wawona"
+ref = "master"
+description = "Wawona repo (deploy-time git mirror of the local `wawona` source)."
 license = "MIT"
-platform = ["all"]
-include = ["docs/**/*.md", "src/**/*", "Sources/**/*.swift", "dependencies/**/*.{nix,sh,py,patch,c,h,m}"]
-exclude = ["dependencies/generators/gradlegen/output/**", "**/target/**"]
+include = ["docs/**", "src/**", "Sources/**", "dependencies/**", "*.md"]
+exclude = ["dependencies/generators/gradlegen/output/**", "**/.git/**", "inspirational_projects/**"]
+enabled = false
 
 # ---------------------------------------------------------------------------
 # Wayland protocol corpus (the entire wayland.app / Wayland Explorer set).
@@ -233,17 +235,18 @@ description = "Pixel manipulation library (Weston Pixman renderer path)."
 license = "MIT"
 include = ["pixman/**/*.{c,h}", "**/*.md", "README*"]
 
-# owl ObjC compositor: canonical upstream URL unconfirmed -> shipped disabled.
+# owl: the portable Wayland compositor in Objective-C (Cocoa backend) — prior art
+# for running Wayland clients in Quartz on macOS (like Wawona's ObjC bridge).
 [[source]]
 name = "owl"
 project = "owl"
 kind = "git"
-url = "https://github.com/CoreBedtime/owl"
-ref = "main"
-enabled = false
-description = "Owl ObjC compositor (confirm upstream URL before enabling)."
+url = "https://github.com/owl-compositor/owl"
+ref = "tmp"
+description = "Owl: portable Wayland compositor in Objective-C using Cocoa/GNUstep (runs Wayland clients in macOS Quartz)."
+license = "GPL-3.0"
 platform = ["macos"]
-include = ["**/*.{m,h,c,md}"]
+include = ["**/*.m", "**/*.h", "**/*.c", "**/*.md", "Sources/**", "README*"]
 
 # ---------------------------------------------------------------------------
 # Graphics: Vulkan.
@@ -270,17 +273,20 @@ license = "Apache-2.0"
 platform = ["android", "all"]
 include = ["**/*.adoc", "**/*.txt", "**/*.md"]
 
-# LunarG KosmicKrisp (Vulkan-on-Metal): upstream URL unconfirmed -> disabled.
+# LunarG KosmicKrisp (Vulkan-on-Metal): now upstreamed INTO Mesa (src/kosmickrisp
+# + docs/drivers/kosmickrisp.rst). Conformant Vulkan->Metal 4 on Apple Silicon
+# (macOS 26+); primary macOS Vulkan path. Sparse-checkout just its subtree.
 [[source]]
 name = "kosmickrisp"
 project = "vulkan"
-kind = "web-mirror"
-url = "https://www.lunarg.com/"
-seeds = ["https://www.lunarg.com/"]
-max_pages = 40
-enabled = false
-description = "LunarG KosmicKrisp Vulkan-on-Metal (confirm docs URL before enabling)."
+kind = "git"
+url = "https://gitlab.freedesktop.org/mesa/mesa"
+ref = "main"
+description = "KosmicKrisp: conformant Vulkan-on-Metal Mesa driver for Apple Silicon (macOS 26+/Metal 4). Source in Mesa src/kosmickrisp + docs/drivers/kosmickrisp.rst."
+license = "MIT"
 platform = ["macos", "ios"]
+include = ["src/kosmickrisp/**/*.c", "src/kosmickrisp/**/*.h", "src/kosmickrisp/**/*.md", "docs/drivers/kosmickrisp.rst", "docs/drivers/*.rst"]
+sparse = ["src/kosmickrisp", "docs/drivers"]
 
 # ---------------------------------------------------------------------------
 # Graphics: OpenGL / GLES.
