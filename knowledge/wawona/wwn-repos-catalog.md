@@ -20,7 +20,7 @@ compositor/shell/toolchain development.
 
 | Repo | Role | `registryFragment` keys | CI |
 |------|------|-------------------------|-----|
-| **wwn-apt** | App Store `apt` compatibility layer: module catalog (YAML), shell CLI stub, StoreKit + ODR spec | `apt-rootfs` | catalog validate + doc firewall + `apt-rootfs-ios` build |
+| **wwn-apt** | App Store `apt` compatibility layer: optional module catalog (foot, neovim, fastfetch), bundled policy (zsh, coreutils, waypipe, apt), shell CLI stub, StoreKit + ODR spec | `apt-rootfs` | catalog validate + doc firewall + `apt-rootfs-ios` build |
 
 **Documentation firewall:** the `wwn-apt` repo must **not** mention jailbreak
 distribution or `repo.wawona.io`. App Store Review Notes come from
