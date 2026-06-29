@@ -162,7 +162,7 @@ def resolve_patch(entries: dict[str, dict], software: str) -> dict | None:
     # repo/name shorthand, e.g. wwn-zsh/zsh
     if "/" in software and not software.startswith(("libs/", "clients/", "wawona/")):
         repo, tail = software.split("/", 1)
-        for key, entry in entries.items():
+        for _key, entry in entries.items():
             if entry["repo"] == repo and entry["name"] == tail:
                 return entry
             if entry["repo"] == repo and entry["software"] == tail:
