@@ -97,9 +97,12 @@ consumer repos wire in [XcodeBuildMCP](https://github.com/getsentry/XcodeBuildMC
 co-hosted — they require macOS + Xcode 16+ on the developer's Mac (via
 nix-darwin, `npx`, or Homebrew) and live only in the consumer `.cursor/mcp.json`.
 They are action/debug tools, not knowledge sources, so they are neither indexed
-nor hosted by WWN-MCP. The curated operational guide is
-`knowledge/wawona/ios-device-dev-workflow.md` (signing via `nix develop`,
-`nix run .#xcodegen`, install on **8amps iPhone Air**, debug with lldb-mcp).
+nor hosted by WWN-MCP. Curated operational guides (indexed in RAG):
+
+- `knowledge/wawona/ios-device-dev-workflow.md` — signing, xcodegen, device install
+- `knowledge/wawona/lldb-mcp-apple-device-debugging.md` — **full lldb-mcp tool
+  reference**, iOS attach on **8amps iPhone Air**, Wawona breakpoints, in-process
+  pthread debugging
 
 ## RAG pipeline
 

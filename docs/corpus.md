@@ -32,8 +32,9 @@ Each `[[source]]` entry supports:
   apps live in `wwn-*` repos (below).
 - `wawona-git` (git, **disabled locally**) — deploy-time git mirror of integration.
 - `wwn-knowledge-wawona` (local) — multi-repo dev model, repo catalog, patch-overlay,
-  iland upstream credit, **iOS device dev workflow** (`knowledge/wawona/`; start with
-  `ios-device-dev-workflow.md` for signing, xcodegen, xcodebuild-mcp, lldb-mcp).
+  iland upstream credit, **iOS device dev workflow**, **lldb-mcp debugging**
+  (`knowledge/wawona/`; start with `ios-device-dev-workflow.md` and
+  `lldb-mcp-apple-device-debugging.md`).
 
 ### Wawona patched-software repos (Wawona org)
 Extracted from the Wawona monorepo into standalone Nix-wrapped flake repos that

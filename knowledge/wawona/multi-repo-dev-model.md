@@ -110,5 +110,8 @@ inventory; `search_code(..., project="weston")` for Weston recipes; `read_docume
 with paths like `wwn-zsh/dependencies/libs/zsh/ios.nix`.
 
 For the **iOS device build/install/debug loop** (nix develop signing, xcodegen,
-xcodebuild-mcp, lldb-mcp on 8amps iPhone Air, wwn-fastfetch flake overrides), see
-**`knowledge/wawona/ios-device-dev-workflow.md`** — high-priority operational guide.
+xcodebuild-mcp, lldb-mcp on 8amps iPhone Air, wwn-fastfetch flake overrides), see:
+
+- **`knowledge/wawona/ios-device-dev-workflow.md`** — end-to-end operational guide
+- **`knowledge/wawona/lldb-mcp-apple-device-debugging.md`** — full lldb-mcp tool catalog,
+  iOS attach workflow, Wawona symbol breakpoints, in-process pthread debugging

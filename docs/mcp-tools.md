@@ -33,7 +33,8 @@ Find a function/type/symbol definition by name across code.
 Wawona architecture / multi-repo dev docs (`project` fan-out across `wawona`,
 `ios-shell`, `weston`, `iland`, `waypipe`, `coreutils`). Good topics:
 `multi-repo dev model`, `registryFragment`, `patch-overlay`, `wwn-iland upstream`,
-`where to edit zsh patches`.
+`where to edit zsh patches`, **`lldb-mcp`**, `ios device dev workflow`,
+`fastfetch in-process crash`.
 
 ### `list_projects()`
 Indexed projects + chunk counts: `[{ "project": "...", "chunks": N }]`.
@@ -81,5 +82,20 @@ The same retrieval is available from the terminal for debugging:
 ```bash
 wwn-mcp search "liquid glass material" --kind docs -k 5
 wwn-mcp search "wl_surface commit" --kind protocol --json
+wwn-mcp search "lldb_set_breakpoint fastfetch_main" --project wawona -k 5
 wwn-mcp info        # resolved settings + index stats
 ```
+
+## Developer-local companion MCP (not wwn-mcp tools)
+
+These run on the developer Mac via `.cursor/mcp.json` (nix-darwin wires them).
+They are **not** served by wwn-mcp, but RAG indexes how to use them:
+
+| MCP name | Package | Role |
+|----------|---------|------|
+| `xcodebuild` | XcodeBuildMCP | Build, install, run on simulator/device |
+| `lldb` | [lldb-mcp](https://github.com/stass/lldb-mcp) | LLDB sessions: attach, breakpoints, backtrace, memory |
+| `nixos` | MCP-NixOS | Live nixpkgs/options (also co-hosted remotely) |
+
+Query wwn-mcp RAG for **`lldb-mcp-apple-device-debugging`** or
+**`ios-device-dev-workflow`** before debugging Wawona on Apple hardware.

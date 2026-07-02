@@ -14,10 +14,14 @@ via nix-darwin (`modules/apps/_ide-mcp.nix`) and are wired into Cursor/Antigravi
 | **wwn-mcp** | RAG over Wawona + `wwn-*` repos (this document) |
 | **nixos** | Live nixpkgs/options lookup (MCP-NixOS) |
 | **xcodebuild** | Build, install, and run on simulator **or device** (XcodeBuildMCP) |
-| **lldb** | Attach, breakpoints, backtraces, expression eval on device (lldb-mcp) |
+| **lldb** | Attach, breakpoints, backtraces, expression eval on device (**lldb-mcp**) |
 
 Pair **xcodebuild-mcp** (install) with **lldb-mcp** (debug). That combination on the
 primary dev device is sufficient to validate iOS fixes.
+
+**Full lldb-mcp guide:** `knowledge/wawona/lldb-mcp-apple-device-debugging.md` — complete
+tool catalog, iOS attach workflow, Wawona symbol breakpoints, in-process pthread debugging,
+and the proven fastfetch SIGBUS investigation on STARDUST.
 
 ## Primary test device
 
@@ -103,17 +107,32 @@ Requires macOS + Xcode 16+ and a USB/Wi‑Fi paired, trusted device.
 
 ## Step 4 — Debug on device (lldb-mcp)
 
-After install, use **lldb-mcp** to debug Wawona on **8amps iPhone Air**:
+After xcodebuild-mcp installs a **Debug** build, use the **`lldb`** MCP server
+(lldb-mcp from [stass/lldb-mcp](https://github.com/stass/lldb-mcp)). Cursor exposes
+28 tools; every command needs a `session_id` from `lldb_start`.
 
-1. **`lldb_attach`** (or **`lldb_start`**) targeting the running Wawona iOS process on
-   the device.
-2. Set breakpoints (`lldb_set_breakpoint`), continue/step (`lldb_continue`,
-   `lldb_step`, `lldb_next`).
-3. Inspect state: `lldb_backtrace`, `lldb_print`, `lldb_frame_info`,
-   `lldb_info_registers`.
+Minimal attach flow on **8amps iPhone Air**:
 
-This is how in-process crashes (e.g. fastfetch `SIGBUS` on `iPhone18,4`) were root-caused.
-Always prefer lldb-mcp over guessing from crash logs alone.
+1. **`lldb_start`** — use Xcode's LLDB:
+   `lldb_path=/Applications/Xcode.app/Contents/Developer/usr/bin/lldb`
+2. **`lldb_command`** — `platform select remote-ios`, then `attach -n Wawona`
+   (or `lldb_attach` with PID from `process list`).
+3. Reproduce the bug (e.g. run `fastfetch` twice in the in-process shell).
+4. **`lldb_thread_list`** → select the crashing pthread (in-process tools rarely
+   crash on the main thread).
+5. **`lldb_backtrace(full=true)`** → **`lldb_print`** / **`lldb_examine`** at fault.
+6. Set proactive breakpoints (`lldb_set_breakpoint` on `fastfetch_main`,
+   `wawona_zsh_main`, `wawona_dispatch_inprocess`) before reproduce when possible.
+7. **`lldb_terminate`** when done.
+
+Wawona bundle ID: **`com.aspauldingcode.Wawona`**. Process name: **Wawona**.
+
+This is how in-process crashes (e.g. fastfetch `SIGBUS` in `parseConfigFiles` on
+STARDUST / `iPhone18,4`) were root-caused. **Always prefer lldb-mcp over `.ips`
+crash logs alone** — live attach exposes struct fields and fault addresses.
+
+See **`lldb-mcp-apple-device-debugging.md`** for the full tool reference, macOS
+workflow, watchpoints, and agent checklist.
 
 ## Applying `wwn-fastfetch` (and other `wwn-*`) changes
 
@@ -197,5 +216,5 @@ Deploy path after editing knowledge:
 | Local fastfetch changes | `--override-input wwn-fastfetch path:../wwn-fastfetch` |
 | Shared fastfetch changes | push `wwn-fastfetch` → `nix flake lock --update-input wwn-fastfetch` |
 | Install to device | xcodebuild-mcp → **8amps iPhone Air** |
-| Debug on device | lldb-mcp attach to Wawona process |
+| Debug on device | `lldb` MCP: start → attach Wawona → backtrace (see lldb-mcp guide) |
 | Refresh agent knowledge | push wwn-mcp → pull → re-index → `nh switch mba` |
