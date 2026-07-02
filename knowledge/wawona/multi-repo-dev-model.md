@@ -108,3 +108,7 @@ WWN-MCP indexes Wawona (integration) **and** every `wwn-*` git source in
 `corpus.toml`. Use `get_patch("zsh")` or `get_patch("wwn-zsh/zsh")` for patch
 inventory; `search_code(..., project="weston")` for Weston recipes; `read_document`
 with paths like `wwn-zsh/dependencies/libs/zsh/ios.nix`.
+
+For the **iOS device build/install/debug loop** (nix develop signing, xcodegen,
+xcodebuild-mcp, lldb-mcp on 8amps iPhone Air, wwn-fastfetch flake overrides), see
+**`knowledge/wawona/ios-device-dev-workflow.md`** — high-priority operational guide.

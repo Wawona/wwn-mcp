@@ -21,6 +21,10 @@ repo's `.cursor/mcp.json` (already done in Wawona and WWN-MCP):
     "xcodebuild": {
       "command": "npx",
       "args": ["-y", "xcodebuildmcp@latest", "mcp"]
+    },
+    "lldb": {
+      "command": "lldb-mcp",
+      "args": []
     }
   }
 }
@@ -29,17 +33,20 @@ repo's `.cursor/mcp.json` (already done in Wawona and WWN-MCP):
 Set `WWN_MCP_TOKEN` in your environment (never commit it). Cursor will expose
 the WWN-MCP tools (`search`, `get_protocol`, `get_patch`, …) plus the companion
 **`nixos`** tools (`nix`, `nix_versions`) for accurate nixpkgs/options/version
-data, and the **`xcodebuild`** tools (getsentry/XcodeBuildMCP) for building,
-running, testing, and log-capturing the Apple Xcode projects. Pair them with an
-always-applied rule so models query them automatically — see the Wawona repo's
-`.cursor/rules/wawona-context.mdc` and `AGENTS.md`.
+data, the **`xcodebuild`** tools (getsentry/XcodeBuildMCP) for building,
+installing, and running on simulator or device, and **`lldb`** (lldb-mcp) for
+on-device debugging. Pair them with an always-applied rule so models query them
+automatically — see the Wawona repo's `.cursor/rules/wawona-context.mdc` and
+`AGENTS.md`.
 
 > **Companion server placement.** `nixos` is a stateless API client that runs
 > anywhere, so WWN-MCP **co-hosts** it on the NixOS host (also reachable at
-> `https://mcp.wawona.io/nixos/mcp`). `xcodebuild` requires **macOS + Xcode 16+**
-> (it drives `xcodebuild`/`simctl`/`devicectl`), so it is **developer-local
-> only** — run via `npx`/Homebrew on your Mac; it is *not* hosted on the Linux
-> server.
+> `https://mcp.wawona.io/nixos/mcp`). `xcodebuild` and `lldb` require **macOS +
+> Xcode 16+** (they drive `xcodebuild`/`devicectl` and LLDB), so they are
+> **developer-local only** — run via nix-darwin, `npx`, or Homebrew on your Mac;
+> they are *not* hosted on the Linux server. See
+> `knowledge/wawona/ios-device-dev-workflow.md` for the full device install +
+> debug loop (primary device: **8amps iPhone Air**).
 
 The `nixos` entry above runs MCP-NixOS locally via `uvx` (no Nix required). To
 use the **hosted** companion instead (co-deployed by the WWN-MCP NixOS module),

@@ -88,15 +88,18 @@ The NixOS module runs it over HTTP behind the same Caddy/TLS/Bearer proxy
 Cursor can also run it directly via `uvx mcp-nixos` (no Nix required); see
 [usage.md](usage.md).
 
-### Developer-local companion: XcodeBuildMCP
+### Developer-local companions: XcodeBuildMCP + lldb-mcp
 
-For building/running/testing the Apple Xcode projects, consumer repos also wire
-in [XcodeBuildMCP](https://github.com/getsentry/XcodeBuildMCP) (`xcodebuild`
-tools: build, simulator, device, log capture). Unlike MCP-NixOS it is **not**
-co-hosted — it requires macOS + Xcode 16+ and must run on the developer's Mac
-(via `npx`/Homebrew), so it lives only in the consumer `.cursor/mcp.json`. It is
-an action/build tool, not a knowledge source, so it is neither indexed nor
-hosted by WWN-MCP.
+For building/installing/running the Apple Xcode projects on simulator or device,
+consumer repos wire in [XcodeBuildMCP](https://github.com/getsentry/XcodeBuildMCP)
+(`xcodebuild` tools). For on-device debugging, pair it with **lldb-mcp**
+(breakpoints, backtraces, expression eval). Unlike MCP-NixOS they are **not**
+co-hosted — they require macOS + Xcode 16+ on the developer's Mac (via
+nix-darwin, `npx`, or Homebrew) and live only in the consumer `.cursor/mcp.json`.
+They are action/debug tools, not knowledge sources, so they are neither indexed
+nor hosted by WWN-MCP. The curated operational guide is
+`knowledge/wawona/ios-device-dev-workflow.md` (signing via `nix develop`,
+`nix run .#xcodegen`, install on **8amps iPhone Air**, debug with lldb-mcp).
 
 ## RAG pipeline
 
