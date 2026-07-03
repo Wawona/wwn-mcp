@@ -197,9 +197,17 @@ it through **`wawona-dispatch.c`** (`fastfetch_main` weak symbol) when
 
 ### fastfetch: crash root cause + in-process lifecycle hardening
 
-The reported `EXC_BAD_ACCESS` in `fastfetch_main` was **macOS IORegistry/SMC detection
+The first reported `EXC_BAD_ACCESS` in `fastfetch_main` was **macOS IORegistry/SMC detection
 paths executing in the iOS sandbox** (CPU pmgr, host serial/UUID, SMC temps). Fixed by
 sysctl-only stubs for `cpu_apple.c`, `host_apple.c`, `smc_temps.c`, `os_apple.m`.
+
+A second deterministic `SIGBUS` (LLDB-MCP on device STARDUST, `iPhone18,4`) surfaced later in
+`parseConfigFiles()`: it iterated `instance.state.platform.configDirs` whose `.data` had been
+left as a small tagged integer (`0x1000000005`) with a non-zero `.length`, faulting on the
+`FFstrbuf.length` read (fault addr `0x1000000009`). This is a **singleton re-entry** hazard: the
+global `FFinstance` is reused on every in-process run, and a prior run aborted by a fatal signal
+skips the post-run `ffDestroyInstance()`, leaving torn state for the next run. See the re-entry
+guards below (belt-and-suspenders; item 4).
 
 Beyond the crash, running a CLI **in-process and repeatedly** exposes process-global
 hazards that a normal `fork`/`exec` binary never hits. On Apple mobile (`WAWONA_APPLE_MOBILE`):
@@ -218,9 +226,25 @@ hazards that a normal `fork`/`exec` binary never hits. On Apple mobile (`WAWONA_
    required because some `exit()` sites (e.g. `commandoption.c`) do not include `fastfetch.h`,
    so an umbrella-header edit would miss them. `fastfetch.c` is compiled as
    `fastfetch_main_impl`; `fastfetch_main` is the wrapping barrier.
+4. **Singleton re-entry** — because a fatal signal skips the post-run cleanup, the wrapper also
+   calls `ffDestroyInstance()` **before** each run. To make that safe, `ffDestroyInstance` and
+   `ffInitInstance` are idempotent via a `static bool ffInstanceLive` flag (no-op destroy on a
+   pristine/zeroed BSS or already-torn instance), `ffPlatformInit` calls `ffPlatformDestroy`
+   first to free any prior `FFstrbuf`/`FFlist` members before re-init, and `parseConfigFiles`
+   refuses to iterate a `configDirs` whose `.data` is null or `.length` is zero. All guarded by
+   `WAWONA_APPLE_MOBILE` in `patch-fastfetch-apple-mobile.py` (+ the pre-run reset in
+   `wawona_ff_inprocess.c`).
 
-pthreads are approved, so multithreaded detection stays on (no `pthread_kill(SIGTERM)` on
+pthreads are approved, so multithreaded detection is available; the default iOS config
+(`fastfetchConfigTemplate` in `Wawona/dependencies/wawona/ios-rootfs.nix`) ships
+`general.multithreading: false` pending on-device stress testing (no `pthread_kill(SIGTERM)` on
 Apple: `HAVE_TIMEDJOIN_NP` is glibc-only).
+
+Config discovery: `WWNRootfsManager.applyShellEnvironment` sets a **general** `XDG_CONFIG_HOME`
+(`$HOME/.config`, plus `XDG_CACHE_HOME`/`XDG_DATA_HOME`/`XDG_STATE_HOME`) for all in-process
+clients and seeds `$HOME/.config/fastfetch/config.jsonc` from the bundled template on first
+launch (copy-if-missing). Neovim shares the same environ and relies on `VIMRUNTIME` rather than
+hijacking `XDG_CONFIG_HOME`.
 
 ### fastfetch: per-platform framework tiering (watchOS is the trap)
 
