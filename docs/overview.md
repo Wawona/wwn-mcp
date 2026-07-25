@@ -99,6 +99,12 @@ nix-darwin, `npx`, or Homebrew) and live only in the consumer `.cursor/mcp.json`
 They are action/debug tools, not knowledge sources, so they are neither indexed
 nor hosted by WWN-MCP. Curated operational guides (indexed in RAG):
 
+- `knowledge/wawona/wwn-repo-dag.md` — authoritative L0-L4 repository layering
+- `knowledge/wawona/wwn-iland-graphics-stack.md` — graphics ownership and
+  minimal EGL/GLES/Vulkan paths
+- `knowledge/wawona/iland-mode-a-b-desktop.md` — privilege and bundle split
+- `knowledge/wawona/platform-capability-matrix.md` — full Apple/Android scope
+- `knowledge/wawona/toolkit-readiness-soft-shm.md` — toolkit gates and SHM fallback
 - `knowledge/wawona/ios-device-dev-workflow.md` — signing, xcodegen, device install
 - `knowledge/wawona/lldb-mcp-apple-device-debugging.md` — **full lldb-mcp tool
   reference**, iOS attach on **8amps iPhone Air**, Wawona breakpoints, in-process

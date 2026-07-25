@@ -82,7 +82,7 @@ project = "wawona"
 kind = "git"
 url = "https://github.com/Wawona/wwn-toolchain"
 ref = "main"
-description = "Wawona cross-compile framework + base library registry (cairo/pango/xkbcommon/libwayland/openssl/ffmpeg/angle/...) + wawona-pty. Exposes lib.mkToolchains, lib.baseRegistry, lib.withPlatformVariants; consumed by Wawona and every wwn-* app repo."
+description = "Wawona L0 cross-compile framework + substrate registry (cairo/pango/pixman/xkbcommon/libwayland/openssl/ffmpeg/...) + wawona-pty. Graphics-driver ownership starts in L1 wwn-iland. Exposes lib.mkToolchains, lib.baseRegistry, lib.withPlatformVariants."
 license = "MIT"
 platform = ["all"]
 include = ["dependencies/**/*.{nix,sh,py,c,h,m}", "lib/**/*.nix", "flake.nix", "**/*.md"]
@@ -94,9 +94,9 @@ project = "iland"
 kind = "git"
 url = "https://github.com/Wawona/wwn-iland"
 ref = "main"
-description = "Wawona's userland Linux-graphics compat layer (iland: WindowServer/SkyLight -> DRM/KMS/EGL/GBM over IOSurface/Metal). Credits CoreBedtime/iland; replaces deleted Wawona/iland fork. Vendors upstream + shims under dependencies/libs/iland/upstream. registryFragment: iland + GL client variants. Depended on by wwn-weston for the DRM/GL path."
+description = "Wawona L1 graphics stack: iland DRM/KMS/EGL/GBM over IOSurface/Metal or AHardwareBuffer/Surface; ANGLE, SwiftShader, MoltenVK, macOS-only KosmicKrisp, and Android Vulkan hooks. Owns Mode A archives and the macOS desktop-host-only Mode B dylib. Credits CoreBedtime/iland."
 license = "UNKNOWN"
-platform = ["macos", "ios"]
+platform = ["macos", "ios", "ipados", "tvos", "watchos", "visionos", "android"]
 include = ["dependencies/**/*.{nix,sh,py,c,h,m,mm}", "flake.nix", "**/*.md", "**/shims/**"]
 exclude = ["**/.git/**"]
 
@@ -339,7 +339,7 @@ url = "https://github.com/CoreBedtime/iland"
 ref = "real"
 description = "macOS Wayland compat layer (WindowServer/SkyLight -> DRM/KMS/EGL/GBM). Upstream reference for bedtime's original macOS-only iland. Wawona's extended packaging (iOS/Android/mobile shims) lives in wwn-iland, not here."
 license = "UNKNOWN"
-platform = ["macos", "ios"]
+platform = ["macos"]
 include = ["**/*.{c,h,m,mm,md}", "shims/**", "README*"]
 
 [[source]]
@@ -374,9 +374,9 @@ project = "vulkan"
 kind = "git"
 url = "https://github.com/KhronosGroup/MoltenVK"
 ref = "main"
-description = "Vulkan-on-Metal for Apple platforms."
+description = "Vulkan-on-Metal reference. Wawona uses it on macOS, iOS, iPadOS, and visionOS; Wawona tvOS/watchOS products intentionally ship no Vulkan artifacts."
 license = "Apache-2.0"
-platform = ["macos", "ios", "tvos", "visionos"]
+platform = ["macos", "ios", "ipados", "visionos"]
 include = ["**/*.md", "Docs/**", "**/*.h"]
 
 [[source]]
@@ -399,9 +399,9 @@ project = "vulkan"
 kind = "git"
 url = "https://gitlab.freedesktop.org/mesa/mesa"
 ref = "main"
-description = "KosmicKrisp: conformant Vulkan-on-Metal Mesa driver for Apple Silicon (macOS 26+/Metal 4). Source in Mesa src/kosmickrisp + docs/drivers/kosmickrisp.rst."
+description = "KosmicKrisp: conformant Vulkan-on-Metal Mesa driver for Apple Silicon macOS 26+/Metal 4. Current pinned upstream docs explicitly say iOS is unsupported; Wawona keeps it macOS-only."
 license = "MIT"
-platform = ["macos", "ios"]
+platform = ["macos"]
 include = ["src/kosmickrisp/**/*.c", "src/kosmickrisp/**/*.h", "src/kosmickrisp/**/*.md", "docs/drivers/kosmickrisp.rst", "docs/drivers/*.rst"]
 sparse = ["src/kosmickrisp", "docs/drivers"]
 
@@ -414,9 +414,9 @@ project = "angle"
 kind = "git"
 url = "https://github.com/google/angle"
 ref = "main"
-description = "ANGLE (GLES -> Metal/Vulkan/D3D); Wawona's primary GL path."
+description = "ANGLE (GLES -> Metal/Vulkan/D3D); Wawona's GLES path on GPU-capable Apple targets and Android. tvOS/watchOS products intentionally ship no OpenGL/ANGLE artifacts."
 license = "BSD-3-Clause"
-platform = ["macos", "ios", "android"]
+platform = ["macos", "ios", "ipados", "visionos", "android"]
 include = ["doc/**", "**/*.md", "include/**/*.h"]
 
 # ---------------------------------------------------------------------------
@@ -1135,7 +1135,7 @@ name = "wwn-knowledge-wawona"
 project = "wawona"
 kind = "local"
 path = "knowledge/wawona"
-description = "Curated WWN-MCP knowledge: multi-repo dev model, wwn-* catalog, patch-overlay model, wwn-apt App Store modules, iland upstream credit, iOS device dev workflow (nix develop, xcodegen, xcodebuild-mcp), lldb-mcp Apple device debugging (full tool catalog + Wawona attach workflows)."
+description = "Curated WWN-MCP knowledge: L0-L4 repo DAG, complete wwn-iland graphics stack, Mode A/B, minimal EGL/Vulkan-to-Metal paths, full Apple/Android capability matrix, toolkit readiness and software SHM fallback, plus multi-repo/device/debug workflows."
 license = "MIT"
 platform = ["all"]
 include = ["**/*.md"]

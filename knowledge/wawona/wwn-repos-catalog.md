@@ -9,7 +9,7 @@ compositor/shell/toolchain development.
 | **wwn-toolchain** | Cross-compile framework, Apple/Android toolchains, ~40 libs, `wawona-pty`, `lib.mkToolchains`, `lib.baseRegistry` | base library set + `wawona-pty` | sample lib builds (`xkbcommon-ios`, …) |
 | **wwn-zsh** | In-process App-Store zsh, RootFS, zsh-framework | `zsh`, `zsh-framework`, `wawona-rootfs` | `verify-zsh-ios-patches.py` |
 | **wwn-weston** | Weston clients + apple-mobile compositor + weston-simple-shm | `weston`, `weston-compositor`, `weston-compositor-drm`, `weston-simple-shm` | `verify-weston-ios-patches.py` |
-| **wwn-iland** | Userland DRM/KMS/EGL/GBM over IOSurface/Metal (fork lineage: CoreBedtime/iland) | `iland`, `iland-gl-clients` | flake check + sample builds |
+| **wwn-iland** | L1 complete graphics stack: DRM/KMS/EGL/GBM over IOSurface/Metal or AHB; ANGLE, SwiftShader, MoltenVK, macOS-only KosmicKrisp, and Android Vulkan hooks. Mode A archives + macOS-only Mode B dylib | `iland`, `iland-baremetal` (macOS only), `angle`, `swiftshader`, `moltenvk`, `kosmickrisp` (macOS only), `iland-gl-clients` | flake check + Mode A/B sample builds |
 | **wwn-waypipe** | waypipe-rs port (v0.11.0 pin + patches) | `waypipe` | flake check |
 | **wwn-coreutils** | uutils coreutils multicall + in-process patched-src | (via `mkMulticall` / patched-src helpers, not always a registry key) | flake check |
 | **wwn-foot** | foot terminal Apple ports | `foot` | flake check |
@@ -34,18 +34,28 @@ distribution or `repo.wawona.io`. App Store Review Notes come from
 
 ## Dependency graph (flakes)
 
+```text
+L0 wwn-toolchain
+  └─ L1 wwn-iland
+       └─ L2 wwn-kmscube
+            └─ L3 wwn-weston
+L0 ──► L3' wwn-waypipe / wwn-anowaW / wwn-vms / wwn-apt / other ports
+L4 Wawona ──► all required lower layers
 ```
-wwn-toolchain
-  ├── wwn-iland
-  ├── wwn-zsh
-  ├── wwn-waypipe
-  ├── wwn-coreutils
-  ├── wwn-foot
-  ├── wwn-fastfetch
-  ├── wwn-apt
-  └── wwn-weston ──► wwn-iland (shim sources via ilandSrc)
-Wawona ──► all of the above as flake inputs (wwn-apt merge — follow-up PR)
-```
+
+Canonical layering and forbidden edges:
+[`wwn-repo-dag.md`](wwn-repo-dag.md).
+
+Canonical graphics mirrors:
+
+- [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md) — L1 ownership
+  and minimal EGL/GLES/Vulkan translation paths.
+- [`iland-mode-a-b-desktop.md`](iland-mode-a-b-desktop.md) — presentation,
+  privilege, and bundle separation.
+- [`platform-capability-matrix.md`](platform-capability-matrix.md) — complete
+  Apple-family and Android product scope.
+- [`toolkit-readiness-soft-shm.md`](toolkit-readiness-soft-shm.md) — toolkit
+  gates and shared software-buffer fallback.
 
 App repos do **not** depend on `wwn-zsh` at flake level (the `wawona_zsh_main`
 symbol resolves at final app link via weak externs) — the DAG stays acyclic.

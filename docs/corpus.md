@@ -31,10 +31,11 @@ Each `[[source]]` entry supports:
   docs, remaining `dependencies/` (app packaging, generators, android). Patched
   apps live in `wwn-*` repos (below).
 - `wawona-git` (git, **disabled locally**) — deploy-time git mirror of integration.
-- `wwn-knowledge-wawona` (local) — multi-repo dev model, repo catalog, patch-overlay,
-  iland upstream credit, **iOS device dev workflow**, **lldb-mcp debugging**
-  (`knowledge/wawona/`; start with `ios-device-dev-workflow.md` and
-  `lldb-mcp-apple-device-debugging.md`).
+- `wwn-knowledge-wawona` (local) — canonical mirrors for the L0-L4 repo DAG,
+  complete iland graphics stack, Mode A/B, platform capability matrix, toolkit
+  readiness/software SHM fallback, plus multi-repo and device/debug workflows
+  (`knowledge/wawona/`; start with `wwn-iland-graphics-stack.md`,
+  `platform-capability-matrix.md`, and `ios-device-dev-workflow.md`).
 
 ### Wawona patched-software repos (Wawona org)
 Extracted from the Wawona monorepo into standalone Nix-wrapped flake repos that
@@ -42,10 +43,12 @@ keep the patch-overlay model (Nix recipes + patch scripts + injected sources;
 pristine upstream fetched & patched at build). Wawona consumes them as flake
 inputs and merges each repo's `registryFragment` over `wwn-toolchain`'s
 `baseRegistry`.
-- `wwn-toolchain` (`project=wawona`) — cross-compile framework + common library
-  substrate + `wawona-pty`; exposes `lib.mkToolchains` / `lib.baseRegistry`.
-- `wwn-iland` (`project=iland`) — userland DRM/KMS/EGL/GBM compat layer (vendors
-  iland upstream + shims); depended on by `wwn-weston`. License `UNKNOWN`.
+- `wwn-toolchain` (`project=wawona`) — L0 cross-compile framework + common
+  substrate (including cairo/pango/pixman/libwayland) + `wawona-pty`; exposes
+  `lib.mkToolchains` / `lib.baseRegistry`.
+- `wwn-iland` (`project=iland`) — L1 DRM/KMS/EGL/GBM compat layer plus ANGLE,
+  SwiftShader, MoltenVK, macOS-only KosmicKrisp, and Android Vulkan hooks;
+  depended on by `wwn-weston`. License `UNKNOWN`.
 - `wwn-weston` (`project=weston`) — Weston Apple ports + `weston-simple-shm` +
   the apple-mobile compositor + `verify-weston-ios-patches.py`.
 - `wwn-zsh` (`project=wawona`) — in-process App-Store-compliant zsh + RootFS +
@@ -75,9 +78,11 @@ Objective-C/Cocoa; prior art for running Wayland clients in macOS Quartz).
 
 ### Graphics
 - Vulkan: `moltenvk`, `vulkan-docs`, `kosmickrisp` (sparse-checkout of Mesa
-  `src/kosmickrisp` + `docs/drivers` — conformant Vulkan-on-Metal for Apple
-  Silicon, macOS 26+/Metal 4).
-- OpenGL/GLES: `angle`.
+  `src/kosmickrisp` + `docs/drivers`). KosmicKrisp is macOS-only: current pinned
+  Mesa docs explicitly say iOS is unsupported. iOS/iPadOS/visionOS use
+  MoltenVK; tvOS/watchOS products ship no Vulkan artifacts.
+- OpenGL/GLES: `angle` for macOS/iOS/iPadOS/visionOS and Android.
+  tvOS/watchOS products ship no OpenGL/ANGLE artifacts.
 
 ### Linux display stack: DRM / KMS / EGL / GBM
 The OS-level contract a Wayland compositor expects from Linux — and exactly what
