@@ -1,6 +1,6 @@
 # Wawona Fastlane + GitHub Release Secrets
 
-Wawona v0.2.4 uses **Nix for builds** and **Fastlane for uploads**. Apple signing certs live in the private repo `aspauldingcode/apple-signing` (fastlane match).
+Wawona v2.5 uses **Nix for builds** and **Fastlane for uploads**. Apple signing certs live in the private repo `aspauldingcode/apple-signing` (fastlane match).
 
 ## One-time setup
 
@@ -35,7 +35,7 @@ Wawona v0.2.4 uses **Nix for builds** and **Fastlane for uploads**. Apple signin
 ```bash
 nix develop .#release
 source .release-secrets.env
-export TEAM_ID WAWONA_VERSION=0.2.4
+export TEAM_ID WAWONA_VERSION=2.5.0
 fastlane ios beta      # TestFlight: iOS/iPadOS/tvOS/watchOS/visionOS
 fastlane android beta  # Play internal track
 fastlane beta          # both
@@ -43,7 +43,7 @@ fastlane beta          # both
 
 ## CI
 
-`.github/workflows/release-beta.yml` — trigger via `workflow_dispatch` or tag `v0.2.*`.
+`.github/workflows/release-beta.yml` — trigger via `workflow_dispatch`, push to `master`, or tag `v*` (e.g. `v2.5.0`).
 
 macOS is **not** uploaded to TestFlight.
 
