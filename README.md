@@ -18,14 +18,12 @@ HTTP transport (`mcp.wawona.io` was never shipped — do not use it).
 ## Quick start
 
 ```bash
-# Install / run with Nix (stdio MCP — same as bare `wwn-mcp`)
-nix run github:Wawona/WWN-MCP#wwn-mcp
+# Terminal smoke (prints JSON / search hits and exits)
+nix run github:Wawona/WWN-MCP#wwn-mcp -- info
+nix run github:Wawona/WWN-MCP#wwn-mcp -- search "watchOS GPU"
 
-# Or, without Nix:
-pip install -e ".[all]"
-wwn-mcp fetch --only wwn-knowledge-wawona   # optional
-wwn-mcp index --knowledge                   # first-run knowledge index
-wwn-mcp                                     # stdio serve (Cursor spawns this)
+# Bare `nix run …#wwn-mcp` on a TTY prints Cursor setup help and exits.
+# Cursor itself must spawn the process (piped stdin) for the MCP server.
 ```
 
 Point Cursor at it:
@@ -36,6 +34,27 @@ Point Cursor at it:
     "wwn-mcp": { "command": "wwn-mcp" }
   }
 }
+```
+
+Until `wwn-mcp` is on PATH:
+
+```json
+{
+  "mcpServers": {
+    "wwn-mcp": {
+      "command": "nix",
+      "args": ["run", "github:Wawona/WWN-MCP#wwn-mcp"]
+    }
+  }
+}
+```
+
+Without Nix:
+
+```bash
+pip install -e ".[all]"
+wwn-mcp index --knowledge
+wwn-mcp info
 ```
 
 With home-manager / dendritic:

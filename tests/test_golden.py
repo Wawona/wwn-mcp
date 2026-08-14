@@ -95,3 +95,18 @@ def test_cli_bare_defaults_to_serve_help():
     p = build_parser()
     ns = p.parse_args([])
     assert ns.cmd is None  # main() treats None as serve
+
+
+def test_cli_serve_on_tty_prints_usage(tmp_path, monkeypatch, capsys):
+    """Interactive `wwn-mcp` must not start JSON-RPC; print Cursor wiring instead."""
+    import wwn_mcp.cli as cli
+
+    monkeypatch.setenv("WWN_MCP_DATA_DIR", str(tmp_path))
+    monkeypatch.setattr(cli.sys.stdin, "isatty", lambda: True)
+
+    rc = cli.main([])
+    assert rc == 0
+    err = capsys.readouterr().err
+    assert "stdio MCP server for Cursor" in err
+    assert "mcpServers" in err
+    assert "wwn-mcp -- info" in err or "#wwn-mcp -- info" in err

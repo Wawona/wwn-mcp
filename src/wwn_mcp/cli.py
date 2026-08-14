@@ -26,8 +26,49 @@ def _add_only(p: argparse.ArgumentParser) -> None:
     )
 
 
+_TTY_USAGE = """\
+wwn-mcp is a stdio MCP server for Cursor — not an interactive CLI chat.
+
+Wire it in Cursor (~/.cursor/mcp.json):
+
+  {{
+    "mcpServers": {{
+      "wwn-mcp": {{ "command": "wwn-mcp" }}
+    }}
+  }}
+
+Or until it is on PATH:
+
+  {{
+    "mcpServers": {{
+      "wwn-mcp": {{
+        "command": "nix",
+        "args": ["run", "github:Wawona/WWN-MCP#wwn-mcp"]
+      }}
+    }}
+  }}
+
+From a terminal (smoke tests — these print and exit):
+
+  nix run github:Wawona/WWN-MCP#wwn-mcp -- info
+  nix run github:Wawona/WWN-MCP#wwn-mcp -- search "watchOS GPU"
+  nix run github:Wawona/WWN-MCP#wwn-mcp -- index --knowledge
+
+Docs: https://github.com/Wawona/wwn-mcp#readme
+      https://wawona.io/docs/contributor/wwn-mcp/
+"""
+
+
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="wwn-mcp", description=__doc__)
+    p = argparse.ArgumentParser(
+        prog="wwn-mcp",
+        description=__doc__,
+        epilog=(
+            "Bare `wwn-mcp` on a TTY prints setup help and exits. "
+            "Cursor (piped stdin) starts the stdio MCP server."
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     p.add_argument("--data-dir", default=None, help="Override the runtime data dir.")
     sub = p.add_subparsers(dest="cmd", required=False)
 
@@ -140,6 +181,16 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if cmd == "serve":
+        # Interactive terminals are not MCP clients. Print how to wire Cursor
+        # instead of blocking on stdin and erroring on a blank Enter/`\n`.
+        if sys.stdin.isatty():
+            print(_TTY_USAGE.format(), file=sys.stderr)
+            print(
+                f"data_dir={settings.data_dir}  db={settings.db_path}",
+                file=sys.stderr,
+            )
+            return 0
+
         from .server import run_server
 
         _ensure_knowledge_index(settings)
