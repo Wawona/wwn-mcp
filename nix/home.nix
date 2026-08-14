@@ -1,5 +1,5 @@
 # Home-manager module: install wwn-mcp on PATH (stdio MCP, mcp-nixos host model).
-# Cursor: { "mcpServers": { "wwn-mcp": { "command": "wwn-mcp" } } }
+# Any MCP host: { "mcpServers": { "wwn-mcp": { "command": "wwn-mcp" } } }
 self:
 { config, lib, pkgs, ... }:
 

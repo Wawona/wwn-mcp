@@ -98,7 +98,7 @@ def test_cli_bare_defaults_to_serve_help():
 
 
 def test_cli_serve_on_tty_prints_usage(tmp_path, monkeypatch, capsys):
-    """Interactive `wwn-mcp` must not start JSON-RPC; print Cursor wiring instead."""
+    """Interactive `wwn-mcp` must not start JSON-RPC; print MCP host wiring instead."""
     import wwn_mcp.cli as cli
 
     monkeypatch.setenv("WWN_MCP_DATA_DIR", str(tmp_path))
@@ -107,6 +107,7 @@ def test_cli_serve_on_tty_prints_usage(tmp_path, monkeypatch, capsys):
     rc = cli.main([])
     assert rc == 0
     err = capsys.readouterr().err
-    assert "stdio MCP server for Cursor" in err
+    assert "stdio MCP server for AI agents" in err
     assert "mcpServers" in err
     assert "wwn-mcp -- info" in err or "#wwn-mcp -- info" in err
+    assert "any client that speaks MCP" in err

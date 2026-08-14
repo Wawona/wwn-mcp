@@ -1,6 +1,6 @@
 """FastMCP server exposing the WWN-MCP retrieval tools and resources.
 
-Transport is **stdio only** (Cursor / mcp-nixos host model). There is no
+Transport is **stdio only** (mcp-nixos host model — any MCP client). There is no
 HTTP / Streamable HTTP path.
 
 Every tool returns structured results that carry citations (project, path,

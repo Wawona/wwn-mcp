@@ -27,9 +27,10 @@ def _add_only(p: argparse.ArgumentParser) -> None:
 
 
 _TTY_USAGE = """\
-wwn-mcp is a stdio MCP server for Cursor — not an interactive CLI chat.
+wwn-mcp is a stdio MCP server for AI agents — not an interactive CLI chat.
 
-Wire it in Cursor (~/.cursor/mcp.json):
+Add it to your MCP host config (Cursor, VS Code, Claude Desktop, Windsurf,
+Antigravity, Zed, … — any client that speaks MCP over stdio):
 
   {{
     "mcpServers": {{
@@ -65,7 +66,7 @@ def build_parser() -> argparse.ArgumentParser:
         description=__doc__,
         epilog=(
             "Bare `wwn-mcp` on a TTY prints setup help and exits. "
-            "Cursor (piped stdin) starts the stdio MCP server."
+            "An MCP host (piped stdin) starts the stdio server."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -181,7 +182,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if cmd == "serve":
-        # Interactive terminals are not MCP clients. Print how to wire Cursor
+        # Interactive terminals are not MCP clients. Print host wiring help
         # instead of blocking on stdin and erroring on a blank Enter/`\n`.
         if sys.stdin.isatty():
             print(_TTY_USAGE.format(), file=sys.stderr)

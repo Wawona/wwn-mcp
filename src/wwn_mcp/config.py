@@ -4,7 +4,7 @@ All paths default under a single data dir (``$WWN_MCP_DATA_DIR`` or
 ``./data``) so the server is hermetic and the runtime artifacts are easy to
 ``.gitignore``. Nothing here is committed to the repo.
 
-Transport is **stdio only** (Cursor / mcp-nixos host model). There is no
+Transport is **stdio only** (mcp-nixos host model — any MCP client). There is no
 HTTP / Streamable HTTP / hosted URL path.
 """
 

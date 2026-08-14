@@ -1,7 +1,7 @@
 # Deployment (home-manager / dendritic stdio)
 
-WWN-MCP is a **stdio** MCP server. Cursor (or any MCP host) spawns the
-`wwn-mcp` binary on PATH — the same host model as
+WWN-MCP is a **stdio** MCP server. Any MCP host spawns the `wwn-mcp` binary on
+PATH — the same host model as
 [mcp-nixos](https://github.com/utensils/mcp-nixos) (`uvx mcp-nixos`).
 
 There is **no** Caddy, Bearer token, Streamable HTTP, or `mcp.wawona.io`.
@@ -33,7 +33,7 @@ wwn-mcp fetch && wwn-mcp index
 wwn-mcp index --knowledge
 ```
 
-## Dendritic / Cursor
+## Dendritic / IDE hosts
 
 Prefer a PATH binary once home-manager (or `nix profile install`) provides it:
 

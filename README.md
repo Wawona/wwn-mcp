@@ -5,15 +5,18 @@
 [![nix (macos-latest)](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml/badge.svg?job=nix%20(macos-latest))](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml)
 
 **Wawona MCP** — a local-embeddings RAG + stdio [Model Context Protocol](https://modelcontextprotocol.io/)
-server that gives any Cursor model retrieval-backed knowledge of the Wawona
+server that gives any MCP-capable agent retrieval-backed knowledge of the Wawona
 stack: Wayland / Smithay / Weston / Niri, Apple + Android UI ladders,
 Vulkan/OpenGL paths, App Store / Play compliance, and the `wwn-*`
 patched-software repos. **WWN = Wawona.**
 
 This is **not** [mcp-nixos](https://github.com/utensils/mcp-nixos). The *host*
-contract is the same idea (Cursor spawns a PATH binary over stdio), but the
-corpus, tools, and package are Wawona-only. There is no public URL / Streamable
-HTTP transport (`mcp.wawona.io` was never shipped — do not use it).
+contract is the same idea (the agent host spawns a PATH binary over stdio), but
+the corpus, tools, and package are Wawona-only. There is no public URL /
+Streamable HTTP transport (`mcp.wawona.io` was never shipped — do not use it).
+
+Works with **any** MCP host that can spawn a stdio server (Cursor, VS Code,
+Claude Desktop, Windsurf, Antigravity, Zed, custom agents, …).
 
 ## Quick start
 
@@ -22,11 +25,11 @@ HTTP transport (`mcp.wawona.io` was never shipped — do not use it).
 nix run github:Wawona/WWN-MCP#wwn-mcp -- info
 nix run github:Wawona/WWN-MCP#wwn-mcp -- search "watchOS GPU"
 
-# Bare `nix run …#wwn-mcp` on a TTY prints Cursor setup help and exits.
-# Cursor itself must spawn the process (piped stdin) for the MCP server.
+# Bare `nix run …#wwn-mcp` on a TTY prints MCP host setup help and exits.
+# Your agent must spawn the process (piped stdin) for the MCP server.
 ```
 
-Point Cursor at it:
+MCP host config (`mcpServers` / equivalent):
 
 ```json
 {
@@ -75,7 +78,7 @@ All documentation lives in [`docs/`](docs/):
 - [Corpus catalog](docs/corpus.md)
 - [MCP tools & resources](docs/mcp-tools.md)
 - [Deployment (home-manager / dendritic stdio)](docs/deployment.md)
-- [Usage (Cursor wiring + local dev)](docs/usage.md)
+- [Usage (MCP host wiring + local dev)](docs/usage.md)
 - [Contributing](docs/contributing.md)
 
 ## License

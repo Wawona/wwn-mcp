@@ -1,8 +1,8 @@
 # Contribute to the Wawona compositor organization
 
 Agents: query **wwn-mcp** (`list_repos`, `where_to_edit`, `get_capability`,
-`search_docs`) before editing. Transport is **stdio only** — Cursor spawns
-`wwn-mcp` like `uvx mcp-nixos`. There is no `mcp.wawona.io`.
+`search_docs`) before editing. Transport is **stdio only** — any MCP host
+spawns `wwn-mcp` like `uvx mcp-nixos`. There is no `mcp.wawona.io`.
 
 ## Which repo
 
@@ -44,7 +44,7 @@ real entry points). No stubs, fake mains, or permanent target exclusions.
 - **Mode B** — macOS desktop-host dylib only (`libwayland-mac.dylib`), SIP-gated.
 - **anowaW** — host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
 
-## Cursor MCP wiring
+## MCP host wiring
 
 ```json
 {
