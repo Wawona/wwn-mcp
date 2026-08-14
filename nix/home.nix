@@ -26,9 +26,9 @@ in
     };
 
     corpusManifest = lib.mkOption {
-      type = lib.types.path;
+      type = lib.types.str;
       default = "${self}/corpus.toml";
-      description = "Path to corpus.toml (local siblings + git fallbacks).";
+      description = "Path to corpus.toml (local siblings + git fallbacks). Prefer a live checkout path so ../wwn-* siblings resolve.";
     };
 
     model = lib.mkOption {
@@ -56,7 +56,7 @@ in
 
     home.sessionVariables = {
       WWN_MCP_DATA_DIR = dataDir;
-      WWN_MCP_CORPUS_TOML = toString corpusToml;
+      WWN_MCP_CORPUS_TOML = corpusToml;
       WWN_MCP_MODEL = cfg.model;
       FASTEMBED_CACHE_PATH = "${dataDir}/models";
     };
@@ -69,7 +69,7 @@ in
         Type = "oneshot";
         Environment = [
           "WWN_MCP_DATA_DIR=${dataDir}"
-          "WWN_MCP_CORPUS_TOML=${toString corpusToml}"
+          "WWN_MCP_CORPUS_TOML=${corpusToml}"
           "WWN_MCP_CORPUS_DIR=${dataDir}/corpus"
           "WWN_MCP_MODEL=${cfg.model}"
           "FASTEMBED_CACHE_PATH=${dataDir}/models"
