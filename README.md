@@ -1,35 +1,42 @@
 # WWN-MCP
 
-[![CI](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml)
+[![MCP](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml)
+[![nix (ubuntu-latest)](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml/badge.svg?job=nix%20(ubuntu-latest))](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml)
+[![nix (macos-latest)](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml/badge.svg?job=nix%20(macos-latest))](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml)
 
-A local-embeddings RAG + Model Context Protocol (MCP) server that gives any
-Cursor model retrieval-backed knowledge of the Wawona stack: Wayland/Smithay/
-Weston, the Apple (OS 26 / Liquid Glass) and Android (Material 3 Expressive) UI
-ladders, the Vulkan/OpenGL graphics paths, App Store / Play Store compliance,
-and Wawona's integration source plus the extracted **`wwn-*` patched-software
-repos** (toolchain, zsh, weston, iland, waypipe, coreutils, foot, fastfetch,
-apt). "WWN" = Wawona.
+A local-embeddings RAG + **stdio** Model Context Protocol (MCP) server that
+gives any Cursor model retrieval-backed knowledge of the Wawona stack: Wayland /
+Smithay / Weston / Niri, Apple + Android UI ladders, Vulkan/OpenGL paths, App
+Store / Play compliance, and the `wwn-*` patched-software repos. "WWN" = Wawona.
+
+**Host model matches [mcp-nixos](https://github.com/utensils/mcp-nixos):** Cursor
+spawns `wwn-mcp` on PATH over stdio. There is **no** public URL / Streamable HTTP
+transport (`mcp.wawona.io` was never shipped — do not use it).
 
 ## Quick start
 
 ```bash
-# Run the server locally (Streamable HTTP on http://127.0.0.1:8765/mcp)
-nix run github:Wawona/WWN-MCP#wwn-mcp -- serve
+# Install / run with Nix (stdio MCP — same as bare `wwn-mcp`)
+nix run github:Wawona/WWN-MCP#wwn-mcp
 
 # Or, without Nix:
-pip install -e .
-wwn-mcp fetch        # mirror corpus sources declared in corpus.toml
-wwn-mcp index        # chunk + embed into the sqlite hybrid index
-wwn-mcp serve        # start the MCP server
+pip install -e ".[all]"
+wwn-mcp fetch --only wwn-knowledge-wawona   # optional
+wwn-mcp index --knowledge                   # first-run knowledge index
+wwn-mcp                                     # stdio serve (Cursor spawns this)
 ```
 
-Point Cursor at it by adding a remote MCP entry (see
-[docs/usage.md](docs/usage.md)):
+Point Cursor at it:
 
 ```json
-{ "mcpServers": { "wwn-mcp": { "url": "https://mcp.wawona.io/mcp",
-  "headers": { "Authorization": "Bearer ${WWN_MCP_TOKEN}" } } } }
+{ "mcpServers": {
+    "wwn-mcp": { "command": "wwn-mcp" },
+    "nixos": { "command": "uvx", "args": ["mcp-nixos"] }
+} }
 ```
+
+With home-manager: `programs.wwn-mcp.enable = true` (see
+[docs/deployment.md](docs/deployment.md)).
 
 ## Documentation
 
@@ -38,7 +45,7 @@ All documentation lives in [`docs/`](docs/):
 - [Overview & architecture](docs/overview.md)
 - [Corpus catalog](docs/corpus.md)
 - [MCP tools & resources](docs/mcp-tools.md)
-- [Deployment (NixOS, mcp.wawona.io)](docs/deployment.md)
+- [Deployment (home-manager / dendritic stdio)](docs/deployment.md)
 - [Usage (Cursor wiring + local dev)](docs/usage.md)
 - [Contributing](docs/contributing.md)
 

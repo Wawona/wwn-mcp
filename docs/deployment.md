@@ -1,103 +1,76 @@
-# Deployment (NixOS, mcp.wawona.io)
+# Deployment (home-manager / dendritic stdio)
 
-WWN-MCP ships a NixOS module (`nixosModules.wwn-mcp`) that runs the server as a
-hardened systemd service behind a Caddy reverse proxy terminating TLS at
-`mcp.wawona.io`, with a periodic re-index timer that does an atomic DB swap.
+WWN-MCP is a **stdio** MCP server. Cursor (or any MCP host) spawns the
+`wwn-mcp` binary on PATH — the same host model as
+[mcp-nixos](https://github.com/utensils/mcp-nixos) (`uvx mcp-nixos`).
 
-## Add the flake input
+There is **no** Caddy, Bearer token, Streamable HTTP, or `mcp.wawona.io`.
+That hostname was never deployed; do not configure clients against it.
+
+## home-manager
 
 ```nix
 {
   inputs.wwn-mcp.url = "github:Wawona/WWN-MCP";
 
-  outputs = { nixpkgs, wwn-mcp, ... }: {
-    nixosConfigurations.mcp-host = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        wwn-mcp.nixosModules.wwn-mcp
-        ({ ... }: {
-          services.wwn-mcp = {
-            enable = true;
-            domain = "mcp.wawona.io";
-            tokenFile = "/run/secrets/wwn-mcp.env";   # contains WWN_MCP_TOKEN=...
-            corpusManifest = ./corpus.server.toml;    # see note below
-            reindex.onCalendar = "daily";
-          };
-          # Caddy needs an ACME email for TLS.
-          security.acme.acceptTerms = true;
-          security.acme.defaults.email = "admin@wawona.io";
-          networking.firewall.allowedTCPPorts = [ 80 443 ];
-        })
-      ];
-    };
+  # in your homeConfiguration modules:
+  imports = [ inputs.wwn-mcp.homeModules.wwn-mcp ];
+
+  programs.wwn-mcp = {
+    enable = true;
+    # dataDir / corpusManifest / reindex.onCalendar have sensible defaults
   };
 }
 ```
 
-## Options (`services.wwn-mcp`)
+This installs `wwn-mcp` on PATH and sets `WWN_MCP_DATA_DIR` /
+`WWN_MCP_CORPUS_TOML`. On Linux it also installs a user systemd timer that
+periodically `fetch` + `index`s. On Darwin, reindex with:
 
-| option | default | purpose |
-|--------|---------|---------|
-| `enable` | false | turn the service on |
-| `package` | flake's `wwn-mcp` | the package to run |
-| `domain` | `mcp.wawona.io` | TLS hostname served by Caddy |
-| `host` / `port` | `127.0.0.1` / `8765` | local bind for the MCP server |
-| `dataDir` | `/var/lib/wwn-mcp` | corpus cache + sqlite index |
-| `corpusManifest` | bundled `corpus.toml` | source manifest |
-| `model` | `BAAI/bge-small-en-v1.5` | embedding model (hashing fallback) |
-| `tokenFile` | null | file with `WWN_MCP_TOKEN=…` for Bearer auth at the proxy |
-| `reindex.enable` / `reindex.onCalendar` | true / `daily` | periodic re-index |
-| `proxy.enable` | true | run the Caddy TLS + Bearer reverse proxy |
-| `nixos.enable` | true | co-host the MCP-NixOS companion server |
-| `nixos.package` | `inputs.mcp-nixos` flake pkg | the mcp-nixos package to run |
-| `nixos.port` | `8001` | local bind for the companion server |
-| `nixos.path` | `/nixos/mcp` | its HTTP MCP endpoint under `domain` |
+```bash
+wwn-mcp fetch && wwn-mcp index
+# or knowledge-only:
+wwn-mcp index --knowledge
+```
 
-## Server-tuned corpus manifest
+## Dendritic / Cursor
 
-The bundled `corpus.toml` has a `wawona` **local** source (`../Wawona`, i.e.
-`~/Wawona/Wawona` when WWN-MCP lives at `~/Wawona/WWN-MCP`) for developer
-checkouts. On the server there is no such checkout — use the shipped
-**`corpus.server.toml`** (local `wawona` disabled, `wawona-git` enabled). All
-`wwn-*` sources are git-backed on both manifests. Point `corpusManifest` at
-`corpus.server.toml` on NixOS deploy.
+Prefer a PATH binary once home-manager (or `nix profile install`) provides it:
 
-## What the service does
+```json
+{ "mcpServers": {
+    "wwn-mcp": { "command": "wwn-mcp" },
+    "nixos": { "command": "uvx", "args": ["mcp-nixos"] }
+} }
+```
 
-- `wwn-mcp.service` runs `wwn-mcp serve --transport http` bound to localhost.
-  Hardening: `DynamicUser`, `StateDirectory=wwn-mcp`, `ProtectSystem=strict`,
-  `PrivateTmp`, `RestrictAddressFamilies`, `SystemCallFilter=@system-service`.
-- `wwn-mcp-reindex.service` (+ timer) runs `fetch` then `index --reset` into a
-  staging DB (`index.build.sqlite`), then `mv` over `index.sqlite` and
-  `try-restart`s the server — so reads never see a half-written index.
-- Caddy serves `domain` over TLS; when `tokenFile` is set it rejects requests
-  without `Authorization: Bearer <token>` (401) and reverse-proxies the rest:
-  `/nixos/mcp*` → the companion MCP-NixOS server, everything else → wwn-mcp.
-- `mcp-nixos.service` (when `nixos.enable`) runs the
-  [MCP-NixOS](https://github.com/utensils/mcp-nixos) companion over HTTP
-  (`MCP_NIXOS_TRANSPORT=http`, `MCP_NIXOS_STATELESS_HTTP=1`) bound to localhost,
-  hardened like the main service. It queries upstream Nix services live, so it
-  needs network egress but no local index. Its package comes from the
-  `mcp-nixos` flake input (which `follows` this flake's `nixpkgs`).
+Until the package is on PATH, `nix run` still works (no `--transport` flag):
 
-After deploy you get two MCP endpoints on the one host:
-`https://mcp.wawona.io/mcp` (WWN-MCP) and `https://mcp.wawona.io/nixos/mcp`
-(MCP-NixOS), both behind the same TLS + Bearer.
+```json
+{ "mcpServers": {
+    "wwn-mcp": {
+      "command": "nix",
+      "args": ["run", "/path/to/wwn-mcp#wwn-mcp"],
+      "env": {
+        "WWN_MCP_DATA_DIR": "/Users/you/.local/share/wwn-mcp",
+        "WWN_MCP_CORPUS_TOML": "/path/to/wwn-mcp/corpus.toml"
+      }
+    }
+} }
+```
 
 ## First index
 
-The first `wwn-mcp-reindex` run fetches the whole corpus (large; `nixpkgs` is
-scoped). Trigger it immediately instead of waiting for the timer:
+On first `wwn-mcp` / `serve`, an empty index automatically indexes shipped
+`knowledge/` so contribute/DAG/capability tools answer immediately. Expand:
 
 ```bash
-sudo systemctl start wwn-mcp-reindex.service
-journalctl -u wwn-mcp-reindex -f
+wwn-mcp fetch                 # clone git / crawl web sources
+wwn-mcp index                 # full corpus
+wwn-mcp index --local-siblings  # only local paths under ~/Wawona/
 ```
 
-## Hermetic embedding model (optional)
+## CI status
 
-`nix build .#wwn-mcp-model` pins the BGE-small ONNX model via `fetchurl`. Set
-the real hash once (the flake ships `lib.fakeHash`; build once and copy the hash
-Nix reports), then wire `FASTEMBED_CACHE_PATH`/`model` to use it offline. Without
-this, fastembed fetches the model on first index (needs network), and if
-fastembed is unavailable the server falls back to the hashing embedder.
+GitHub Actions workflow **MCP** builds and smokes the package with Nix on
+**macOS** and **Linux** (ubuntu + Nix). The README badge is that workflow.

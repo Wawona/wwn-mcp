@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wwn-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local-embeddings RAG + MCP server for the Wawona stack (Wayland/Smithay/Weston, Apple OS 26, Android, graphics, store compliance)."
 readme = "README.md"
 requires-python = ">=3.11"

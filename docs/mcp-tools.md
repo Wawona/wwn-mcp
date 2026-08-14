@@ -31,10 +31,21 @@ Find a function/type/symbol definition by name across code.
 
 ### `get_architecture(topic, top_k=8)`
 Wawona architecture / multi-repo dev docs (`project` fan-out across `wawona`,
-`ios-shell`, `weston`, `iland`, `waypipe`, `coreutils`). Good topics:
-`multi-repo dev model`, `registryFragment`, `patch-overlay`, `wwn-iland upstream`,
-`where to edit zsh patches`, **`lldb-mcp`**, `ios device dev workflow`,
-`fastfetch in-process crash`.
+`ios-shell`, `weston`, `iland`, `waypipe`, `coreutils`, `niri`, `kmscube`,
+`ssh`). Good topics: `multi-repo dev model`, `registryFragment`, `patch-overlay`,
+`wwn-iland upstream`, `where to edit zsh patches`, **`lldb-mcp`**,
+`ios device dev workflow`, `fastfetch in-process crash`.
+
+### `list_repos()`
+Org catalog: layer, role, when-to-edit for each `wwn-*` / Wawona / wawona.io.
+
+### `where_to_edit(change)`
+Map a natural-language change (`zsh patch`, `ANGLE`, `niri recipe`,
+`Machines UI`) to the correct repo.
+
+### `get_capability(platform, feature)`
+Four-state gate (`available` | `planned` | `blocked` | `forbidden`) for a
+platform + feature (e.g. `watchos` + `gpu`, `visionos` + `vm`).
 
 ### `list_projects()`
 Indexed projects + chunk counts: `[{ "project": "...", "chunks": N }]`.
@@ -72,7 +83,7 @@ Read a chunk by `chunk_id`, or a file by `source/relative/path` with an optional
 
 | URI | content |
 |-----|---------|
-| `wwn://status` | index stats (chunk counts by kind/project, vector backend) |
+| `wwn://status` | index stats, `last_indexed`, source SHAs, embed backend, transport=`stdio` |
 | `wwn://patches` | the full patched-software inventory (JSON) |
 
 ## CLI equivalents
@@ -95,7 +106,7 @@ They are **not** served by wwn-mcp, but RAG indexes how to use them:
 |----------|---------|------|
 | `xcodebuild` | XcodeBuildMCP | Build, install, run on simulator/device |
 | `lldb` | [lldb-mcp](https://github.com/stass/lldb-mcp) | LLDB sessions: attach, breakpoints, backtrace, memory |
-| `nixos` | MCP-NixOS | Live nixpkgs/options (also co-hosted remotely) |
+| `nixos` | MCP-NixOS | Live nixpkgs/options (stdio via `uvx mcp-nixos`) |
 
 Query wwn-mcp RAG for **`lldb-mcp-apple-device-debugging`** or
 **`ios-device-dev-workflow`** before debugging Wawona on Apple hardware.

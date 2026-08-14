@@ -5,7 +5,8 @@ physical Apple hardware. Agents should follow this end-to-end — it is the prov
 
 ## MCP stack (developer-local, macOS)
 
-These MCP servers are **not** hosted on `mcp.wawona.io`. They run on the developer Mac
+These MCP servers are **not** a remote hosted service. They run on the developer Mac
+(stdio / local process), same as wwn-mcp itself.
 via nix-darwin (`modules/apps/_ide-mcp.nix`) and are wired into Cursor/Antigravity
 `.cursor/mcp.json`:
 

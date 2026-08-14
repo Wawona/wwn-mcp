@@ -1,36 +1,30 @@
 # Wawona org repo catalog (`wwn-*` + integration)
 
-Quick reference for every repository under `github.com/Wawona` that matters for
+Quick reference for repositories under `github.com/Wawona` that matter for
 compositor/shell/toolchain development.
 
-| Repo | Role | `registryFragment` keys | Patch-anchor CI |
-|------|------|-------------------------|-----------------|
-| **Wawona** | Integration: Smithay backend, SwiftUI/Android apps, `flake.nix` inputs, xcodegen, gradlegen | (local Wawona-only recipes if any) | Wayland/Android maintainability scripts |
-| **wwn-toolchain** | Cross-compile framework, Apple/Android toolchains, ~40 libs, `wawona-pty`, `lib.mkToolchains`, `lib.baseRegistry` | base library set + `wawona-pty` | sample lib builds (`xkbcommon-ios`, …) |
-| **wwn-zsh** | In-process App-Store zsh, RootFS, zsh-framework | `zsh`, `zsh-framework`, `wawona-rootfs` | `verify-zsh-ios-patches.py` |
-| **wwn-weston** | Weston clients + apple-mobile compositor + weston-simple-shm | `weston`, `weston-compositor`, `weston-compositor-drm`, `weston-simple-shm` | `verify-weston-ios-patches.py` |
-| **wwn-iland** | L1 complete graphics stack: DRM/KMS/EGL/GBM over IOSurface/Metal or AHB; ANGLE, SwiftShader, MoltenVK, macOS-only KosmicKrisp, and Android Vulkan hooks. Mode A archives + macOS-only Mode B dylib | `iland`, `iland-baremetal` (macOS only), `angle`, `swiftshader`, `moltenvk`, `kosmickrisp` (macOS only), `iland-gl-clients` | flake check + Mode A/B sample builds |
-| **wwn-waypipe** | waypipe-rs port (v0.11.0 pin + patches) | `waypipe` | flake check |
-| **wwn-coreutils** | uutils coreutils multicall + in-process patched-src | (via `mkMulticall` / patched-src helpers, not always a registry key) | flake check |
-| **wwn-foot** | foot terminal Apple ports | `foot` | flake check |
-| **wwn-fastfetch** | fastfetch port (in-process on Apple mobile, binary on macOS/Android) + Wayland WM on macOS | `fastfetch` | `verify-fastfetch-ios-patches.py` |
-| **WWN-MCP** | RAG + MCP retrieval for agents | — | — |
-
-## App Store module catalog
-
-| Repo | Role | `registryFragment` keys | CI |
-|------|------|-------------------------|-----|
-| **wwn-apt** | App Store `apt` compatibility layer: optional module catalog (foot, neovim, fastfetch), bundled policy (zsh, coreutils, waypipe, apt), shell CLI stub, StoreKit + ODR spec | `apt-rootfs` | catalog validate + doc firewall + `apt-rootfs-ios` build |
-
-**Documentation firewall:** the `wwn-apt` repo must **not** mention jailbreak
-distribution or `repo.wawona.io`. App Store Review Notes come from
-`wwn-apt/docs/APP-STORE-MODULES.md` only.
-
-## Jailbreak distribution
-
-| Repo | Role | Notes |
-|------|------|-------|
-| **repo.wawona.io** | Real Debian `.deb` flat repo (Procursus / Termux) | **Jailbreak only.** App Store–approved modules use **`wwn-apt` only**; **`repo.wawona.io` is prohibited** on App Store builds. |
+| Repo | Layer | Role | Patch-anchor / notes |
+|------|-------|------|----------------------|
+| **Wawona** | L4 | Integration: Smithay, SwiftUI/Android, flake merge, xcodegen | Product gates |
+| **wwn-toolchain** | L0 | Cross-compile + substrate (cairo/pango/pixman/libwayland/…) + pty | No wwn-* inputs |
+| **wwn-iland** | L1 | DRM/KMS/EGL/GBM + ANGLE/SwiftShader/MoltenVK/KosmicKrisp | Mode A/B |
+| **wwn-kmscube** | L2 | Graphics acceptance clients | Must not depend on weston |
+| **wwn-weston** | L3 | Weston compositor + clients | Mandatory native bundle |
+| **wwn-niri** | L3 | Niri compositor | Mandatory native bundle |
+| **wwn-waypipe** | L3′ | waypipe-rs remote | |
+| **wwn-anowaW** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
+| **wwn-vms** | L3′ | VM machine kinds | Planned |
+| **wwn-containers** | L3′ | Container machine kinds | Planned |
+| **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
+| **wwn-zsh** | L3′ | In-process App Store zsh + RootFS | |
+| **wwn-coreutils** | L3′ | uutils in-process multicall | |
+| **wwn-foot** | L3′ | foot terminal | |
+| **wwn-fastfetch** | L3′ | fastfetch port | |
+| **wwn-neovim** | L3′ | neovim / optional module | |
+| **wwn-phoon-rs** | L3′ | phoon client | |
+| **wwn-apt** | L3′ | App Store apt catalog (StoreKit + ODR) | No jailbreak mentions |
+| **wwn-mcp** | tooling | Stdio RAG + MCP for agents | This repo |
+| **wawona.io** | docs | Public site | Not a product flake input |
 
 ## Dependency graph (flakes)
 
@@ -38,42 +32,25 @@ distribution or `repo.wawona.io`. App Store Review Notes come from
 L0 wwn-toolchain
   └─ L1 wwn-iland
        └─ L2 wwn-kmscube
-            └─ L3 wwn-weston
-L0 ──► L3' wwn-waypipe / wwn-anowaW / wwn-vms / wwn-apt / other ports
+            └─ L3 wwn-weston / wwn-niri
+L0 ──► L3' waypipe / anowaW / vms / containers / ssh / apt / ports
 L4 Wawona ──► all required lower layers
 ```
 
-Canonical layering and forbidden edges:
-[`wwn-repo-dag.md`](wwn-repo-dag.md).
+Canonical layering: [`wwn-repo-dag.md`](wwn-repo-dag.md).
+How to contribute: [`contribute.md`](contribute.md).
 
-Canonical graphics mirrors:
+## Deleted / renamed
 
-- [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md) — L1 ownership
-  and minimal EGL/GLES/Vulkan translation paths.
-- [`iland-mode-a-b-desktop.md`](iland-mode-a-b-desktop.md) — presentation,
-  privilege, and bundle separation.
-- [`platform-capability-matrix.md`](platform-capability-matrix.md) — complete
-  Apple-family and Android product scope.
-- [`toolkit-readiness-soft-shm.md`](toolkit-readiness-soft-shm.md) — toolkit
-  gates and shared software-buffer fallback.
-
-App repos do **not** depend on `wwn-zsh` at flake level (the `wawona_zsh_main`
-symbol resolves at final app link via weak externs) — the DAG stays acyclic.
-
-## Deleted / renamed repos
-
-- **`Wawona/iland`** (org fork) — **deleted**. Superseded by **`wwn-iland`**.
-  Upstream inspiration: [CoreBedtime/iland](https://github.com/CoreBedtime/iland).
-- **`Wawona/Wawona-repo`** — renamed to **`repo.wawona.io`** (jailbreak utilities repo).
-- **`Wawona/wawona.github.io`** — renamed to **`wawona.io`** (project website).
+- **`Wawona/iland`** — deleted; use **wwn-iland** (credits CoreBedtime/iland).
+- **`Wawona/Wawona-repo`** → **repo.wawona.io** (jailbreak only; not in default RAG).
+- **`Wawona/wawona.github.io`** → **wawona.io**.
 
 ## Standalone build examples
 
 ```sh
 cd ~/Wawona/wwn-zsh    && nix build .#zsh-ios
-cd ~/Wawona/wwn-fastfetch && nix build .#fastfetch-ios
-cd ~/Wawona/wwn-weston && nix build .#weston-compositor-ios
 cd ~/Wawona/wwn-iland  && nix build .#iland-ios
-cd ~/Wawona/wwn-apt   && nix build .#apt-rootfs-ios
-cd ~/Wawona/Wawona     && nix build .#wawona-macos   # full integration
+cd ~/Wawona/wwn-niri   && nix build .#niri-ios   # when attribute exists
+cd ~/Wawona/Wawona     && nix build .#wawona-macos
 ```

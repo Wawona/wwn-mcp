@@ -1,7 +1,7 @@
 """FastMCP server exposing the WWN-MCP retrieval tools and resources.
 
-Transport defaults to Streamable HTTP (for the hosted mcp.wawona.io deployment
-behind a TLS+Bearer proxy); ``stdio`` is available for local Cursor use.
+Transport is **stdio only** (Cursor / mcp-nixos host model). There is no
+HTTP / Streamable HTTP path.
 
 Every tool returns structured results that carry citations (project, path,
 line range, source URL) so models can open the underlying files.
@@ -40,7 +40,7 @@ def _fmt(results: list[SearchResult]) -> list[dict[str, Any]]:
 def build_server(settings: Settings):  # -> FastMCP
     from mcp.server.fastmcp import FastMCP
 
-    mcp = FastMCP("wwn-mcp", host=settings.host, port=settings.port)
+    mcp = FastMCP("wwn-mcp")
     store = Store(settings)
 
     @mcp.tool()
@@ -74,10 +74,13 @@ def build_server(settings: Settings):  # -> FastMCP
 
         Searches curated knowledge under ``project=wawona`` and ``ios-shell``,
         plus architecture READMEs from Wawona integration and ``wwn-*`` repos
-        (weston, iland, waypipe, coreutils).
+        (weston, iland, waypipe, coreutils, niri, kmscube, ssh).
         """
         per = max(2, (top_k + 4) // 5)
-        projects = ["wawona", "ios-shell", "weston", "iland", "waypipe", "coreutils"]
+        projects = [
+            "wawona", "ios-shell", "weston", "iland", "waypipe", "coreutils",
+            "niri", "kmscube", "ssh",
+        ]
         seen: set[str] = set()
         merged: list = []
         for proj in projects:
@@ -139,6 +142,36 @@ def build_server(settings: Settings):  # -> FastMCP
         return {"error": f"no patched software named '{software}'", "available": available}
 
     @mcp.tool()
+    def list_repos() -> list[dict]:
+        """List Wawona org repos with layer, role, and when-to-edit hints."""
+        from .contribute import list_repos as _list
+
+        return _list()
+
+    @mcp.tool()
+    def where_to_edit(change: str) -> dict:
+        """Map a change description to the correct Wawona org repo.
+
+        Examples: 'zsh patch', 'ANGLE', 'niri recipe', 'Machines UI', 'wayland protocol'.
+        """
+        from .contribute import where_to_edit as _where
+
+        return _where(change)
+
+    @mcp.tool()
+    def get_capability(platform: str, feature: str) -> dict:
+        """Four-state capability gate for a platform + feature.
+
+        States: available | planned | blocked | forbidden.
+        Platforms: macos, ios, ipados, tvos, watchos, visionos, android, linux.
+        Features: native, remote, vm, container, multi_window, nested_compositors,
+        gpu, desktop, anowaw.
+        """
+        from .contribute import get_capability as _cap
+
+        return _cap(platform, feature)
+
+    @mcp.tool()
     def read_document(ref: str, start: int | None = None, end: int | None = None) -> dict:
         """Read a chunk by id, or a file by 'source/relative/path' (optional line range)."""
         # chunk id?
@@ -169,7 +202,25 @@ def build_server(settings: Settings):  # -> FastMCP
         """Index status + corpus statistics."""
         import json
 
-        return json.dumps(store.stats(), indent=2)
+        stats = store.stats()
+        meta = {
+            k: v
+            for k, v in (
+                (r["key"], r["value"])
+                for r in store.db.execute("SELECT key, value FROM meta").fetchall()
+            )
+        }
+        from .embed import Embedder
+
+        emb = Embedder(settings.model_name, settings.embed_dim)
+        out = {
+            **stats,
+            "embed_backend": emb.backend,
+            "last_indexed": meta.get("last_indexed"),
+            "source_shas": json.loads(meta.get("source_shas", "{}")),
+            "transport": "stdio",
+        }
+        return json.dumps(out, indent=2)
 
     @mcp.resource("wwn://patches")
     def patches_resource() -> str:
@@ -181,11 +232,7 @@ def build_server(settings: Settings):  # -> FastMCP
     return mcp
 
 
-def run_server(settings: Settings, host: str, port: int, transport: str = "http") -> None:
-    object.__setattr__(settings, "host", host)
-    object.__setattr__(settings, "port", port)
+def run_server(settings: Settings) -> None:
+    """Run the MCP server over stdio (only supported transport)."""
     mcp = build_server(settings)
-    if transport == "stdio":
-        mcp.run(transport="stdio")
-    else:
-        mcp.run(transport="streamable-http")
+    mcp.run(transport="stdio")

@@ -14,7 +14,7 @@ Related: `ios-device-dev-workflow.md` (full build → install → debug loop).
 | Nix package | `modules/pkgs/_lldb-mcp.nix` in nix-darwin dotfiles |
 | Cursor MCP name | **`lldb`** (not `lldb-mcp`) |
 | Requires | macOS, Xcode LLDB (`DEVELOPER_DIR` set), paired Apple device for iOS attach |
-| **Not indexed** | Action/debug server — like xcodebuild-mcp, it runs locally, not on `mcp.wawona.io` |
+| **Not indexed** | Action/debug server — like xcodebuild-mcp, it runs locally (stdio), not as a remote URL |
 
 Wired by nix-darwin `dendritic.ide.mcp.lldb.enable` (default on Darwin) into
 `.cursor/mcp.json`, `.antigravity/mcp.json`, and per-repo `Wawona/.cursor/mcp.json`.

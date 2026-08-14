@@ -40,9 +40,14 @@ the new tool in [mcp-tools.md](mcp-tools.md).
 ```bash
 ruff check src
 pytest -q
-nix flake check          # evaluates package, app, nixosModule
+nix flake check          # package + pytest checks (macOS and Linux in CI)
 nix build .#wwn-mcp      # builds the package
+nix run .#wwn-mcp -- info
+nix run .#wwn-mcp -- index --knowledge
+nix run .#wwn-mcp -- search "repo DAG" -k 3
 ```
+
+CI workflow **MCP** runs the Nix matrix on `macos-latest` and `ubuntu-latest`.
 
 ## Conventions
 

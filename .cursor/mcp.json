@@ -4,15 +4,11 @@
       "command": "/nix/var/nix/profiles/default/bin/nix",
       "args": [
         "run",
-        "/Users/8amps/Wawona/WWN-MCP#wwn-mcp",
-        "--",
-        "serve",
-        "--transport",
-        "stdio"
+        "/Users/8amps/Wawona/wwn-mcp#wwn-mcp"
       ],
       "env": {
         "WWN_MCP_DATA_DIR": "/Users/8amps/.local/share/wwn-mcp",
-        "WWN_MCP_CORPUS_TOML": "/Users/8amps/Wawona/WWN-MCP/corpus.toml"
+        "WWN_MCP_CORPUS_TOML": "/Users/8amps/Wawona/wwn-mcp/corpus.toml"
       }
     },
     "nixos": {

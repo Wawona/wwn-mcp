@@ -3,6 +3,9 @@
 All paths default under a single data dir (``$WWN_MCP_DATA_DIR`` or
 ``./data``) so the server is hermetic and the runtime artifacts are easy to
 ``.gitignore``. Nothing here is committed to the repo.
+
+Transport is **stdio only** (Cursor / mcp-nixos host model). There is no
+HTTP / Streamable HTTP / hosted URL path.
 """
 
 from __future__ import annotations
@@ -12,8 +15,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 DEFAULT_MODEL = "BAAI/bge-small-en-v1.5"
-DEFAULT_HOST = "127.0.0.1"
-DEFAULT_PORT = 8765
 DEFAULT_EMBED_DIM = 384  # bge-small-en-v1.5 / hashing-fallback dimension
 
 
@@ -60,9 +61,6 @@ class Settings:
     db_path: Path
     model_name: str
     embed_dim: int
-    host: str
-    port: int
-    token: str | None
     corpus_manifest: Path
 
     @staticmethod
@@ -77,9 +75,6 @@ class Settings:
             db_path=db_path,
             model_name=os.environ.get("WWN_MCP_MODEL", DEFAULT_MODEL),
             embed_dim=int(os.environ.get("WWN_MCP_EMBED_DIM", DEFAULT_EMBED_DIM)),
-            host=os.environ.get("WWN_MCP_HOST", DEFAULT_HOST),
-            port=int(os.environ.get("WWN_MCP_PORT", DEFAULT_PORT)),
-            token=os.environ.get("WWN_MCP_TOKEN") or None,
             corpus_manifest=manifest,
         )
 

@@ -30,6 +30,7 @@ license = "MIT"
 platform = ["all"]
 include = [
   "docs/**/*.md",
+  "docs/agent-rules/**",
   "src/**/*.rs",
   "src/**/*.{c,h,m,mm}",
   "Sources/**/*.swift",
@@ -41,6 +42,8 @@ include = [
   "dependencies/**/*.m",
   "Cargo.toml",
   "flake.nix",
+  "AGENTS.md",
+  ".cursor/rules/**",
   ".github/scripts/*.py",
 ]
 exclude = [
@@ -60,10 +63,19 @@ name = "wawona-git"
 project = "wawona"
 kind = "git"
 url = "https://github.com/Wawona/Wawona"
-ref = "master"
-description = "Wawona repo (deploy-time git mirror of the local `wawona` source)."
+ref = "development"
+description = "Wawona repo (git mirror of the local `wawona` source; active work is on development)."
 license = "MIT"
-include = ["docs/**", "src/**", "Sources/**", "dependencies/**", "*.md"]
+include = [
+  "docs/**",
+  "docs/agent-rules/**",
+  "src/**",
+  "Sources/**",
+  "dependencies/**",
+  "AGENTS.md",
+  ".cursor/rules/**",
+  "*.md",
+]
 exclude = ["dependencies/generators/gradlegen/output/**", "**/.git/**", "inspirational_projects/**"]
 enabled = false
 
@@ -183,6 +195,205 @@ license = "MIT"
 platform = ["ios", "ipados", "tvos", "watchos", "visionos"]
 include = ["catalog/**/*.{yaml,yml,json}", "apt/**/*.{sh,8}", "docs/**/*.md", "scripts/**/*.py", "dependencies/**/*.nix", "flake.nix", ".github/scripts/*.py", "**/*.md"]
 exclude = ["**/.git/**", "**/__pycache__/**", "**/.venv/**", "**/result/**"]
+
+# ---------------------------------------------------------------------------
+# Additional org repos (mandatory compositors, L2 acceptance, planned surfaces)
+# Prefer local sibling checkouts under ~/Wawona/; git URL used when fetched.
+# ---------------------------------------------------------------------------
+[[source]]
+name = "wwn-niri"
+project = "niri"
+kind = "local"
+path = "../wwn-niri"
+description = "Mandatory bundled Niri compositor for every Wawona product target."
+license = "MIT"
+platform = ["all"]
+include = ["dependencies/**/*.{nix,sh,py,rs}", "flake.nix", "**/*.md", ".github/scripts/*.py"]
+exclude = ["**/.git/**", "**/target/**", "**/result/**"]
+
+[[source]]
+name = "wwn-niri-git"
+project = "niri"
+kind = "git"
+url = "https://github.com/Wawona/wwn-niri"
+ref = "development"
+description = "Git mirror of wwn-niri (enable when no local sibling)."
+license = "MIT"
+platform = ["all"]
+include = ["dependencies/**/*.{nix,sh,py,rs}", "flake.nix", "**/*.md", ".github/scripts/*.py"]
+exclude = ["**/.git/**", "**/target/**"]
+enabled = false
+
+[[source]]
+name = "wwn-kmscube"
+project = "kmscube"
+kind = "local"
+path = "../wwn-kmscube"
+description = "L2 graphics acceptance client (kmscube) against wwn-iland."
+license = "MIT"
+platform = ["all"]
+include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
+exclude = ["**/.git/**"]
+
+[[source]]
+name = "wwn-kmscube-git"
+project = "kmscube"
+kind = "git"
+url = "https://github.com/Wawona/wwn-kmscube"
+ref = "development"
+license = "MIT"
+include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wwn-anowaW"
+project = "anowaw"
+kind = "local"
+path = "../wwn-anowaW"
+description = "Host-app → Wayland bridge (not Desktop/LockScreen). Planned."
+license = "MIT"
+platform = ["macos", "android", "ios", "ipados"]
+include = ["**/*.{nix,md,swift,kt,rs}", "flake.nix"]
+exclude = ["**/.git/**", "**/target/**"]
+
+[[source]]
+name = "wwn-anowaW-git"
+project = "anowaw"
+kind = "git"
+url = "https://github.com/Wawona/wwn-anowaW"
+ref = "development"
+license = "MIT"
+include = ["**/*.{nix,md,swift,kt,rs}", "flake.nix"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wwn-vms"
+project = "vms"
+kind = "local"
+path = "../wwn-vms"
+description = "VM machine kinds (planned)."
+license = "MIT"
+include = ["**/*.{nix,md,rs}", "flake.nix"]
+exclude = ["**/.git/**", "**/target/**"]
+
+[[source]]
+name = "wwn-vms-git"
+project = "vms"
+kind = "git"
+url = "https://github.com/Wawona/wwn-vms"
+ref = "development"
+license = "MIT"
+include = ["**/*.{nix,md,rs}", "flake.nix"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wwn-containers"
+project = "containers"
+kind = "local"
+path = "../wwn-containers"
+description = "Container machine kinds (planned)."
+license = "MIT"
+include = ["**/*.{nix,md,rs}", "flake.nix"]
+exclude = ["**/.git/**", "**/target/**"]
+
+[[source]]
+name = "wwn-containers-git"
+project = "containers"
+kind = "git"
+url = "https://github.com/Wawona/wwn-containers"
+ref = "development"
+license = "MIT"
+include = ["**/*.{nix,md,rs}", "flake.nix"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wwn-ssh"
+project = "ssh"
+kind = "local"
+path = "../wwn-ssh"
+description = "SSH backend: Apple-mobile libssh2 vs macOS/Android OpenSSH."
+license = "MIT"
+platform = ["all"]
+include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
+exclude = ["**/.git/**"]
+
+[[source]]
+name = "wwn-ssh-git"
+project = "ssh"
+kind = "git"
+url = "https://github.com/Wawona/wwn-ssh"
+ref = "development"
+license = "MIT"
+include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wwn-neovim"
+project = "neovim"
+kind = "local"
+path = "../wwn-neovim"
+description = "Neovim port / optional App Store module."
+license = "MIT"
+include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
+exclude = ["**/.git/**"]
+
+[[source]]
+name = "wwn-neovim-git"
+project = "neovim"
+kind = "git"
+url = "https://github.com/Wawona/wwn-neovim"
+ref = "development"
+license = "MIT"
+include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wwn-phoon-rs"
+project = "wawona"
+kind = "local"
+path = "../wwn-phoon-rs"
+description = "phoon-rs bundled client."
+license = "MIT"
+include = ["**/*.{nix,md,rs}", "flake.nix"]
+exclude = ["**/.git/**", "**/target/**"]
+
+[[source]]
+name = "wwn-phoon-rs-git"
+project = "wawona"
+kind = "git"
+url = "https://github.com/Wawona/wwn-phoon-rs"
+ref = "development"
+license = "MIT"
+include = ["**/*.{nix,md,rs}", "flake.nix"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wawona-io"
+project = "wawona"
+kind = "local"
+path = "../wawona.io"
+description = "Public wawona.io contributor/user docs (Zola site)."
+license = "MIT"
+include = ["content/**/*.md", "docs/**/*.md", "README.md", "AGENTS.md"]
+exclude = ["**/themes/**", "**/public/**", "**/.git/**"]
+
+[[source]]
+name = "wawona-io-git"
+project = "wawona"
+kind = "git"
+url = "https://github.com/Wawona/wawona.io"
+ref = "main"
+license = "MIT"
+include = ["content/**/*.md", "docs/**/*.md", "README.md"]
+exclude = ["**/themes/**", "**/public/**", "**/.git/**"]
+enabled = false
 
 # ---------------------------------------------------------------------------
 # Wayland protocol corpus (the entire wayland.app / Wayland Explorer set).

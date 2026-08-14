@@ -7,6 +7,9 @@ whose content hash is unchanged, upsert new/changed ones, and prune stale ones.
 from __future__ import annotations
 
 import fnmatch
+import json
+import subprocess
+from datetime import UTC, datetime
 from pathlib import Path
 
 from .chunk import Chunk, chunk_file
@@ -14,6 +17,18 @@ from .config import Settings
 from .corpus import Source, filter_sources, load_sources, source_root
 from .embed import Embedder
 from .store import Store
+
+
+def _git_sha(root: Path) -> str | None:
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", str(root), "rev-parse", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+        return out.strip() or None
+    except (OSError, subprocess.CalledProcessError):
+        return None
 
 _DEFAULT_INCLUDE = [
     "**/*.md", "**/*.mdx", "**/*.markdown", "**/*.rst", "**/*.adoc", "**/*.txt", "**/*.scd",
@@ -107,6 +122,25 @@ def build_index(settings: Settings, only: list[str] | None = None, reset: bool =
         "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
         (str(patch_inv.get("count", 0)),),
     )
+    shas: dict[str, str] = {}
+    for src in sources:
+        if not src.enabled or src.name not in per_source:
+            continue
+        root = source_root(settings.corpus_dir, settings.corpus_manifest.parent, src)
+        sha = _git_sha(root) if root.exists() else None
+        if sha:
+            shas[src.name] = sha
+    now = datetime.now(UTC).isoformat()
+    for key, value in (
+        ("last_indexed", now),
+        ("source_shas", json.dumps(shas)),
+        ("embed_backend", embedder.backend),
+    ):
+        store.db.execute(
+            "INSERT INTO meta(key,value) VALUES(?,?) "
+            "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+            (key, value),
+        )
     store.commit()
 
     return {
@@ -114,5 +148,7 @@ def build_index(settings: Settings, only: list[str] | None = None, reset: bool =
         "vector_backend": store.stats()["vector_backend"],
         "sources": per_source,
         "patches": patch_inv.get("count", 0),
+        "last_indexed": now,
+        "source_shas": shas,
         "totals": store.stats(),
     }

@@ -2,17 +2,14 @@
 
 ## Connect Cursor (any Wawona-org repo)
 
-Wawona development uses **multiple repos** under `~/Wawona/` (one directory per
-`github.com/Wawona/*` repo). Open **`~/Wawona/Wawona`** for compositor work, or
-any sibling `wwn-*` repo for patched-software recipes. Add MCP config to each
-repo's `.cursor/mcp.json` (already done in Wawona and WWN-MCP):
+Wawona development uses **multiple repos** under `~/Wawona/`. Add MCP config to
+each repo's `.cursor/mcp.json` (or rely on dendritic / home-manager to write it):
 
 ```json
 {
   "mcpServers": {
     "wwn-mcp": {
-      "url": "https://mcp.wawona.io/mcp",
-      "headers": { "Authorization": "Bearer ${WWN_MCP_TOKEN}" }
+      "command": "wwn-mcp"
     },
     "nixos": {
       "command": "uvx",
@@ -30,93 +27,46 @@ repo's `.cursor/mcp.json` (already done in Wawona and WWN-MCP):
 }
 ```
 
-Set `WWN_MCP_TOKEN` in your environment (never commit it). Cursor will expose
-the WWN-MCP tools (`search`, `get_protocol`, `get_patch`, …) plus the companion
-**`nixos`** tools (`nix`, `nix_versions`) for accurate nixpkgs/options/version
-data, the **`xcodebuild`** tools (getsentry/XcodeBuildMCP) for building,
-installing, and running on simulator or device, and **`lldb`** (lldb-mcp) for
-on-device debugging. Pair them with an always-applied rule so models query them
-automatically — see the Wawona repo's `.cursor/rules/wawona-context.mdc` and
-`AGENTS.md`.
+**stdio only.** There is no `https://mcp.wawona.io/mcp` — that hostname was
+never shipped. Install the package (`programs.wwn-mcp.enable` or
+`nix profile install github:Wawona/WWN-MCP`) so `wwn-mcp` is on PATH.
 
-> **Companion server placement.** `nixos` is a stateless API client that runs
-> anywhere, so WWN-MCP **co-hosts** it on the NixOS host (also reachable at
-> `https://mcp.wawona.io/nixos/mcp`). `xcodebuild` and `lldb` require **macOS +
-> Xcode 16+** (they drive `xcodebuild`/`devicectl` and LLDB), so they are
-> **developer-local only** — run via nix-darwin, `npx`, or Homebrew on your Mac;
-> they are *not* hosted on the Linux server. See
-> `knowledge/wawona/ios-device-dev-workflow.md` for the full device install +
-> debug loop (primary device: **8amps iPhone Air**).
+Companion servers:
 
-The `nixos` entry above runs MCP-NixOS locally via `uvx` (no Nix required). To
-use the **hosted** companion instead (co-deployed by the WWN-MCP NixOS module),
-point it at the remote endpoint:
+- **`nixos`** — live nixpkgs/options (utensils/mcp-nixos), also stdio via `uvx`.
+- **`xcodebuild` / `lldb`** — macOS-local action tools; not part of wwn-mcp.
 
-```json
-{ "mcpServers": { "nixos": {
-  "url": "https://mcp.wawona.io/nixos/mcp",
-  "headers": { "Authorization": "Bearer ${WWN_MCP_TOKEN}" }
-} } }
-```
-
-## Run a local server (stdio) with Nix — no hosting required
-
-This is the recommended setup for a single developer machine. Cursor launches
-the server on demand via Nix and talks to it over stdio (no port, no token).
-
-**1. Build an index once** (the server needs a populated index to answer). Fetch
-+ index the whole corpus, or a subset to start fast:
+## Run a local server (stdio) with Nix
 
 ```bash
-# whole corpus (long: clones many repos + embeds on CPU)
-nix run github:Wawona/WWN-MCP -- fetch
-nix run github:Wawona/WWN-MCP -- index
+# Build / run (bare argv = stdio serve)
+nix run github:Wawona/WWN-MCP#wwn-mcp
 
-# …or a subset first
-nix run github:Wawona/WWN-MCP -- fetch --only crate2nix fastlane-docs egl-registry
-nix run github:Wawona/WWN-MCP -- index --only crate2nix fastlane-docs egl-registry
+# Index first (knowledge-only is enough to start)
+nix run github:Wawona/WWN-MCP#wwn-mcp -- index --knowledge
 ```
 
-The index lands in `$XDG_DATA_HOME/wwn-mcp` (default `~/.local/share/wwn-mcp`).
+Or from a checkout:
 
-**2. Point Cursor at it** in `.cursor/mcp.json`:
-
-```jsonc
-// .cursor/mcp.json
-{ "mcpServers": { "wwn-mcp": {
-  // absolute nix path: Cursor-spawned servers may not inherit your PATH
-  "command": "/nix/var/nix/profiles/default/bin/nix",
-  "args": ["run", "github:Wawona/WWN-MCP#wwn-mcp", "--", "serve", "--transport", "stdio"],
-  "env": { "WWN_MCP_DATA_DIR": "/Users/you/.local/share/wwn-mcp" }
-} } }
+```bash
+nix run .#wwn-mcp -- info
+nix run .#wwn-mcp -- index --local-siblings
+nix run .#wwn-mcp          # stdio
 ```
-
-Use a **local checkout** instead of `github:Wawona/WWN-MCP` for offline / dev work
-(e.g. `nix run /path/to/WWN-MCP#wwn-mcp -- serve --transport stdio`). Reload the
-Cursor window; the `wwn-mcp` tools appear in MCP settings.
-
-**3. Refresh later** by re-running `fetch` + `index` (incremental — only changed
-chunks are re-embedded).
-
-Prefer `nix profile install github:Wawona/WWN-MCP` if you want a stable `wwn-mcp`
-on your PATH for the CLI; the Cursor entry can still use `nix run` so it always
-tracks the flake.
 
 ## Local development
 
 ```bash
-# With Nix:
-nix develop                       # dev shell with python + deps + caddy
+nix develop
 python -m wwn_mcp.cli info
 
 # Without Nix:
-pip install -e ".[all,dev]"       # all = fastembed + sqlite-vec; falls back if omitted
+pip install -e ".[all,dev]"
 
-# Pipeline
-wwn-mcp fetch --only smithay wayland-protocols   # fetch a subset
-wwn-mcp index --only smithay wayland-protocols   # chunk + embed + store
+wwn-mcp fetch --only smithay wayland-protocols
+wwn-mcp index --only smithay wayland-protocols
 wwn-mcp search "delegate_xdg_shell" --kind code -k 5
-wwn-mcp serve --transport http   # http://127.0.0.1:8765/mcp
+wwn-mcp   # stdio serve
 ```
 
 ### Useful environment variables
@@ -127,14 +77,10 @@ wwn-mcp serve --transport http   # http://127.0.0.1:8765/mcp
 | `WWN_MCP_CORPUS_TOML` | packaged copy, else `./corpus.toml` | manifest path |
 | `WWN_MCP_DB` | `<data>/index.sqlite` | sqlite index path |
 | `WWN_MCP_MODEL` | `BAAI/bge-small-en-v1.5` | embedding model |
-| `WWN_MCP_HOST` / `WWN_MCP_PORT` | `127.0.0.1` / `8765` | serve bind |
-| `WWN_MCP_TOKEN` | — | bearer token (auth is enforced at the proxy) |
 
 ### Notes
 
-- `fetch` skips `enabled = false` sources and logs/continues on per-source
-  failures, so a flaky upstream never aborts the run.
-- `index` is incremental: unchanged chunks (by content hash) are skipped and
-  removed chunks are pruned.
-- Without `fastembed`/`sqlite-vec`, search still works (hashing embedder +
-  brute-force/FTS); install the `all` extra for full semantic quality.
+- `fetch` skips `enabled = false` sources and continues on per-source failures.
+- `index` is incremental by content hash.
+- Empty index on serve → auto `index --knowledge`.
+- Without `fastembed`/`sqlite-vec`, search still works (hashing + FTS).

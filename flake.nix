@@ -1,20 +1,12 @@
 {
-  description = "WWN-MCP: local-embeddings RAG + MCP server for the Wawona stack.";
+  description = "WWN-MCP: local-embeddings RAG + stdio MCP server for the Wawona stack.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-
-    # WWN-MCP depends on MCP-NixOS (utensils/mcp-nixos) so models get accurate,
-    # real-time Nix knowledge (nixpkgs packages/options, nix-darwin,
-    # home-manager, flakes, noogle, binary-cache status). It is co-hosted as a
-    # companion MCP server by the NixOS module; it is a *live* MCP, not part of
-    # WWN-MCP's indexed RAG corpus.
-    mcp-nixos.url = "github:utensils/mcp-nixos";
-    mcp-nixos.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, mcp-nixos }:
+  outputs = { self, nixpkgs, flake-utils }:
     let
       # Pinned embedding model for hermetic, offline-capable embeds.
       # NOTE: build with `nix build .#wwn-mcp-model` once and replace the hash
@@ -44,22 +36,30 @@
 
           wwn-mcp = py.buildPythonApplication {
             pname = "wwn-mcp";
-            version = "0.1.0";
+            version = "0.2.0";
             src = self;
             pyproject = true;
             build-system = [ py.setuptools ];
             dependencies = optionalDeps;
-            # Tests need network/model; skip in the sandbox.
+            # Tests need writable data dir; run via checks.pytest outside sandbox.
             doCheck = false;
-            pythonImportsCheck = [ "wwn_mcp" "wwn_mcp.cli" ];
-            # Bundle the corpus manifest next to the package so an installed
-            # (read-only store) wwn-mcp finds it with no WWN_MCP_CORPUS_TOML env.
+            pythonImportsCheck = [
+              "wwn_mcp"
+              "wwn_mcp.cli"
+              "wwn_mcp.embed"
+              "wwn_mcp.store"
+              "wwn_mcp.contribute"
+            ];
+            # Bundle the corpus manifest + knowledge next to the package so an
+            # installed (read-only store) wwn-mcp finds them with no env override.
             postInstall = ''
               install -Dm644 corpus.toml \
                 "$out/${py.python.sitePackages}/wwn_mcp/corpus.toml"
+              mkdir -p "$out/${py.python.sitePackages}/wwn_mcp/knowledge"
+              cp -R knowledge/. "$out/${py.python.sitePackages}/wwn_mcp/knowledge/"
             '';
             meta = {
-              description = "Local-embeddings RAG + MCP server for the Wawona stack.";
+              description = "Local-embeddings RAG + stdio MCP server for the Wawona stack.";
               homepage = "https://github.com/Wawona/WWN-MCP";
               license = lib.licenses.mit;
               mainProgram = "wwn-mcp";
@@ -71,13 +71,35 @@
             url = modelInfo.url;
             hash = modelInfo.hash;
           };
+
+          pytestCheck = pkgs.runCommand "wwn-mcp-pytest" {
+            nativeBuildInputs = [
+              (pkgs.python3.withPackages (ps:
+                [ ps.pytest ps.setuptools ]
+                ++ lib.filter (x: x != null) [
+                  (ps.mcp or null)
+                  (ps.fastembed or null)
+                  (ps.sqlite-vec or null)
+                ]))
+            ];
+          } ''
+            cp -R ${self} srcdir
+            chmod -R u+w srcdir
+            cd srcdir
+            export PYTHONPATH="$PWD/src:$PYTHONPATH"
+            pytest -q
+            touch $out
+          '';
         in
         {
           packages = {
             inherit wwn-mcp wwn-mcp-model;
             default = wwn-mcp;
-            # Companion server, re-exported for convenience / co-hosting.
-            mcp-nixos = mcp-nixos.packages.${system}.default;
+          };
+
+          checks = {
+            package = wwn-mcp;
+            pytest = pytestCheck;
           };
 
           apps = {
@@ -100,19 +122,18 @@
                   (ps.ruff or null)
                 ]))
               pkgs.git
-              pkgs.caddy
             ];
             shellHook = ''
               export PYTHONPATH="$PWD/src:$PYTHONPATH"
-              echo "wwn-mcp dev shell. Try: python -m wwn_mcp.cli info"
+              echo "wwn-mcp dev shell (stdio). Try: python -m wwn_mcp.cli info"
             '';
           };
         });
     in
     perSystem // {
-      # System-independent NixOS module (defined in ./nix/module.nix).
-      nixosModules.wwn-mcp = import ./nix/module.nix self;
-      nixosModules.default = self.nixosModules.wwn-mcp;
+      # home-manager: programs.wwn-mcp.enable = true;
+      homeModules.wwn-mcp = import ./nix/home.nix self;
+      homeModules.default = self.homeModules.wwn-mcp;
 
       overlays.default = final: prev: {
         wwn-mcp = self.packages.${prev.stdenv.hostPlatform.system}.wwn-mcp;

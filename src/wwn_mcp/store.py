@@ -188,10 +188,13 @@ class Store:
                 continue
             if lang and (row["lang"] or "") != lang:
                 continue
-            results.append(self._to_result(row, score))
-            if len(results) >= top_k:
+            # Prefer curated knowledge + agent-rules over random upstream mirrors.
+            boost = _path_boost(row["path"] or "", row["source"] or "")
+            results.append(self._to_result(row, score + boost))
+            if len(results) >= top_k * 2:
                 break
-        return results
+        results.sort(key=lambda r: r.score, reverse=True)
+        return results[:top_k]
 
     def _fts_search(self, query: str, limit: int) -> list[tuple[str, float]]:
         toks = _FTS_TOKEN_RE.findall(query)
@@ -290,6 +293,17 @@ class Store:
             "by_project": by_project,
             "vector_backend": "sqlite-vec" if self._vec else "bruteforce",
         }
+
+
+def _path_boost(path: str, source: str) -> float:
+    p = path.replace("\\", "/")
+    if "knowledge/" in p or source.startswith("wwn-knowledge"):
+        return 0.15
+    if "docs/agent-rules/" in p or p.endswith(".mdc") or "AGENTS.md" in p:
+        return 0.12
+    if p.startswith("docs/") and source in ("wawona", "wawona-git"):
+        return 0.08
+    return 0.0
 
 
 def _cosine(a: list[float], b: array.array) -> float:

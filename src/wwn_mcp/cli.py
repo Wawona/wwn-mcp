@@ -1,4 +1,8 @@
-"""``wwn-mcp`` command-line entry point: fetch | index | search | serve."""
+"""``wwn-mcp`` command-line entry point.
+
+Bare ``wwn-mcp`` (no subcommand) starts the MCP server over **stdio**
+(mcp-nixos host model). Subcommands: fetch | index | search | serve | info.
+"""
 
 from __future__ import annotations
 
@@ -7,6 +11,9 @@ import json
 import sys
 
 from .config import Settings
+
+# Knowledge sources indexed automatically when the DB is empty (first spawn).
+_KNOWLEDGE_ONLY = ["wwn-knowledge", "wwn-knowledge-wawona"]
 
 
 def _add_only(p: argparse.ArgumentParser) -> None:
@@ -22,7 +29,7 @@ def _add_only(p: argparse.ArgumentParser) -> None:
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="wwn-mcp", description=__doc__)
     p.add_argument("--data-dir", default=None, help="Override the runtime data dir.")
-    sub = p.add_subparsers(dest="cmd", required=True)
+    sub = p.add_subparsers(dest="cmd", required=False)
 
     p_fetch = sub.add_parser("fetch", help="Mirror/clone corpus sources from corpus.toml.")
     _add_only(p_fetch)
@@ -31,6 +38,16 @@ def build_parser() -> argparse.ArgumentParser:
     p_index = sub.add_parser("index", help="Chunk + embed the fetched corpus into the index.")
     _add_only(p_index)
     p_index.add_argument("--reset", action="store_true", help="Drop and rebuild the index.")
+    p_index.add_argument(
+        "--local-siblings",
+        action="store_true",
+        help="Index only local-sibling / knowledge sources (skip git/web that are not fetched).",
+    )
+    p_index.add_argument(
+        "--knowledge",
+        action="store_true",
+        help="Index only shipped knowledge/ sources (fast first-run).",
+    )
 
     p_search = sub.add_parser("search", help="Query the hybrid index from the terminal.")
     p_search.add_argument("query")
@@ -40,16 +57,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_search.add_argument("-k", "--top-k", type=int, default=8)
     p_search.add_argument("--json", action="store_true")
 
-    p_serve = sub.add_parser("serve", help="Start the MCP server.")
-    p_serve.add_argument("--host", default=None)
-    p_serve.add_argument("--port", type=int, default=None)
-    p_serve.add_argument(
-        "--transport",
-        choices=["http", "stdio"],
-        default="http",
-        help="http = Streamable HTTP (default); stdio = local Cursor stdio.",
-    )
-
+    sub.add_parser("serve", help="Start the MCP server over stdio (same as bare wwn-mcp).")
     sub.add_parser("info", help="Print resolved settings and index status.")
     return p
 
@@ -62,26 +70,57 @@ def _settings(args: argparse.Namespace) -> Settings:
     return Settings.load()
 
 
+def _ensure_knowledge_index(settings: Settings) -> None:
+    """If the sqlite index is missing or empty, index shipped knowledge/ only."""
+    needs = (not settings.db_path.exists()) or settings.db_path.stat().st_size < 4096
+    if not needs:
+        from .store import Store
+
+        store = Store(settings)
+        if store.stats().get("chunks", 0) > 0:
+            return
+    from .index import build_index
+
+    print("wwn-mcp: empty index — indexing shipped knowledge/ …", file=sys.stderr)
+    build_index(settings, only=_KNOWLEDGE_ONLY, reset=False)
+
+
+def _index_only_args(args: argparse.Namespace) -> list[str] | None:
+    if getattr(args, "knowledge", False):
+        return list(_KNOWLEDGE_ONLY)
+    if getattr(args, "local_siblings", False):
+        from .corpus import load_sources
+
+        return [s.name for s in load_sources(Settings.load().corpus_manifest)
+                if s.kind == "local" and s.enabled]
+    return args.only
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     settings = _settings(args)
     settings.ensure_dirs()
 
-    if args.cmd == "fetch":
+    cmd = args.cmd
+    if cmd is None:
+        cmd = "serve"
+
+    if cmd == "fetch":
         from .fetch import fetch_all
 
         n = fetch_all(settings, only=args.only, depth=args.depth)
         print(f"fetched/updated {n} source(s) into {settings.corpus_dir}")
         return 0
 
-    if args.cmd == "index":
+    if cmd == "index":
         from .index import build_index
 
-        stats = build_index(settings, only=args.only, reset=args.reset)
+        only = _index_only_args(args)
+        stats = build_index(settings, only=only, reset=args.reset)
         print(json.dumps(stats, indent=2))
         return 0
 
-    if args.cmd == "search":
+    if cmd == "search":
         from .store import Store
 
         store = Store(settings)
@@ -100,18 +139,14 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"        {r.title}")
         return 0
 
-    if args.cmd == "serve":
+    if cmd == "serve":
         from .server import run_server
 
-        run_server(
-            settings,
-            host=args.host or settings.host,
-            port=args.port or settings.port,
-            transport=args.transport,
-        )
+        _ensure_knowledge_index(settings)
+        run_server(settings)
         return 0
 
-    if args.cmd == "info":
+    if cmd == "info":
         from .store import Store
 
         store = Store(settings)
@@ -121,7 +156,7 @@ def main(argv: list[str] | None = None) -> int:
             "db_path": str(settings.db_path),
             "model": settings.model_name,
             "embed_dim": settings.embed_dim,
-            "auth": "bearer" if settings.token else "none",
+            "transport": "stdio",
             "index": store.stats(),
         }
         print(json.dumps(info, indent=2))

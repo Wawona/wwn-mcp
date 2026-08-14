@@ -1,146 +1,80 @@
 # WWN-MCP — Overview & Architecture
 
 WWN-MCP is a local-embeddings RAG (retrieval-augmented generation) service plus
-a Model Context Protocol (MCP) server. It gives any Cursor model on-demand,
-retrieval-backed knowledge of the Wawona stack so it stops guessing about niche,
-post-training-cutoff topics.
+a **stdio** Model Context Protocol (MCP) server. It gives any Cursor model
+on-demand, retrieval-backed knowledge of the Wawona stack so it stops guessing
+about niche, post-training-cutoff topics.
 
 It is a standalone, open-source (MIT) Wawona-org project. The Wawona repo is a
-*consumer* (its `.cursor/` config + rules point at the hosted server) and one of
-the indexed corpus sources.
+*consumer* (its `.cursor/` config + rules point at the local `wwn-mcp` binary)
+and one of the indexed corpus sources.
+
+**Host model:** same as [mcp-nixos](https://github.com/utensils/mcp-nixos) —
+Cursor spawns `wwn-mcp` on PATH over stdio. No public URL / Streamable HTTP.
 
 ## What it knows
 
-- The entire wayland.app / Wayland Explorer protocol set (core/stable/staging/
-  experimental/unstable/wlr/kde/hyprland/cosmic/weston/treeland/river/external).
-- Weston, Smithay, Sway, Cocoa-Way, iland, Pixman.
-- Vulkan (MoltenVK, KosmicKrisp, Android Vulkan), OpenGL/GLES (ANGLE + per-target).
-- The Linux DRM/KMS/EGL/GBM display stack (kernel `Documentation/gpu`, libdrm,
-  Khronos EGL registry, Mesa GBM) — the OS contract iland reimplements on Apple.
-- Apple AppKit/UIKit/WatchKit/SwiftUI/Metal/IOSurface + Liquid Glass (OS 26),
-  Virtualization.framework, Containerization.framework, UTM/UTM-SE.
-- macOS internals / reverse-engineering: Mach-O binary format, dyld
-  (framework/.dylib loading + `DYLD_INSERT_LIBRARIES` interposing), Mach, the XNU
-  kernel, launchd — how iland injects dylibs to replace WindowServer/SkyLight.
-- Swift the language (The Swift Programming Language reference) + the official
-  Swift MCP SDK (`modelcontextprotocol/swift-sdk`).
-- Rust the language (The Rust Programming Language book) + the official Rust MCP
-  SDK (`rmcp`, `modelcontextprotocol/rust-sdk`).
-- XcodeGen (full Project Spec reference) — Wawona's Nix-driven `.xcodeproj`
-  generator.
-- crate2nix (full docs + Nix API) — splits Wawona's Rust backend crate-by-crate
-  into separate Nix derivations for isolated, incremental builds.
-- CI / release automation: Fastlane (TestFlight via `pilot`, Play via `supply`,
-  `deliver`/`match`/`gym`/`scan`) and GitHub Actions runners (GitHub-hosted +
-  self-hosted + matrix strategy) — the path to *prebuilt* downloads for testers.
-- Determinate Nix (installer, FlakeHub, Magic Nix Cache, CI action) and Nix
-  developer environments (`nix.dev`, `devenv`, `nix-direnv`).
-- Android Jetpack Compose + Material 3 Expressive (Android 16+), NDK graphics.
-- App Store Review Guidelines + Google Play policies (the strictness asymmetry).
-- App Store optional module delivery: **`wwn-apt`** — `apt` CLI compatibility layer
-  over an embedded catalog; StoreKit 2 + On-Demand Resources for foot, neovim,
-  and fastfetch (bundled zsh/coreutils/waypipe/apt are non-removable).
-- iOS shell App Store compliance: prior art (ios_system, a-Shell/WebAssembly,
-  iSH/ash, Blink) + a curated guide to how Wawona ports zsh in-process (no
-  fork/exec), its RootFS, and the sandbox-as-"container" model.
-- Wawona's own `docs/`, `src/`, and remaining `dependencies/` tree, plus the
-  extracted patched-software repos (`wwn-toolchain`, `wwn-zsh`, `wwn-weston`,
-  `wwn-iland`, `wwn-waypipe`, `wwn-coreutils`, `wwn-foot`, `wwn-fastfetch`,
-  `wwn-apt`) — Wawona is now an
-  integration layer consuming them as flake inputs.
+- The entire wayland.app / Wayland Explorer protocol set.
+- Weston, Niri, Smithay, Sway, Cocoa-Way, iland, Pixman.
+- Vulkan (MoltenVK, KosmicKrisp, Android Vulkan), OpenGL/GLES (ANGLE).
+- Linux DRM/KMS/EGL/GBM (the OS contract iland reimplements on Apple).
+- Apple AppKit/UIKit/WatchKit/SwiftUI/Metal/IOSurface + Liquid Glass.
+- macOS internals (Mach-O, dyld, Mach, XNU, launchd).
+- Swift / Rust language books + MCP SDKs.
+- XcodeGen, crate2nix, Fastlane, GitHub Actions, Determinate Nix.
+- Android Jetpack Compose + Material 3, NDK graphics.
+- App Store / Play policies; wwn-apt module delivery.
+- Wawona integration + extracted `wwn-*` repos (toolchain, iland, weston,
+  niri, kmscube, waypipe, anowaW, vms, containers, ssh, zsh, …).
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-  subgraph consumers [Consumer repos: Wawona, future projects]
+  subgraph consumers [Consumer repos]
     Cursor["Cursor / any model + .cursor rules"]
   end
-  Cursor -->|"Streamable HTTP + Bearer"| Proxy["caddy TLS: mcp.wawona.io"]
-  subgraph host [WWN-MCP NixOS host]
-    Proxy -->|"/mcp"| Server["wwn-mcp server (FastMCP)"]
-    Proxy -->|"/nixos/mcp"| NixOS["MCP-NixOS (companion, live)"]
-    Server --> DB[("sqlite: FTS5 + vec0 hybrid index")]
-    Timer["systemd timer"] --> Ingest["fetch + chunk + embed"]
-    Ingest --> DB
-    Manifest["corpus.toml"] --> Ingest
-  end
-  Sources["corpus sources (git + web mirrors)"] --> Ingest
-  NixOS -.->|"live queries"| NixData["search.nixos.org, NixHub, cache.nixos.org, noogle, ..."]
+  Cursor -->|"stdio spawn"| Server["wwn-mcp (FastMCP)"]
+  Server --> DB[("sqlite: FTS5 + vec0 hybrid index")]
+  Timer["user timer / manual"] --> Ingest["fetch + chunk + embed"]
+  Ingest --> DB
+  Manifest["corpus.toml"] --> Ingest
+  Sources["corpus sources (local siblings + git + web)"] --> Ingest
+  Cursor -->|"stdio spawn"| NixOS["mcp-nixos (uvx, separate)"]
 ```
 
 ## Companion: MCP-NixOS
 
-WWN-MCP **depends on** [MCP-NixOS](https://github.com/utensils/mcp-nixos)
-(`utensils/mcp-nixos`) and co-hosts it as a companion MCP server so models get
-accurate, real-time Nix knowledge — nixpkgs packages/options, `nix-darwin`,
-`home-manager`, flakes/FlakeHub, `noogle` function signatures, NixOS wiki +
-nix.dev, package version history, and binary-cache status. It is a *live* MCP
-(it queries upstream Nix services on demand), so it is **not** part of WWN-MCP's
-indexed RAG corpus — the two are complementary:
+WWN-MCP does **not** co-host MCP-NixOS. Cursor runs it separately:
 
-- **WWN-MCP** → the Wawona stack + all `wwn-*` patched-software repos (`get_patch` /
-  `list_patches` scan each repo's `dependencies/` tree).
-- **MCP-NixOS** → authoritative *upstream* nixpkgs/option/version facts.
+```json
+{ "nixos": { "command": "uvx", "args": ["mcp-nixos"] } }
+```
 
-The NixOS module runs it over HTTP behind the same Caddy/TLS/Bearer proxy
-(default path `/nixos/mcp`); see [deployment.md](deployment.md). For local use,
-Cursor can also run it directly via `uvx mcp-nixos` (no Nix required); see
-[usage.md](usage.md).
+- **WWN-MCP** → Wawona stack + `wwn-*` repos (`get_patch` / `list_patches`).
+- **MCP-NixOS** → live upstream nixpkgs/option/version facts.
 
-### Developer-local companions: XcodeBuildMCP + lldb-mcp
+### Developer-local: XcodeBuildMCP + lldb-mcp
 
-For building/installing/running the Apple Xcode projects on simulator or device,
-consumer repos wire in [XcodeBuildMCP](https://github.com/getsentry/XcodeBuildMCP)
-(`xcodebuild` tools). For on-device debugging, pair it with **lldb-mcp**
-(breakpoints, backtraces, expression eval). Unlike MCP-NixOS they are **not**
-co-hosted — they require macOS + Xcode 16+ on the developer's Mac (via
-nix-darwin, `npx`, or Homebrew) and live only in the consumer `.cursor/mcp.json`.
-They are action/debug tools, not knowledge sources, so they are neither indexed
-nor hosted by WWN-MCP. Curated operational guides (indexed in RAG):
-
-- `knowledge/wawona/wwn-repo-dag.md` — authoritative L0-L4 repository layering
-- `knowledge/wawona/wwn-iland-graphics-stack.md` — graphics ownership and
-  minimal EGL/GLES/Vulkan paths
-- `knowledge/wawona/iland-mode-a-b-desktop.md` — privilege and bundle split
-- `knowledge/wawona/platform-capability-matrix.md` — full Apple/Android scope
-- `knowledge/wawona/toolkit-readiness-soft-shm.md` — toolkit gates and SHM fallback
-- `knowledge/wawona/ios-device-dev-workflow.md` — signing, xcodegen, device install
-- `knowledge/wawona/lldb-mcp-apple-device-debugging.md` — **full lldb-mcp tool
-  reference**, iOS attach on **8amps iPhone Air**, Wawona breakpoints, in-process
-  pthread debugging
+macOS-only action tools in the consumer `.cursor/mcp.json`. Curated guides in
+`knowledge/wawona/` (DAG, graphics, Mode A/B, platform matrix, device workflow,
+lldb-mcp reference).
 
 ## RAG pipeline
 
 ```
-corpus.toml  ──▶  fetch  ──▶  chunk  ──▶  embed  ──▶  store (sqlite)  ──▶  serve (MCP)
+corpus.toml  ──▶  fetch  ──▶  chunk  ──▶  embed  ──▶  store (sqlite)  ──▶  serve (stdio)
              sources       per-file     fastembed     FTS5 + vec0          tools/resources
                           (md/code/      (BGE-small,    hybrid (RRF)
                            xml/patch)     hashing
                                           fallback)
 ```
 
-1. **fetch** (`fetch.py`) — git shallow-clones and bounded web-mirror crawls
-   each enabled source in `corpus.toml` into the runtime corpus cache. `local`
-   sources are read in place.
-2. **chunk** (`chunk.py`) — markdown-by-heading, code-by-symbol (with windowing
-   fallback), one chunk per Wayland `<interface>`, whole-file patches, and
-   stripped HTML/text. Each chunk carries project/path/line-range/kind/lang/tags
-   and a content hash + citation URL.
-3. **embed** (`embed.py`) — fastembed (ONNX CPU, BGE-small) when available; a
-   deterministic hashing embedder otherwise, so the pipeline always runs.
-4. **store** (`store.py`) — sqlite with FTS5 (lexical) and a `sqlite-vec` vector
-   index (brute-force cosine fallback), fused with reciprocal-rank fusion.
-   Indexing is incremental by content hash (upsert changed, prune stale).
-5. **serve** (`server.py`) — FastMCP exposing search/protocol/patch tools and
-   resources over Streamable HTTP (or stdio for local Cursor).
+First empty serve auto-indexes shipped `knowledge/`.
 
 ## Design choices
 
-- **Local + hermetic**: no external embedding API; everything runs offline once
-  the corpus is fetched. Fits the Nix/reproducibility ethos.
-- **Graceful degradation**: missing `fastembed`/`sqlite-vec` never breaks the
-  tool — it falls back to hashing embeddings and brute-force/FTS search.
-- **Public/MIT hygiene**: only WWN-MCP's own code + `corpus.toml` + docs are
-  committed. Fetched third-party docs/source live in the `.gitignore`d runtime
-  data dir and are never redistributed; their licenses ride along in citations.
+- **Local + hermetic**: no external embedding API.
+- **Graceful degradation**: missing fastembed/sqlite-vec → hashing + FTS.
+- **Public/MIT hygiene**: fetched third-party docs stay in the runtime data dir.
+- **stdio only**: no HTTP transport to maintain.

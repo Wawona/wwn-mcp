@@ -57,14 +57,17 @@ inputs and merges each repo's `registryFragment` over `wwn-toolchain`'s
   `wwn-foot` (`project=wawona`), `wwn-fastfetch` (`project=wawona`),
   `wwn-apt` (`project=wawona`) — App Store module catalog + `apt` CLI (StoreKit +
   ODR; optional modules foot/neovim/fastfetch) — the remaining patched apps.
+- Local siblings (preferred on `~/Wawona/` checkouts) plus disabled `*-git`
+  mirrors: `wwn-niri`, `wwn-kmscube`, `wwn-anowaW`, `wwn-vms`, `wwn-containers`,
+  `wwn-ssh`, `wwn-neovim`, `wwn-phoon-rs`, `wawona-io`.
 
 `list_patches` / `get_patch` scan **`dependencies/` in all of the above** (not
 just Wawona integration). Paths are repo-qualified, e.g.
 `wwn-zsh/dependencies/libs/zsh/patches/patch-zsh-exec.py`.
 
-**Deploy manifest:** `corpus.server.toml` disables local `wawona`, enables
-`wawona-git`; use it for NixOS (`services.wwn-mcp.corpusManifest`).
-
+**Stdio host:** one `corpus.toml`. Local `wawona` is enabled for sibling
+checkouts; `wawona-git` (`ref = development`) stays disabled until you need a
+git-only machine.
 ### Wayland protocols (the whole wayland.app set)
 `wayland-explorer`, `wayland-core`, `wayland-protocols`, `wlr-protocols`,
 `plasma-wayland-protocols`, `hyprland-protocols`, `cosmic-protocols`,
