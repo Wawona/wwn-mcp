@@ -4,14 +4,16 @@
 [![nix (ubuntu-latest)](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml/badge.svg?job=nix%20(ubuntu-latest))](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml)
 [![nix (macos-latest)](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml/badge.svg?job=nix%20(macos-latest))](https://github.com/Wawona/wwn-mcp/actions/workflows/ci.yml)
 
-A local-embeddings RAG + **stdio** Model Context Protocol (MCP) server that
-gives any Cursor model retrieval-backed knowledge of the Wawona stack: Wayland /
-Smithay / Weston / Niri, Apple + Android UI ladders, Vulkan/OpenGL paths, App
-Store / Play compliance, and the `wwn-*` patched-software repos. "WWN" = Wawona.
+**Wawona MCP** — a local-embeddings RAG + stdio [Model Context Protocol](https://modelcontextprotocol.io/)
+server that gives any Cursor model retrieval-backed knowledge of the Wawona
+stack: Wayland / Smithay / Weston / Niri, Apple + Android UI ladders,
+Vulkan/OpenGL paths, App Store / Play compliance, and the `wwn-*`
+patched-software repos. **WWN = Wawona.**
 
-**Host model matches [mcp-nixos](https://github.com/utensils/mcp-nixos):** Cursor
-spawns `wwn-mcp` on PATH over stdio. There is **no** public URL / Streamable HTTP
-transport (`mcp.wawona.io` was never shipped — do not use it).
+This is **not** [mcp-nixos](https://github.com/utensils/mcp-nixos). The *host*
+contract is the same idea (Cursor spawns a PATH binary over stdio), but the
+corpus, tools, and package are Wawona-only. There is no public URL / Streamable
+HTTP transport (`mcp.wawona.io` was never shipped — do not use it).
 
 ## Quick start
 
@@ -29,14 +31,22 @@ wwn-mcp                                     # stdio serve (Cursor spawns this)
 Point Cursor at it:
 
 ```json
-{ "mcpServers": {
-    "wwn-mcp": { "command": "wwn-mcp" },
-    "nixos": { "command": "uvx", "args": ["mcp-nixos"] }
-} }
+{
+  "mcpServers": {
+    "wwn-mcp": { "command": "wwn-mcp" }
+  }
+}
 ```
 
-With home-manager: `programs.wwn-mcp.enable = true` (see
-[docs/deployment.md](docs/deployment.md)).
+With home-manager / dendritic:
+
+```nix
+programs.wwn-mcp.enable = true;
+```
+
+See [docs/deployment.md](docs/deployment.md). On first empty DB, `serve`
+auto-indexes shipped `knowledge/`. For local sibling repos:
+`wwn-mcp index --local-siblings` (or `fetch` then `index`).
 
 ## Documentation
 
