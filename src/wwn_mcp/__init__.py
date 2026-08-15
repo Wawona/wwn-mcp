@@ -5,4 +5,4 @@ See the ``docs/`` folder for documentation. The public surface is the
 ``fetch | index | search | serve``.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.2.2"

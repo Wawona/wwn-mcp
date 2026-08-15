@@ -110,25 +110,22 @@ def test_cli_serve_on_tty_prints_usage(tmp_path, monkeypatch, capsys):
     assert rc == 0
     err = capsys.readouterr().err
     assert "stdio MCP server for AI agents" in err
+    assert "host-agnostic" in err
     assert "mcpServers" in err
+    assert "context_servers" in err
+    assert "Zed" in err
     assert "wwn-mcp -- info" in err or "#wwn-mcp -- info" in err
-    assert "any client that speaks MCP" in err
+    assert "Cursor is one client" in err
 
 
-def test_cli_serve_stdout_tty_only_prints_usage(tmp_path, monkeypatch, capsys):
-    """IDE/nix wrappers often leave stdin non-TTY while stdout is still a TTY."""
+def test_cli_serve_stdout_tty_only_is_not_interactive(monkeypatch):
+    """MCP hosts may leave stdout on a TTY while stdin is a pipe — still serve."""
     import wwn_mcp.cli as cli
 
-    monkeypatch.setenv("WWN_MCP_DATA_DIR", str(tmp_path))
     monkeypatch.delenv("WWN_MCP_FORCE_STDIO", raising=False)
     monkeypatch.setattr(cli.sys.stdin, "isatty", lambda: False)
     monkeypatch.setattr(cli.sys.stdout, "isatty", lambda: True)
-
-    rc = cli.main([])
-    assert rc == 0
-    err = capsys.readouterr().err
-    assert "mcpServers" in err
-    assert "blank line is invalid" in err
+    assert cli._is_interactive_terminal() is False
 
 
 def test_is_interactive_respects_force_stdio(monkeypatch):

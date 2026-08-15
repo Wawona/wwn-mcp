@@ -32,16 +32,21 @@ wwn-mcp is a stdio MCP server for AI agents — not an interactive CLI chat.
 Running it in a terminal and pressing Enter is not supported: stdin must be
 valid newline-delimited JSON-RPC from an MCP host (a blank line is invalid).
 
-Add it to your MCP host config (Cursor, VS Code, Claude Desktop, Windsurf,
-Antigravity, Zed, … — any client that speaks MCP over stdio):
+It is host-agnostic RAG over stdio. Cursor is one client; also VS Code,
+Claude Desktop, Windsurf, Antigravity, Zed, and any other MCP host.
+
+Prefer a PATH binary (fast spawn). Do **not** put `nix run --refresh` in an
+MCP host config — eval/build routinely exceeds host initialize timeouts (~60s).
+
+Cursor / VS Code / Claude Desktop / Windsurf (~/.cursor/mcp.json or equivalent):
 
   {{
     "mcpServers": {{
-      "wwn-mcp": {{ "command": "wwn-mcp" }}
+      "wwn-mcp": {{ "command": "wwn-mcp", "args": [] }}
     }}
   }}
 
-Or until it is on PATH:
+Until installed on PATH (still avoid --refresh):
 
   {{
     "mcpServers": {{
@@ -51,6 +56,21 @@ Or until it is on PATH:
       }}
     }}
   }}
+
+Zed (~/.config/zed/settings.json — key is context_servers; args required):
+
+  {{
+    "context_servers": {{
+      "wwn-mcp": {{
+        "command": "wwn-mcp",
+        "args": [],
+        "env": {{}}
+      }}
+    }}
+  }}
+
+Install once:  nix profile install github:Wawona/WWN-MCP
+               # or:  programs.wwn-mcp.enable = true;  (home-manager)
 
 From a terminal (smoke tests — these print and exit):
 
@@ -66,29 +86,40 @@ Docs: https://github.com/Wawona/wwn-mcp#readme
 
 
 def _is_interactive_terminal() -> bool:
-    """True when a human is likely at a terminal — do not start JSON-RPC.
+    """True when a human is typing at a terminal — do not start JSON-RPC.
 
-    MCP hosts spawn us with piped stdin *and* stdout (neither is a TTY).
-    Humans often have both as TTYs; some wrappers (IDE Run, certain nix
-    launches) leave stdout as a TTY while stdin is a pipe — stdin-only
-    ``isatty()`` then wrongly starts the server, and the first Enter sends
-    ``\\n``, which the MCP SDK rejects (JSONRPCMessage validation error).
+    MCP hosts (Cursor, Zed, VS Code, …) spawn us with **piped stdin**. A human
+    ``nix run …#wwn-mcp`` has stdin as a TTY. Only stdin matters: some hosts
+    leave stdout attached to a TTY while stdin is a pipe; treating stdout-only
+    as interactive made those hosts print setup help and exit, then time out
+    on ``initialize``.
     """
     import os
 
     if os.environ.get("WWN_MCP_FORCE_STDIO", "").strip() in ("1", "true", "yes"):
         return False
     try:
-        if sys.stdin.isatty():
-            return True
+        return bool(sys.stdin.isatty())
     except Exception:
-        pass
-    try:
-        if sys.stdout.isatty():
-            return True
-    except Exception:
-        pass
-    return False
+        return False
+
+
+def _ensure_knowledge_index_async(settings: Settings) -> None:
+    """Index shipped knowledge/ in a daemon thread — never block MCP initialize.
+
+    Zed (and other hosts) abort context servers that do not answer
+    ``initialize`` within ~60s. Embedding/model download on a cold DB can
+    exceed that, so serve must listen first.
+    """
+    import threading
+
+    def _run() -> None:
+        try:
+            _ensure_knowledge_index(settings)
+        except Exception as exc:  # pragma: no cover - logged for operators
+            print(f"wwn-mcp: background knowledge index failed: {exc}", file=sys.stderr)
+
+    threading.Thread(target=_run, name="wwn-mcp-index", daemon=True).start()
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -225,7 +256,8 @@ def main(argv: list[str] | None = None) -> int:
 
         from .server import run_server
 
-        _ensure_knowledge_index(settings)
+        # Answer initialize immediately; fill an empty DB in the background.
+        _ensure_knowledge_index_async(settings)
         run_server(settings)
         return 0
 

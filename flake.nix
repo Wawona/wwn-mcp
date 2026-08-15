@@ -36,7 +36,7 @@
 
           wwn-mcp = py.buildPythonApplication {
             pname = "wwn-mcp";
-            version = "0.2.1";
+            version = "0.2.2";
             src = self;
             pyproject = true;
             build-system = [ py.setuptools ];

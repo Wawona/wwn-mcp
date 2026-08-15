@@ -1,0 +1,9 @@
+{
+  "context_servers": {
+    "wwn-mcp": {
+      "command": "/Users/YOU/.local/bin/wwn-mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}

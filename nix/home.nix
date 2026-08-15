@@ -1,5 +1,5 @@
-# Home-manager module: install wwn-mcp on PATH (stdio MCP, mcp-nixos host model).
-# Any MCP host: { "mcpServers": { "wwn-mcp": { "command": "wwn-mcp" } } }
+# Home-manager module: install wwn-mcp on PATH (stdio MCP for any host).
+# Cursor uses mcpServers; Zed uses context_servers — same command/args payload.
 self:
 { config, lib, pkgs, ... }:
 

@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wwn-mcp"
-version = "0.2.1"
+version = "0.2.2"
 description = "Local-embeddings RAG + MCP server for the Wawona stack (Wayland/Smithay/Weston, Apple OS 26, Android, graphics, store compliance)."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Alex Spaulding" }]
-keywords = ["mcp", "rag", "wayland", "wawona", "cursor"]
+keywords = ["mcp", "rag", "wayland", "wawona", "cursor", "zed", "vscode"]
 
 # Core dependency is just the MCP SDK. Embeddings (fastembed) and the sqlite
 # vector extension (sqlite-vec) are optional extras: when absent, wwn-mcp

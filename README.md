@@ -16,38 +16,51 @@ the corpus, tools, and package are Wawona-only. There is no public URL /
 Streamable HTTP transport (`mcp.wawona.io` was never shipped — do not use it).
 
 Works with **any** MCP host that can spawn a stdio server (Cursor, VS Code,
-Claude Desktop, Windsurf, Antigravity, Zed, custom agents, …).
+Claude Desktop, Windsurf, Antigravity, Zed, custom agents, …). Cursor is one
+client — not the only one. Zed uses `context_servers` instead of `mcpServers`
+(see [docs/usage.md](docs/usage.md)).
+
+Install a PATH binary for MCP hosts — do not wire `nix run --refresh` into
+editor config (Zed’s ~60s `initialize` timeout → “Context server request
+timeout”).
 
 ## Quick start
 
 ```bash
-# Terminal smoke (prints JSON / search hits and exits)
-nix run github:Wawona/WWN-MCP#wwn-mcp -- info
-nix run github:Wawona/WWN-MCP#wwn-mcp -- search "watchOS GPU"
+# Install once (recommended for Cursor / Zed / …)
+nix profile install github:Wawona/WWN-MCP
 
-# Bare `nix run …#wwn-mcp` on an interactive terminal prints MCP host setup help
-# and exits (so Enter does not produce a JSON-RPC parse error). Your agent must
-# spawn the process with piped stdin+stdout for the MCP server.
+# Terminal smoke (prints JSON / search hits and exits)
+wwn-mcp info
+wwn-mcp search "watchOS GPU"
+# or: nix run github:Wawona/WWN-MCP#wwn-mcp -- info
+
+# Bare `wwn-mcp` / `nix run …#wwn-mcp` on an interactive terminal prints MCP
+# host setup help (Cursor + Zed examples) and exits. Your agent must spawn
+# the process with piped stdin for the MCP server.
 ```
 
-MCP host config (`mcpServers` / equivalent):
+### Cursor / VS Code–shaped hosts (`mcpServers`)
 
 ```json
 {
   "mcpServers": {
-    "wwn-mcp": { "command": "wwn-mcp" }
+    "wwn-mcp": { "command": "wwn-mcp", "args": [] }
   }
 }
 ```
 
-Until `wwn-mcp` is on PATH:
+### Zed (`context_servers` in `~/.config/zed/settings.json`)
+
+Use an **absolute** path (Dock-launched Zed has no shell PATH):
 
 ```json
 {
-  "mcpServers": {
+  "context_servers": {
     "wwn-mcp": {
-      "command": "nix",
-      "args": ["run", "github:Wawona/WWN-MCP#wwn-mcp"]
+      "command": "/Users/YOU/.nix-profile/bin/wwn-mcp",
+      "args": [],
+      "env": {}
     }
   }
 }
@@ -68,8 +81,9 @@ programs.wwn-mcp.enable = true;
 ```
 
 See [docs/deployment.md](docs/deployment.md). On first empty DB, `serve`
-auto-indexes shipped `knowledge/`. For local sibling repos:
-`wwn-mcp index --local-siblings` (or `fetch` then `index`).
+auto-indexes shipped `knowledge/` **in the background** so `initialize` is
+not blocked. For local sibling repos: `wwn-mcp index --local-siblings`
+(or `fetch` then `index`).
 
 ## Documentation
 
