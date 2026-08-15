@@ -102,7 +102,9 @@ def test_cli_serve_on_tty_prints_usage(tmp_path, monkeypatch, capsys):
     import wwn_mcp.cli as cli
 
     monkeypatch.setenv("WWN_MCP_DATA_DIR", str(tmp_path))
+    monkeypatch.delenv("WWN_MCP_FORCE_STDIO", raising=False)
     monkeypatch.setattr(cli.sys.stdin, "isatty", lambda: True)
+    monkeypatch.setattr(cli.sys.stdout, "isatty", lambda: True)
 
     rc = cli.main([])
     assert rc == 0
@@ -111,3 +113,56 @@ def test_cli_serve_on_tty_prints_usage(tmp_path, monkeypatch, capsys):
     assert "mcpServers" in err
     assert "wwn-mcp -- info" in err or "#wwn-mcp -- info" in err
     assert "any client that speaks MCP" in err
+
+
+def test_cli_serve_stdout_tty_only_prints_usage(tmp_path, monkeypatch, capsys):
+    """IDE/nix wrappers often leave stdin non-TTY while stdout is still a TTY."""
+    import wwn_mcp.cli as cli
+
+    monkeypatch.setenv("WWN_MCP_DATA_DIR", str(tmp_path))
+    monkeypatch.delenv("WWN_MCP_FORCE_STDIO", raising=False)
+    monkeypatch.setattr(cli.sys.stdin, "isatty", lambda: False)
+    monkeypatch.setattr(cli.sys.stdout, "isatty", lambda: True)
+
+    rc = cli.main([])
+    assert rc == 0
+    err = capsys.readouterr().err
+    assert "mcpServers" in err
+    assert "blank line is invalid" in err
+
+
+def test_is_interactive_respects_force_stdio(monkeypatch):
+    import wwn_mcp.cli as cli
+
+    monkeypatch.setattr(cli.sys.stdin, "isatty", lambda: True)
+    monkeypatch.setattr(cli.sys.stdout, "isatty", lambda: True)
+    monkeypatch.delenv("WWN_MCP_FORCE_STDIO", raising=False)
+    assert cli._is_interactive_terminal() is True
+    monkeypatch.setenv("WWN_MCP_FORCE_STDIO", "1")
+    assert cli._is_interactive_terminal() is False
+
+
+def test_skip_blank_stdin_filter():
+    """Blank lines must not reach JSON-RPC validation."""
+    import asyncio
+
+    from wwn_mcp.server import SkipBlankStdin
+
+    class _Mem:
+        def __init__(self, text: str):
+            self._lines = text.splitlines(keepends=True)
+
+        def __aiter__(self):
+            async def _gen():
+                for line in self._lines:
+                    yield line
+
+            return _gen()
+
+    async def _collect():
+        src = _Mem('\n\n{"jsonrpc":"2.0","id":1,"method":"ping"}\n\n')
+        kept = [line async for line in SkipBlankStdin(src)]
+        assert len(kept) == 1
+        assert "ping" in kept[0]
+
+    asyncio.run(_collect())

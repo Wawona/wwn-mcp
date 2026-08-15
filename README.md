@@ -25,8 +25,9 @@ Claude Desktop, Windsurf, Antigravity, Zed, custom agents, …).
 nix run github:Wawona/WWN-MCP#wwn-mcp -- info
 nix run github:Wawona/WWN-MCP#wwn-mcp -- search "watchOS GPU"
 
-# Bare `nix run …#wwn-mcp` on a TTY prints MCP host setup help and exits.
-# Your agent must spawn the process (piped stdin) for the MCP server.
+# Bare `nix run …#wwn-mcp` on an interactive terminal prints MCP host setup help
+# and exits (so Enter does not produce a JSON-RPC parse error). Your agent must
+# spawn the process with piped stdin+stdout for the MCP server.
 ```
 
 MCP host config (`mcpServers` / equivalent):

@@ -29,6 +29,9 @@ def _add_only(p: argparse.ArgumentParser) -> None:
 _TTY_USAGE = """\
 wwn-mcp is a stdio MCP server for AI agents — not an interactive CLI chat.
 
+Running it in a terminal and pressing Enter is not supported: stdin must be
+valid newline-delimited JSON-RPC from an MCP host (a blank line is invalid).
+
 Add it to your MCP host config (Cursor, VS Code, Claude Desktop, Windsurf,
 Antigravity, Zed, … — any client that speaks MCP over stdio):
 
@@ -55,9 +58,37 @@ From a terminal (smoke tests — these print and exit):
   nix run github:Wawona/WWN-MCP#wwn-mcp -- search "watchOS GPU"
   nix run github:Wawona/WWN-MCP#wwn-mcp -- index --knowledge
 
+Force stdio even on a TTY (debug only): WWN_MCP_FORCE_STDIO=1
+
 Docs: https://github.com/Wawona/wwn-mcp#readme
       https://wawona.io/docs/contributor/wwn-mcp/
 """
+
+
+def _is_interactive_terminal() -> bool:
+    """True when a human is likely at a terminal — do not start JSON-RPC.
+
+    MCP hosts spawn us with piped stdin *and* stdout (neither is a TTY).
+    Humans often have both as TTYs; some wrappers (IDE Run, certain nix
+    launches) leave stdout as a TTY while stdin is a pipe — stdin-only
+    ``isatty()`` then wrongly starts the server, and the first Enter sends
+    ``\\n``, which the MCP SDK rejects (JSONRPCMessage validation error).
+    """
+    import os
+
+    if os.environ.get("WWN_MCP_FORCE_STDIO", "").strip() in ("1", "true", "yes"):
+        return False
+    try:
+        if sys.stdin.isatty():
+            return True
+    except Exception:
+        pass
+    try:
+        if sys.stdout.isatty():
+            return True
+    except Exception:
+        pass
+    return False
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -65,8 +96,8 @@ def build_parser() -> argparse.ArgumentParser:
         prog="wwn-mcp",
         description=__doc__,
         epilog=(
-            "Bare `wwn-mcp` on a TTY prints setup help and exits. "
-            "An MCP host (piped stdin) starts the stdio server."
+            "Bare `wwn-mcp` on an interactive terminal prints setup help and exits. "
+            "An MCP host (piped stdin+stdout) starts the stdio server."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -184,7 +215,7 @@ def main(argv: list[str] | None = None) -> int:
     if cmd == "serve":
         # Interactive terminals are not MCP clients. Print host wiring help
         # instead of blocking on stdin and erroring on a blank Enter/`\n`.
-        if sys.stdin.isatty():
+        if _is_interactive_terminal():
             print(_TTY_USAGE.format(), file=sys.stderr)
             print(
                 f"data_dir={settings.data_dir}  db={settings.db_path}",

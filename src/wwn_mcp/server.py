@@ -232,7 +232,75 @@ def build_server(settings: Settings):  # -> FastMCP
     return mcp
 
 
+def _stdio_server_skip_blanks(stdin=None, stdout=None):
+    """Like ``mcp.server.stdio.stdio_server``, but ignore empty / whitespace lines.
+
+    A lone ``\\n`` is not valid JSON-RPC. The upstream SDK turns it into a
+    pydantic ``JSONRPCMessage`` validation error and an Internal Server Error
+    notification on stdout — exactly what users see when they press Enter in a
+    terminal that somehow reached ``serve``. Skipping blanks keeps real MCP
+    hosts working (they never send empty frames) while making accidental
+    newlines a no-op.
+    """
+    import sys
+    from contextlib import asynccontextmanager
+    from io import TextIOWrapper
+
+    import anyio
+    from mcp.server.stdio import stdio_server as upstream_stdio_server
+
+    @asynccontextmanager
+    async def _cm():
+        # Pass explicit streams so mcp skips fd-claim and we can filter lines.
+        a_in = stdin
+        a_out = stdout
+        if a_in is None:
+            a_in = SkipBlankStdin(
+                anyio.wrap_file(
+                    TextIOWrapper(sys.stdin.buffer, encoding="utf-8", errors="replace")
+                )
+            )
+        elif not isinstance(a_in, SkipBlankStdin):
+            a_in = SkipBlankStdin(a_in)
+        if a_out is None:
+            a_out = anyio.wrap_file(
+                TextIOWrapper(sys.stdout.buffer, encoding="utf-8", line_buffering=True)
+            )
+        async with upstream_stdio_server(stdin=a_in, stdout=a_out) as streams:
+            yield streams
+
+    return _cm()
+
+
+class SkipBlankStdin:
+    """Async line iterator that drops empty / whitespace-only frames."""
+
+    def __init__(self, inner: Any) -> None:
+        self._inner = inner
+
+    def __aiter__(self):
+        return self._iterate()
+
+    async def _iterate(self):
+        async for line in self._inner:
+            if isinstance(line, (bytes, bytearray)):
+                text = line.decode("utf-8", errors="replace")
+            else:
+                text = line
+            if text.strip():
+                yield line
+
+
 def run_server(settings: Settings) -> None:
     """Run the MCP server over stdio (only supported transport)."""
+    import mcp.server.fastmcp.server as fastmcp_server
+    from mcp.server.stdio import stdio_server as upstream_stdio_server
+
     mcp = build_server(settings)
-    mcp.run(transport="stdio")
+
+    # Patch FastMCP's imported stdio_server so blank Enter/`\n` is ignored.
+    fastmcp_server.stdio_server = _stdio_server_skip_blanks  # type: ignore[misc,assignment]
+    try:
+        mcp.run(transport="stdio")
+    finally:
+        fastmcp_server.stdio_server = upstream_stdio_server  # type: ignore[misc,assignment]
