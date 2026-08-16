@@ -1,4 +1,4 @@
-# wwn-apt — removed
+# wwn-apt. Removed
 
 **Retired.** Do not answer as if StoreKit / ODR `apt install` of Mach-O modules
 is a Wawona product path.
@@ -9,7 +9,7 @@ is a Wawona product path.
   Wasm package client (OCI artifacts preferred).
 - Canonical product doc: `Wawona/docs/wasm-wasi.md`.
 - **Containers** (`wwn-containers` + Machines kind `container`): OCI Linux images
-  (e.g. Docker Hub), macOS Apple Container / iOS UTM-SE jitless container-in-VM —
+  (e.g. Docker Hub), macOS Apple Container / iOS UTM-SE jitless container-in-VM -
   **not** Wasm packages.
 
 If a user asks about `apt` on iPhone in Wawona: explain it was removed; point at

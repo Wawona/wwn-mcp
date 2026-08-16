@@ -24,9 +24,9 @@ not the Wawona integration monorepo (`Wawona/Wawona`).
 
 ## The iOS constraints that matter for a shell
 
-A shell's whole job — start programs, fork/exec, interpret scripts — collides
+A shell's whole job. Start programs, fork/exec, interpret scripts. Collides
 with the iOS sandbox. The binding constraints (Apple-mobile: iOS, iPadOS, tvOS,
-watchOS, visionOS — **macOS is exempt**):
+watchOS, visionOS. **macOS is exempt**):
 
 - **App Store Review Guideline 2.5.2**: an app may not download, install, or
   execute code that introduces or changes features/functionality. Everything
@@ -52,21 +52,21 @@ a foreign machine, or **offload execution to a remote host**.
 | Project | Technique | Compliance trick |
 |---|---|---|
 | **ios_system** (`holzschu/ios_system`) | Reimplements Unix commands as C functions in an **in-process lookup table**; "exec" calls a function pointer, never `fork`/`exec`. | All "executables" are linked-in functions → nothing is spawned or downloaded. The foundation other iOS shells build on. |
-| **a-Shell** (`holzschu/a-shell`) | Built on ios_system; adds **WebAssembly** (wasmer / wasm3) to run extra programs. | wasm modules are **interpreted/JIT-free data**, not native Mach-O, so shipping/using them doesn't violate 2.5.2 — the compliant way to "add a binary". |
-| **iSH** (`ish-app/ish`) | A **usermode x86 emulator** running **Alpine Linux**; the real BusyBox **`ash`/`dash`** and Linux ELF binaries run **emulated**. | Foreign binaries are *interpreted* by the emulator, never natively `exec`'d, and nothing native is downloaded — execution is just data interpretation. |
+| **a-Shell** (`holzschu/a-shell`) | Built on ios_system; adds **WebAssembly** (wasmer / wasm3) to run extra programs. | wasm modules are **interpreted/JIT-free data**, not native Mach-O, so shipping/using them doesn't violate 2.5.2. The compliant way to "add a binary". |
+| **iSH** (`ish-app/ish`) | A **usermode x86 emulator** running **Alpine Linux**; the real BusyBox **`ash`/`dash`** and Linux ELF binaries run **emulated**. | Foreign binaries are *interpreted* by the emulator, never natively `exec`'d, and nothing native is downloaded. Execution is just data interpretation. |
 | **Blink** (`blinksh/blink`) | A polished **mosh/SSH terminal**: compute happens on a **remote host**. | The iOS app is "just a terminal/transport"; no local arbitrary execution at all. The remote-compute escape hatch. |
 
 The three escape hatches, summarized:
 
-1. **In-process command library** (ios_system) — commands are functions.
-2. **Interpreter/emulator** (a-Shell's wasm, iSH's x86) — foreign code is *data*
+1. **In-process command library** (ios_system). Commands are functions.
+2. **Interpreter/emulator** (a-Shell's wasm, iSH's x86). Foreign code is *data*
    you interpret, not native code you execute.
-3. **Remote execution** (Blink) — move the real work off-device.
+3. **Remote execution** (Blink). Move the real work off-device.
 
 ## How Wawona ports zsh to iOS (the real design)
 
 Wawona's goal is **real, full zsh** (ZLE line editing, completion, history,
-dotfiles) on Apple mobile — not a reimplemented shell. It uses the **in-process**
+dotfiles) on Apple mobile. Not a reimplemented shell. It uses the **in-process**
 hatch, taken further than ios_system: it links **actual zsh** and a **real
 coreutils** into the app and runs them as functions.
 
@@ -74,18 +74,18 @@ coreutils** into the app and runs them as functions.
 
 - Built by Nix at **`wwn-zsh/dependencies/libs/zsh/ios.nix`** as a **static archive
   `libwawona-zsh.a`** (cross-compiled zsh 5.9, `--enable-static
-  --disable-dynamic`, sandbox-friendly `configure` — no `getpwuid`, no
+  --disable-dynamic`, sandbox-friendly `configure`. No `getpwuid`, no
   `/dev/fd`, termcap stubbed). `main` is renamed to **`wawona_zsh_main`**.
 - The archive is linked into the **signed app binary** (via
   `scripts/xcode-prebuild.sh` + the `xcodegen.nix` force-load path). There is
   **no separate `zsh` Mach-O** in the bundle.
 - At runtime the shell runs **in-process on a `pthread`** (≈16 MB stack), started
-  from the **`wwn-toolchain`** `wawona-pty` layer — **never** `fork`/`exec`/`posix_spawn`. One shell
+  from the **`wwn-toolchain`** `wawona-pty` layer. **never** `fork`/`exec`/`posix_spawn`. One shell
   session per app launch (zsh global state is not re-entrant).
 - `WWNRootfsManager` (`Wawona/src/platform/ios/WWNRootfsManager.m`) sets
   `WAWONA_ZSH_IN_PROCESS=1`, which selects the in-process path in
   **`wwn-toolchain/dependencies/libs/wawona-pty/src/wwn_pty.c`**.
-- The legacy `zsh-framework-ios` (nested `zsh.framework`) is **abandoned** —
+- The legacy `zsh-framework-ios` (nested `zsh.framework`) is **abandoned** -
   `installd` rejects third-party nested frameworks.
 
 ### 2. External commands: in-process dispatch, never fork
@@ -96,7 +96,7 @@ coreutils** into the app and runs them as functions.
   and the fork is skipped entirely.
 - A `wwn_inproc` command is dispatched via **`wawona_dispatch_inprocess()`**
   (**`wwn-toolchain/dependencies/libs/wawona-pty/src/wawona-dispatch.c`**), which forwards a
-  **safe-subset** basename to Rust **`wawona_coreutils_main()`** — a patched
+  **safe-subset** basename to Rust **`wawona_coreutils_main()`**. A patched
   **uutils coreutils** built as a static lib (≈39 utils: `ls`, `cat`, `cp`, …).
   Anything not in the subset prints a sandbox-aware **"command not found"**.
 - CI (**`wwn-zsh/.github/scripts/verify-zsh-ios-patches.py`**) **bans** `fork(`, `execve(`,
@@ -125,7 +125,7 @@ coreutils** into the app and runs them as functions.
   `.zsh_history`).
 - The shell env is virtual: `HOME`/`ZDOTDIR` point into the rootfs `home/`,
   `WAWONA_SHELL` is a virtual `/usr/bin/zsh`, and `PATH=/usr/bin:/bin` contains
-  **no real executables** — commands are resolved by the exec hook, not `PATH`.
+  **no real executables**. Commands are resolved by the exec hook, not `PATH`.
 - **No chroot, no mount namespace.** It is a *logical prefix* inside the app
   sandbox; it never reads or writes iOS system tools/paths.
 
@@ -138,7 +138,7 @@ coreutils** into the app and runs them as functions.
   container runtime on iOS. The `MachineProfile` `type = container` enum exists
   but is **not** wired to iOS shell isolation.
 - Per-machine isolation on iOS, when needed, is expressed as **VMs** (JIT-less,
-  on-device, solely to host Wayland compositors) — not containers.
+  on-device, solely to host Wayland compositors). Not containers.
 
 ### 5. Terminal / PTY wiring
 
@@ -157,8 +157,8 @@ coreutils** into the app and runs them as functions.
   static libs in the app binary). Nothing is downloaded or generated at runtime.
 - **No JIT, no `dlopen` of user code, no `fork`/`exec`/`posix_spawn`** on the
   shell path (enforced by CI patch-verification).
-- **The shell cannot run arbitrary binaries** — only the in-process safe-subset
-  utilities — and writes only inside the app container.
+- **The shell cannot run arbitrary binaries**. Only the in-process safe-subset
+  utilities. And writes only inside the app container.
 - Treat the **Apple-strict** answer as the baseline; Android (Play) permits real
   `fork`/`exec` and dynamic native loading, so the Android build deliberately
   drops all of this machinery.
@@ -167,21 +167,21 @@ coreutils** into the app and runs them as functions.
 
 Some `docs/ios-local-shell/` files (`APP-STORE-COMPLIANCE.md`,
 `WAWONA-PTY-SPEC.md`, `ios-local-shell-spike.md`) still describe an older
-**`posix_spawn` of a bundled zsh** model. That is **superseded** — the shipping
+**`posix_spawn` of a bundled zsh** model. That is **superseded**. The shipping
 design is **in-process `wawona_zsh_main` on a pthread**. `ARCHITECTURE.md` and the
 C sources are authoritative; trust the in-process description above.
 
 ## Where to look (canonical files)
 
-- `wwn-zsh/dependencies/libs/zsh/ios.nix` — zsh → `libwawona-zsh.a`, `wawona_zsh_main`.
-- `wwn-zsh/dependencies/libs/zsh/patches/patch-zsh-exec.py` — kills fork/exec; in-process dispatch.
-- `wwn-toolchain/dependencies/libs/wawona-pty/src/wwn_pty.c` — in-process spawn, PTY fallback, fake TTY.
-- `wwn-toolchain/dependencies/libs/wawona-pty/src/wawona-dispatch.c` — safe-subset → uutils.
-- `wwn-coreutils/dependencies/libs/coreutils/` — uutils patch + multicall (macOS/Android).
-- `wwn-zsh/dependencies/wawona/ios-rootfs.nix` — `wawona-rootfs` prefix + dotfile templates.
-- `Wawona/src/platform/ios/WWNRootfsManager.m` — rootfs install/refresh + shell env.
-- `wwn-weston/dependencies/clients/weston/terminal-patches/patch-terminal.py` — terminal spawn.
-- `wwn-zsh/.github/scripts/verify-zsh-ios-patches.py` — the compliance guardrail.
+- `wwn-zsh/dependencies/libs/zsh/ios.nix`. Zsh → `libwawona-zsh.a`, `wawona_zsh_main`.
+- `wwn-zsh/dependencies/libs/zsh/patches/patch-zsh-exec.py`. Kills fork/exec; in-process dispatch.
+- `wwn-toolchain/dependencies/libs/wawona-pty/src/wwn_pty.c`. In-process spawn, PTY fallback, fake TTY.
+- `wwn-toolchain/dependencies/libs/wawona-pty/src/wawona-dispatch.c`. Safe-subset → uutils.
+- `wwn-coreutils/dependencies/libs/coreutils/`. Uutils patch + multicall (macOS/Android).
+- `wwn-zsh/dependencies/wawona/ios-rootfs.nix`. `wawona-rootfs` prefix + dotfile templates.
+- `Wawona/src/platform/ios/WWNRootfsManager.m`. Rootfs install/refresh + shell env.
+- `wwn-weston/dependencies/clients/weston/terminal-patches/patch-terminal.py`. Terminal spawn.
+- `wwn-zsh/.github/scripts/verify-zsh-ios-patches.py`. The compliance guardrail.
 
 ## fastfetch (same in-process model)
 
@@ -190,10 +190,10 @@ C sources are authoritative; trust the in-process description above.
 it through **`wawona-dispatch.c`** (`fastfetch_main` weak symbol) when
 `libfastfetch.a` is force-loaded into the app.
 
-- `wwn-fastfetch/dependencies/clients/fastfetch/apple-mobile.nix` — in-process archive.
-- `wwn-fastfetch/dependencies/clients/fastfetch/patches/patch-fastfetch-apple-mobile.py` — no fork/exec/system on Apple mobile.
-- `wwn-fastfetch/dependencies/clients/fastfetch/patches/apply-wawona-wayland-macos.py` — Wayland WM when `WAYLAND_DISPLAY` set (macOS).
-- `wwn-fastfetch/.github/scripts/verify-fastfetch-ios-patches.py` — patch-anchor CI.
+- `wwn-fastfetch/dependencies/clients/fastfetch/apple-mobile.nix`. In-process archive.
+- `wwn-fastfetch/dependencies/clients/fastfetch/patches/patch-fastfetch-apple-mobile.py`. No fork/exec/system on Apple mobile.
+- `wwn-fastfetch/dependencies/clients/fastfetch/patches/apply-wawona-wayland-macos.py`. Wayland WM when `WAYLAND_DISPLAY` set (macOS).
+- `wwn-fastfetch/.github/scripts/verify-fastfetch-ios-patches.py`. Patch-anchor CI.
 
 ### fastfetch: crash root cause + in-process lifecycle hardening
 
@@ -212,21 +212,21 @@ guards below (belt-and-suspenders; item 4).
 Beyond the crash, running a CLI **in-process and repeatedly** exposes process-global
 hazards that a normal `fork`/`exec` binary never hits. On Apple mobile (`WAWONA_APPLE_MOBILE`):
 
-1. **Signals** — `ffStart()` installs `sigaction(SIGINT/SIGTERM/SIGQUIT, exitSignalHandler)`
+1. **Signals**. `ffStart()` installs `sigaction(SIGINT/SIGTERM/SIGQUIT, exitSignalHandler)`
    (handler calls `exit(0)`) and `sigprocmask(SIG_BLOCK, SIGCHLD)`. In-process this hijacks
    the host app's signal handling and turns a Ctrl-C into a whole-app exit. → guarded off.
-2. **`atexit`** — `atexit(ffDestroyInstance)` (main) and `atexit(restoreTerm)` (io_unix)
+2. **`atexit`**. `atexit(ffDestroyInstance)` (main) and `atexit(restoreTerm)` (io_unix)
    accumulate one registration per run and only fire at real app exit, against a global
    `FFinstance` that was re-inited each run (leak / use-after-free). → guarded off; cleanup
    runs deterministically per invocation via the wrapper.
-3. **`exit()`** — called on `--help`/`--version`/bad flags/parse errors from `fastfetch.c`,
+3. **`exit()`**. Called on `--help`/`--version`/bad flags/parse errors from `fastfetch.c`,
    `option.c`, `commandoption.c`, `temps.c`, `percent.c`. In-process any of these terminates
    the app. → a `setjmp`/`longjmp` shim (`wawona_ff_inprocess.{h,c}`) redirects `exit()` back
    to the dispatcher. Delivered as a **forced include** (`-include wawona_ff_inprocess.h`),
    required because some `exit()` sites (e.g. `commandoption.c`) do not include `fastfetch.h`,
    so an umbrella-header edit would miss them. `fastfetch.c` is compiled as
    `fastfetch_main_impl`; `fastfetch_main` is the wrapping barrier.
-4. **Singleton re-entry** — because a fatal signal skips the post-run cleanup, the wrapper also
+4. **Singleton re-entry**. Because a fatal signal skips the post-run cleanup, the wrapper also
    calls `ffDestroyInstance()` **before** each run. To make that safe, `ffDestroyInstance` and
    `ffInitInstance` are idempotent via a `static bool ffInstanceLive` flag (no-op destroy on a
    pristine/zeroed BSS or already-torn instance), `ffPlatformInit` calls `ffPlatformDestroy`
@@ -253,7 +253,7 @@ ship IOKit headers; they are simply not linked/used). `apple-mobile.nix` keys of
 `mobile.isWatchOS` and emits the exact framework set to `$out/nix-support/fastfetch-frameworks`
 (base `CoreFoundation`+`Foundation`, plus `VideoToolbox`+`Metal` only off watchOS; `IOKit`
 dropped everywhere). Consumers (`fastfetch-ldflags.nix`, Wawona `xcodegen fastfetchLdflags`)
-read the manifest — no per-platform framework knowledge is hardcoded. On watchOS the GPU
+read the manifest. No per-platform framework knowledge is hardcoded. On watchOS the GPU
 module self-stubs, the VideoToolbox codec detector is swapped for a no-op, and the shared
 `cf_helpers.h` / `smbios.c` gate IOKit behind `__has_include`.
 

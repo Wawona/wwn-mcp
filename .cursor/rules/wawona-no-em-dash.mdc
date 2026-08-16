@@ -1,0 +1,36 @@
+---
+description: Never use em dashes (U+2014) or word-joining en dashes in Wawona copy or code
+alwaysApply: true
+---
+
+# No em dashes (org-wide)
+
+**Hard forbid** Unicode em dash `—` (U+2014), `&mdash;`, `&#8212;`, and en dash
+`–` (U+2013) used between words. Applies to **wawona.io**, **Wawona** product
+code/docs/comments/UI strings, agent rules, and sibling `wwn-*` prose you edit.
+
+## Use instead
+
+Period, comma, colon, or parentheses. Numeric ranges use a hyphen: `5-15 GB`.
+
+```text
+Bad:  Native on macOS — no VM.
+Good: Native on macOS. No VM.
+
+Bad:  Fastlane — lanes in fastlane/
+Good: Fastlane: lanes in fastlane/
+```
+
+The Bad lines above are the only place the glyph may appear in rules: so agents
+can match it. Never put it in shippable copy, docs, comments, or UI.
+
+## Scope
+
+- Public site (`wawona.io`)
+- App strings, Settings copy, logs meant for humans
+- Markdown docs, `AGENTS.md`, Cursor rules (except Bad examples)
+- Code comments in Wawona / integration layers
+
+Do not replace an em dash with an en dash. Use ASCII `-` only for ranges or
+compound tokens. Prefer `Mode A/B` or `Mode A and Mode B`, not a dash join.
+

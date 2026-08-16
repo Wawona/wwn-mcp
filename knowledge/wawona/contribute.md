@@ -1,7 +1,7 @@
 # Contribute to the Wawona compositor organization
 
 Agents: query **wwn-mcp** (`list_repos`, `where_to_edit`, `get_capability`,
-`search_docs`) before editing. Transport is **stdio only** — any MCP host
+`search_docs`) before editing. Transport is **stdio only**. Any MCP host
 spawns `wwn-mcp` like `uvx mcp-nixos`. There is no `mcp.wawona.io`.
 
 **Human contributors using AI:** start with the public guide
@@ -27,7 +27,7 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | This RAG / corpus | `wwn-mcp` |
 
 Never invert the DAG: L0 ↚ L1+; L1 ↚ weston/kmscube; Wawona is never an input
-of L0–L3. See [`wwn-repo-dag.md`](wwn-repo-dag.md).
+of L0-L3. See [`wwn-repo-dag.md`](wwn-repo-dag.md).
 
 ## Branch + CI
 
@@ -45,9 +45,9 @@ real entry points). No stubs, fake mains, or permanent target exclusions.
 
 ## Mode A / B / Wawona Swinging Bridge (do not conflate)
 
-- **Mode A** — store-safe in-window iland (`libiland_userland.a`).
-- **Mode B** — macOS desktop-host dylib only (`libwayland-mac.dylib`), SIP-gated.
-- **Wawona Swinging Bridge** — host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
+- **Mode A**. Store-safe in-window iland (`libiland_userland.a`).
+- **Mode B**. MacOS desktop-host dylib only (`libwayland-mac.dylib`), SIP-gated.
+- **Wawona Swinging Bridge**. Host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
 
 ## MCP host wiring
 

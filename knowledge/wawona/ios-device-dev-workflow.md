@@ -1,7 +1,7 @@
 # iOS device development workflow (high priority)
 
 **Authoritative operational guide** for building, installing, and debugging Wawona on
-physical Apple hardware. Agents should follow this end-to-end — it is the proven path.
+physical Apple hardware. Agents should follow this end-to-end. It is the proven path.
 
 ## MCP stack (developer-local, macOS)
 
@@ -20,7 +20,7 @@ via nix-darwin (`modules/apps/_ide-mcp.nix`) and are wired into Cursor/Antigravi
 Pair **xcodebuild-mcp** (install) with **lldb-mcp** (debug). That combination on the
 primary dev device is sufficient to validate iOS fixes.
 
-**Full lldb-mcp guide:** `knowledge/wawona/lldb-mcp-apple-device-debugging.md` — complete
+**Full lldb-mcp guide:** `knowledge/wawona/lldb-mcp-apple-device-debugging.md`. Complete
 tool catalog, iOS attach workflow, Wawona symbol breakpoints, in-process pthread debugging,
 and the proven fastfetch SIGBUS investigation on STARDUST.
 
@@ -35,7 +35,7 @@ and the proven fastfetch SIGBUS investigation on STARDUST.
 When automating via xcodebuild-mcp, select this device for install/run. When debugging
 via lldb-mcp, attach to the Wawona process on this device after install.
 
-## Step 1 — Enter the dev shell (Xcode signing)
+## Step 1. Enter the dev shell (Xcode signing)
 
 From the **Wawona integration repo** (`~/Wawona/Wawona`):
 
@@ -59,10 +59,10 @@ TEAM_ID=G6EJA4DJKW nix build .#wawona-ios-ipa --impure
 ```
 
 **Rule:** always work inside `nix develop` (or a child shell that inherited its env)
-when driving xcodebuild, xcodegen, or MCP build tools — do not rely on a bare shell
+when driving xcodebuild, xcodegen, or MCP build tools. Do not rely on a bare shell
 missing `DEVELOPMENT_TEAM` / `DEVELOPER_DIR`.
 
-## Step 2 — Regenerate the Xcode project
+## Step 2. Regenerate the Xcode project
 
 After Nix recipe changes (new static libs, ldflags, embedded rootfs, framework lists),
 regenerate `.xcodeproj` from the Wawona flake:
@@ -71,7 +71,7 @@ regenerate `.xcodeproj` from the Wawona flake:
 # all Apple targets (CI default)
 nix run .#xcodegen
 
-# faster iteration — iOS + iPadOS only
+# faster iteration. IOS + iPadOS only
 nix run .#xcodegen-ios
 
 # macOS only
@@ -90,15 +90,15 @@ For UI-only Swift/ObjC edits without dependency changes:
 export WAWONA_SKIP_NIX_PREBUILD=1   # skip full Nix prebuild; faster UI loop
 ```
 
-## Step 3 — Build and install on device (xcodebuild-mcp)
+## Step 3. Build and install on device (xcodebuild-mcp)
 
-Use **XcodeBuildMCP** (`xcodebuild` tools) — not raw shell `xcodebuild` unless MCP is
+Use **XcodeBuildMCP** (`xcodebuild` tools). Not raw shell `xcodebuild` unless MCP is
 unavailable.
 
 Typical agent flow:
 
-1. **`session_show_defaults`** — confirm project, scheme, and device defaults.
-2. **`session_set_defaults`** — point at `Wawona.xcodeproj`, the iOS scheme, and the
+1. **`session_show_defaults`**. Confirm project, scheme, and device defaults.
+2. **`session_set_defaults`**. Point at `Wawona.xcodeproj`, the iOS scheme, and the
    **8amps iPhone Air** device.
 3. Build + install to device (device workflow tools; enable device capability in
    XcodeBuildMCP config if tools are missing).
@@ -106,7 +106,7 @@ Typical agent flow:
 
 Requires macOS + Xcode 16+ and a USB/Wi‑Fi paired, trusted device.
 
-## Step 4 — Debug on device (lldb-mcp)
+## Step 4. Debug on device (lldb-mcp)
 
 After xcodebuild-mcp installs a **Debug** build, use the **`lldb`** MCP server
 (lldb-mcp from [stass/lldb-mcp](https://github.com/stass/lldb-mcp)). Cursor exposes
@@ -114,9 +114,9 @@ After xcodebuild-mcp installs a **Debug** build, use the **`lldb`** MCP server
 
 Minimal attach flow on **8amps iPhone Air**:
 
-1. **`lldb_start`** — use Xcode's LLDB:
+1. **`lldb_start`**. Use Xcode's LLDB:
    `lldb_path=/Applications/Xcode.app/Contents/Developer/usr/bin/lldb`
-2. **`lldb_command`** — `platform select remote-ios`, then `attach -n Wawona`
+2. **`lldb_command`**. `platform select remote-ios`, then `attach -n Wawona`
    (or `lldb_attach` with PID from `process list`).
 3. Reproduce the bug (e.g. run `fastfetch` twice in the in-process shell).
 4. **`lldb_thread_list`** → select the crashing pthread (in-process tools rarely
@@ -130,7 +130,7 @@ Wawona bundle ID: **`com.aspauldingcode.Wawona`**. Process name: **Wawona**.
 
 This is how in-process crashes (e.g. fastfetch `SIGBUS` in `parseConfigFiles` on
 STARDUST / `iPhone18,4`) were root-caused. **Always prefer lldb-mcp over `.ips`
-crash logs alone** — live attach exposes struct fields and fault addresses.
+crash logs alone**. Live attach exposes struct fields and fault addresses.
 
 See **`lldb-mcp-apple-device-debugging.md`** for the full tool reference, macOS
 workflow, watchpoints, and agent checklist.
@@ -141,7 +141,7 @@ Wawona consumes `wwn-fastfetch` as a **flake input** (`flake.nix` →
 `inputs.wwn-fastfetch.url = "github:Wawona/wwn-fastfetch"`). Local edits in
 `~/Wawona/wwn-fastfetch` do **not** affect Wawona builds until one of:
 
-### Option A — Local input override (fast iteration)
+### Option A. Local input override (fast iteration)
 
 Point the Wawona flake at the sibling checkout without pushing:
 
@@ -159,7 +159,7 @@ Same pattern works for any `wwn-*` input (see
 `.github/scripts/nix-build-android-meson-sandbox-gate.sh` for
 `WWN_TOOLCHAIN_ROOT` / `WWN_WESTON_ROOT` env-var style).
 
-### Option B — Push upstream + flake lock (shared/CI path)
+### Option B. Push upstream + flake lock (shared/CI path)
 
 1. Commit and push changes to **`github.com/Wawona/wwn-fastfetch`** (`main`).
 2. In Wawona, advance the input pin:
@@ -172,7 +172,7 @@ Same pattern works for any `wwn-*` input (see
 3. Regenerate Xcode project (`nix run .#xcodegen-ios`) and rebuild.
 
 **Rule:** if you skip both override and lock update, Wawona still builds the **old**
-pinned fastfetch from `flake.lock` — a common source of “fix didn't land” confusion.
+pinned fastfetch from `flake.lock`. A common source of “fix didn't land” confusion.
 
 After fastfetch recipe changes, also verify:
 `wwn-fastfetch/.github/scripts/verify-fastfetch-ios-patches.py`.

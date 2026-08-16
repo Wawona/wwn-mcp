@@ -10,7 +10,7 @@ Public guide: https://wawona.io/docs/contributor/wwn-mcp/
 
 ## Transport
 
-- **stdio only** — host spawns `wwn-mcp` like `uvx mcp-nixos`.
+- **stdio only**. Host spawns `wwn-mcp` like `uvx mcp-nixos`.
 - There is **no** `mcp.wawona.io` / Streamable HTTP endpoint.
 
 ```json
@@ -26,10 +26,10 @@ Install: `nix profile install github:Wawona/WWN-MCP` then `wwn-mcp info`.
 
 ## Required agent loop
 
-1. `where_to_edit` / `list_repos` — correct org repo (never invert the DAG).
-2. `get_capability(platform, feature)` — `available` | `planned` | `blocked` | `forbidden`.
-3. `search_docs` / `get_architecture` — mission, Mode A/B, port fidelity.
-4. `search_code` / `find_symbol` / `get_patch` — implementation + patches.
+1. `where_to_edit` / `list_repos`. Correct org repo (never invert the DAG).
+2. `get_capability(platform, feature)`. `available` | `planned` | `blocked` | `forbidden`.
+3. `search_docs` / `get_architecture`. Mission, Mode A/B, port fidelity.
+4. `search_code` / `find_symbol` / `get_patch`. Implementation + patches.
 5. `get_protocol` when touching Wayland surfaces.
 6. Trust citations over priors.
 

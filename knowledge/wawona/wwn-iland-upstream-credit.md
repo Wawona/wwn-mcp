@@ -17,7 +17,7 @@ CoreBedtime/iland project.
 1. Wawona initially forked iland as **`github.com/Wawona/iland`** (a GitHub fork
    of CoreBedtime/iland).
 2. That fork was **deleted** after extraction into the dedicated flake repo
-   **`github.com/Wawona/wwn-iland`** — the current home for all iland-related
+   **`github.com/Wawona/wwn-iland`**. The current home for all iland-related
    Nix packaging, shims, and Wawona-specific extensions.
 
 Do not reference `Wawona/iland`; use **`wwn-iland`**.
@@ -28,7 +28,7 @@ Upstream iland targeted **macOS only**. `wwn-iland` implements substantial
 Wawona-specific work:
 
 - **KMS/DRM on iOS** and across the Apple platform family (iPadOS, tvOS,
-  visionOS) — not just macOS.
+  visionOS). Not just macOS.
 - **Android** graphics-compat paths where applicable.
 - Nix-wrapped, cross-compiled recipes via **`wwn-toolchain`** (`registryFragment`
   for iland and the complete L1 graphics stack).
@@ -46,12 +46,12 @@ Wawona-specific work:
 
 ## Indexing note (WWN-MCP)
 
-- **`project=iland`, source `wwn-iland`** — Wawona's packaging + shims (edit here).
-- **`project=iland`, source `iland` (CoreBedtime/iland)** — upstream reference
+- **`project=iland`, source `wwn-iland`**. Wawona's packaging + shims (edit here).
+- **`project=iland`, source `iland` (CoreBedtime/iland)**. Upstream reference
   implementation (read-only context; do not edit for Wawona patches).
 
 When answering "how does iland work in Wawona?", prefer **`wwn-iland`** recipes
-and knowledge docs over vanilla CoreBedtime/iland behavior — the mobile/Android
+and knowledge docs over vanilla CoreBedtime/iland behavior. The mobile/Android
 paths exist only in `wwn-iland`.
 
 Architecture: [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md).

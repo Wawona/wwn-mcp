@@ -2,7 +2,7 @@
 
 **High-priority companion MCP** for on-device and on-Mac debugging. Agents debugging
 Wawona crashes, in-process shell tools, or UI issues on Apple hardware **must use
-lldb-mcp** — not crash-log guesswork alone.
+lldb-mcp**. Not crash-log guesswork alone.
 
 Related: `ios-device-dev-workflow.md` (full build → install → debug loop).
 
@@ -10,11 +10,11 @@ Related: `ios-device-dev-workflow.md` (full build → install → debug loop).
 
 | Field | Value |
 |-------|-------|
-| Upstream | [stass/lldb-mcp](https://github.com/stass/lldb-mcp) — LLDB wrapped as MCP tools |
+| Upstream | [stass/lldb-mcp](https://github.com/stass/lldb-mcp). LLDB wrapped as MCP tools |
 | Nix package | `modules/pkgs/_lldb-mcp.nix` in nix-darwin dotfiles |
 | Cursor MCP name | **`lldb`** (not `lldb-mcp`) |
 | Requires | macOS, Xcode LLDB (`DEVELOPER_DIR` set), paired Apple device for iOS attach |
-| **Not indexed** | Action/debug server — like xcodebuild-mcp, it runs locally (stdio), not as a remote URL |
+| **Not indexed** | Action/debug server. Like xcodebuild-mcp, it runs locally (stdio), not as a remote URL |
 
 Wired by nix-darwin `dendritic.ide.mcp.lldb.enable` (default on Darwin) into
 `.cursor/mcp.json`, `.antigravity/mcp.json`, and per-repo `Wawona/.cursor/mcp.json`.
@@ -28,15 +28,15 @@ inspect frames, and evaluate expressions at the fault site.
 | Layer | Process | Bundle ID | Key symbols / breakpoints |
 |-------|---------|-----------|---------------------------|
 | iOS/iPadOS app | **Wawona** | `com.aspauldingcode.Wawona` | App entry, SwiftUI, ObjC bridge |
-| In-process zsh | same process (pthread) | — | `wawona_zsh_main`, `wwn_pty_spawn_shell_paced` |
-| In-process dispatch | same process | — | `wawona_dispatch_inprocess` (`wawona-dispatch.c`) |
-| fastfetch | same process | — | `fastfetch_main`, `fastfetch_main_impl`, `parseConfigFiles` |
-| neovim | same process | — | `wawona_nvim_main` |
-| foot / waypipe | same process | — | `foot_main`, waypipe entry symbols |
+| In-process zsh | same process (pthread) | - | `wawona_zsh_main`, `wwn_pty_spawn_shell_paced` |
+| In-process dispatch | same process | - | `wawona_dispatch_inprocess` (`wawona-dispatch.c`) |
+| fastfetch | same process | - | `fastfetch_main`, `fastfetch_main_impl`, `parseConfigFiles` |
+| neovim | same process | - | `wawona_nvim_main` |
+| foot / waypipe | same process | - | `foot_main`, waypipe entry symbols |
 | macOS app | **Wawona** | `com.aspauldingcode.Wawona` | Same in-process model + standalone binaries in bundle |
 
 All in-process CLI tools share **one address space** with the app. A crash in
-`fastfetch_main` is an app crash (`EXC_BAD_ACCESS`, `SIGBUS`, etc.) — debug the
+`fastfetch_main` is an app crash (`EXC_BAD_ACCESS`, `SIGBUS`, etc.). Debug the
 **Wawona** process, then inspect the crashing thread's backtrace.
 
 Primary on-device test hardware: **8amps iPhone Air** (hostname **STARDUST**,
@@ -65,7 +65,7 @@ Use **`lldb_list_sessions`** if unsure which sessions are active.
 |------|------|---------|
 | `lldb_start` | `lldb_path?` (default `lldb`), `working_dir?` | Start LLDB; returns `session_id` |
 | `lldb_terminate` | `session_id` | End session |
-| `lldb_list_sessions` | — | List active sessions |
+| `lldb_list_sessions` | - | List active sessions |
 
 Start with Xcode's LLDB on Darwin:
 
@@ -113,7 +113,7 @@ lldb_start(lldb_path="/Applications/Xcode.app/Contents/Developer/usr/bin/lldb")
 
 | Tool | Args | Purpose |
 |------|------|---------|
-| `lldb_backtrace` | `session_id`, `full?`, `limit?` | Call stack — **first tool after crash** |
+| `lldb_backtrace` | `session_id`, `full?`, `limit?` | Call stack. **first tool after crash** |
 | `lldb_frame_info` | `session_id` | Current frame details |
 | `lldb_print` | `session_id`, `expression` | Print variable / expression |
 | `lldb_expression` | `session_id`, `expression` | Evaluate in current frame |
@@ -126,11 +126,11 @@ lldb_start(lldb_path="/Applications/Xcode.app/Contents/Developer/usr/bin/lldb")
 
 | Tool | Args | Purpose |
 |------|------|---------|
-| `lldb_thread_list` | `session_id` | All threads — critical for in-process zsh (pthread) |
+| `lldb_thread_list` | `session_id` | All threads. Critical for in-process zsh (pthread) |
 | `lldb_thread_select` | `session_id`, `thread_id` | Switch to crashing thread |
 
 In-process zsh runs on a **worker pthread**; the crashing thread may not be the
-main thread — always `lldb_thread_list` then select the thread with the fault.
+main thread. Always `lldb_thread_list` then select the thread with the fault.
 
 ### Escape hatch
 
@@ -142,7 +142,7 @@ main thread — always `lldb_thread_list` then select the thread with the fault.
 Use `lldb_command` for iOS platform setup, device selection, and anything without
 a dedicated MCP wrapper (see below).
 
-## Workflow A — iOS physical device (primary)
+## Workflow A. IOS physical device (primary)
 
 Pair with **xcodebuild-mcp**: install a **Debug** build onto **8amps iPhone Air**,
 launch Wawona, reproduce the bug, then attach with lldb-mcp.
@@ -213,11 +213,11 @@ lldb_continue(session_id)
 ### 5. Clean up
 
 ```
-lldb_kill(session_id)        # optional — stops inferior
+lldb_kill(session_id)        # optional. Stops inferior
 lldb_terminate(session_id)   # ends LLDB session
 ```
 
-## Workflow B — macOS local (standalone + in-process)
+## Workflow B. MacOS local (standalone + in-process)
 
 For macOS Wawona (Wayland path, in-process tools, standalone bundle binaries):
 
@@ -232,7 +232,7 @@ lldb_run(session_id)
 macOS also runs fastfetch/neovim/zsh in-process inside the app; breakpoint targets
 are the same symbols as iOS.
 
-## Workflow C — launch app under debugger on device
+## Workflow C. Launch app under debugger on device
 
 When attach-after-launch is flaky, load the device binary and run under LLDB:
 
@@ -252,7 +252,7 @@ installed and running.
 
 1. Install Debug build → launch app → open terminal → run command (`fastfetch`, etc.).
 2. Attach to **Wawona** process.
-3. **`lldb_thread_list`** — find the pthread running the tool (not always thread 1).
+3. **`lldb_thread_list`**. Find the pthread running the tool (not always thread 1).
 4. **`lldb_backtrace(full=true)`** on that thread.
 5. Inspect globals / structs at fault (`lldb_print`, `lldb_examine`).
 
@@ -311,7 +311,7 @@ lldb_backtrace(session_id, full=true)
 | 6 | wwn-mcp | `get_patch`, `search_code` to locate source fix |
 | 7 | xcodebuild-mcp | Reinstall after fix |
 
-**Do not skip lldb-mcp** when the bug is reproducible on device — it is the
+**Do not skip lldb-mcp** when the bug is reproducible on device. It is the
 validated debugging path for this project.
 
 ## Agent checklist
@@ -336,7 +336,7 @@ When investigating a Wawona Apple-platform bug:
 | `lldb_start` fails | Set `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` (nix-darwin does this) |
 | No symbols in backtrace | Rebuild Debug; ensure dSYM / unstripped static archives linked |
 | Attach denied | Device must be trusted, unlocked, Developer Mode on; app must be running |
-| Wrong thread | Always `lldb_thread_list` — in-process zsh/fastfetch use worker pthreads |
+| Wrong thread | Always `lldb_thread_list`. In-process zsh/fastfetch use worker pthreads |
 | iOS platform commands missing | Use **`lldb_command`**, not only wrapper tools |
 | Session ID lost | `lldb_list_sessions` |
 

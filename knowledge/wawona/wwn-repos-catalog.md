@@ -42,7 +42,7 @@ How to contribute: [`contribute.md`](contribute.md).
 
 ## Deleted / renamed
 
-- **`Wawona/iland`** — deleted; use **wwn-iland** (credits CoreBedtime/iland).
+- **`Wawona/iland`**. Deleted; use **wwn-iland** (credits CoreBedtime/iland).
 - **`Wawona/Wawona-repo`** → **repo.wawona.io** (jailbreak only; not in default RAG).
 - **`Wawona/wawona.github.io`** → **wawona.io**.
 

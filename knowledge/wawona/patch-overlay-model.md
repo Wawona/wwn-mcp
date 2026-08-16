@@ -8,7 +8,7 @@ Every Wawona patched-software repo follows the same **patch-overlay** pattern:
 3. **Nix recipes** (`ios.nix`, `android.nix`, `macos.nix`, …) cross-compile the
    patched tree for each platform.
 4. **CI patch-anchor scripts** (`verify-*-patches.py`) assert the patch scripts
-   still apply against the current upstream anchor — no silent drift.
+   still apply against the current upstream anchor. No silent drift.
 
 There are **no long-lived source forks** of zsh, Weston, waypipe, etc. in git;
 only recipes + patches + pins.
@@ -17,7 +17,7 @@ only recipes + patches + pins.
 
 `wwn-toolchain` exports `lib.baseRegistry` (common libs + `wawona-pty`).
 
-Each app repo exports `registryFragment` — an attrset of
+Each app repo exports `registryFragment`. An attrset of
 `withPlatformVariants { ios = ./ios.nix; … }` entries with paths **relative to
 that repo's tree**.
 
@@ -35,12 +35,12 @@ path, so moving recipes out of the monorepo does not break the build graph.
 
 ## Finding patches with WWN-MCP
 
-- **`list_patches()`** — scans `dependencies/` in Wawona + all `wwn-*` corpus
+- **`list_patches()`**. Scans `dependencies/` in Wawona + all `wwn-*` corpus
   sources; returns repo-qualified paths.
-- **`get_patch("zsh")`** — resolves by software name (disambiguates if needed).
-- **`get_patch("wwn-weston/weston")`** — repo-qualified lookup.
+- **`get_patch("zsh")`**. Resolves by software name (disambiguates if needed).
+- **`get_patch("wwn-weston/weston")`**. Repo-qualified lookup.
 - **`read_document("wwn-zsh/dependencies/libs/zsh/patches/patch-zsh-exec.py")`**
-  — read the live patch script from the indexed corpus.
+ . Read the live patch script from the indexed corpus.
 
 ## Per-repo patch highlights
 
@@ -50,6 +50,6 @@ path, so moving recipes out of the monorepo does not break the build graph.
 | Weston terminal | wwn-weston | `terminal-patches/patch-terminal.py`, `compositor-apple-mobile.nix` |
 | waypipe | wwn-waypipe | `patch-waypipe-source.sh`, `waypipe-patched-src.nix` |
 | coreutils | wwn-coreutils | `patch-coreutils-source.sh`, `multicall.nix` |
-| iland shims | wwn-iland | upstream/shims/* (not a single patch file — vendored compat layer) |
+| iland shims | wwn-iland | upstream/shims/* (not a single patch file. Vendored compat layer) |
 | foot | wwn-foot | platform `.nix` recipes + any `patch-*` scripts |
 | fastfetch | wwn-fastfetch | `patch-fastfetch-apple-mobile.py`, `apply-wawona-wayland-macos.py` |

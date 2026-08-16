@@ -1,21 +1,21 @@
-# Wawona repository DAG — authoritative L0–L4 layering
+# Wawona repository DAG. Authoritative L0-L4 layering
 
 Wawona repositories form an acyclic dependency graph. Never invert it.
 
 ```text
-L0  wwn-toolchain — cross-builders and substrate only:
+L0  wwn-toolchain. Cross-builders and substrate only:
     cairo, pango, pixman, fontconfig, freetype, harfbuzz, libwayland, …
     Depends on no wwn-* repository.
-L1  wwn-iland — complete graphics stack:
+L1  wwn-iland. Complete graphics stack:
     iland Mode A/B, DRM/KMS/GBM/EGL, ANGLE, SwiftShader, MoltenVK,
     macOS-only KosmicKrisp, and Android Vulkan ICD hooks.
     Depends on wwn-toolchain only.
-L2  wwn-kmscube — graphics acceptance clients. Depends on toolchain + iland.
-L3  wwn-weston / wwn-niri — compositors. Depends on toolchain + iland + kmscube
+L2  wwn-kmscube. Graphics acceptance clients. Depends on toolchain + iland.
+L3  wwn-weston / wwn-niri. Compositors. Depends on toolchain + iland + kmscube
     (weston); niri merges toolchain (+ iland when GPU requires it).
-L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-vms / wwn-containers / wwn-ssh / wwn-wasm —
+L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-vms / wwn-containers / wwn-ssh / wwn-wasm -
     toolchain; merge iland only when GPU support requires it.
-L4  Wawona — product integration. Merges lower fragments and is never their input.
+L4  Wawona. Product integration. Merges lower fragments and is never their input.
 ```
 
 Hard rules:

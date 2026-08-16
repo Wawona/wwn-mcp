@@ -1,8 +1,8 @@
 # Wawona multi-repo development model
 
 Wawona development is split across the **Wawona GitHub organization**
-(`github.com/Wawona/*`). The monolithic era — all patched software living under
-`Wawona/dependencies/` — is over. Today:
+(`github.com/Wawona/*`). The monolithic era. All patched software living under
+`Wawona/dependencies/`. Is over. Today:
 
 - **`Wawona/Wawona`** is the **integration layer**: Smithay compositor, SwiftUI
   apps, Android packaging, `flake.nix` that wires everything together.

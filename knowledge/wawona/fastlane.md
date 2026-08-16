@@ -55,7 +55,7 @@ secretspec check -P local
 
 ## CI
 
-`.github/workflows/release-beta.yml` — trigger via `workflow_dispatch`, push to
+`.github/workflows/release-beta.yml`. Trigger via `workflow_dispatch`, push to
 `master`, or tag `v*` (CalVer `vYY.M.D`).
 
 macOS GitHub DMG assets need Developer ID sign + notarize (separate from

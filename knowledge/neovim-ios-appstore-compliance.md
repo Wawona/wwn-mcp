@@ -16,7 +16,7 @@ priors; cross-check Apple Guideline 2.5.2 and the `store-compliance` corpus.
 
 ## iOS constraints (same as zsh)
 
-On Apple mobile (iOS, iPadOS, … — **not macOS**):
+On Apple mobile (iOS, iPadOS, …. **not macOS**):
 
 - All executable code must ship signed in the bundle (Guideline 2.5.2).
 - No JIT / `MAP_JIT` / writable+executable pages without entitlement.
@@ -25,7 +25,7 @@ On Apple mobile (iOS, iPadOS, … — **not macOS**):
 - Filesystem is the app sandbox only.
 
 Neovim normally builds Lua codegen tools (`libnlua0.so`) and runs them with host
-`lua` during configure — that breaks cross-compilation when the `.so` targets
+`lua` during configure. That breaks cross-compilation when the `.so` targets
 iOS. External `:terminal`/`:grep`/`system()` also violate App Store posture.
 
 ## Wawona design: in-process Neovim
@@ -37,8 +37,8 @@ iOS. External `:terminal`/`:grep`/`system()` also violate App Store posture.
   spawn stubs, **`ENABLE_LTO OFF`** (objects must be real Mach-O for archive
   collection).
 - **Two-pass build** (`build-helpers.nix`):
-  1. **Host pass** — macOS `libnlua0.so` only (no iOS toolchain).
-  2. **iOS pass** — `WAWONA_HOST_NLUA0` points codegen at the host module;
+  1. **Host pass**. MacOS `libnlua0.so` only (no iOS toolchain).
+  2. **iOS pass**. `WAWONA_HOST_NLUA0` points codegen at the host module;
      generator preprocessor uses **macOS SDK/clang** (`WAWONA_GEN_CC`,
      `WAWONA_MACOS_SDK` patches in `patch-neovim-apple-mobile.py`).
 - **`collectArchive`** gathers `nvim_bin` `.o` + `.deps/usr/lib/*.a`, renames
@@ -72,7 +72,7 @@ iOS. External `:terminal`/`:grep`/`system()` also violate App Store posture.
 | `cmake-apple-mobile-flags.snippet` | Providers off, LTO off, mobile defines |
 | `cmake-deps-apple-mobile.snippet` | Bundled PUC Lua for deps |
 
-CI: **`wwn-neovim/.github/scripts/verify-neovim-ios-patches.py`** — patch anchors,
+CI: **`wwn-neovim/.github/scripts/verify-neovim-ios-patches.py`**. Patch anchors,
 codegen markers, **`nvim/vi/vim` ↔ `WAWONA_INPROC_TOOLS`**, banned spawn/JIT tokens
 in mobile libuv patch.
 
@@ -95,12 +95,12 @@ in mobile libuv patch.
 
 ## Canonical files
 
-- `wwn-neovim/dependencies/libs/neovim/apple-mobile.nix` — two-pass iOS build.
-- `wwn-neovim/dependencies/libs/neovim/build-helpers.nix` — host codegen + collectArchive.
-- `wwn-neovim/dependencies/libs/neovim/patches/patch-neovim-apple-mobile.py` — mobile patches.
-- `wwn-neovim/dependencies/wawona/neovim-rootfs.nix` — bundled runtime prefix.
-- `wwn-neovim/.github/scripts/verify-neovim-ios-patches.py` — compliance guardrail.
-- `wwn-toolchain/dependencies/libs/wawona-pty/src/wawona-dispatch.c` — nvim dispatch.
-- `wwn-zsh/dependencies/wawona/ios-rootfs.nix` — `WAWONA_INPROC_TOOLS`.
-- `Wawona/scripts/xcode-prebuild.sh` — symlinks `libwawona-neovim.a`.
-- `Wawona/src/platform/ios/WWNRootfsManager.m` — `VIMRUNTIME` / XDG env.
+- `wwn-neovim/dependencies/libs/neovim/apple-mobile.nix`. Two-pass iOS build.
+- `wwn-neovim/dependencies/libs/neovim/build-helpers.nix`. Host codegen + collectArchive.
+- `wwn-neovim/dependencies/libs/neovim/patches/patch-neovim-apple-mobile.py`. Mobile patches.
+- `wwn-neovim/dependencies/wawona/neovim-rootfs.nix`. Bundled runtime prefix.
+- `wwn-neovim/.github/scripts/verify-neovim-ios-patches.py`. Compliance guardrail.
+- `wwn-toolchain/dependencies/libs/wawona-pty/src/wawona-dispatch.c`. Nvim dispatch.
+- `wwn-zsh/dependencies/wawona/ios-rootfs.nix`. `WAWONA_INPROC_TOOLS`.
+- `Wawona/scripts/xcode-prebuild.sh`. Symlinks `libwawona-neovim.a`.
+- `Wawona/src/platform/ios/WWNRootfsManager.m`. `VIMRUNTIME` / XDG env.
