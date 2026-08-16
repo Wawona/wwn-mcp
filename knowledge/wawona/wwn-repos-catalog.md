@@ -12,7 +12,7 @@ compositor/shell/toolchain development.
 | **wwn-weston** | L3 | Weston compositor + clients | Mandatory native bundle |
 | **wwn-niri** | L3 | Niri compositor | Mandatory native bundle |
 | **wwn-waypipe** | L3′ | waypipe-rs remote | |
-| **wwn-anowaW** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
+| **Wawona-Swinging-Bridge** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
 | **wwn-vms** | L3′ | VM machine kinds | Planned |
 | **wwn-containers** | L3′ | Container machine kinds | Planned |
 | **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
@@ -33,7 +33,7 @@ L0 wwn-toolchain
   └─ L1 wwn-iland
        └─ L2 wwn-kmscube
             └─ L3 wwn-weston / wwn-niri
-L0 ──► L3' waypipe / anowaW / vms / containers / ssh / wasm / ports
+L0 ──► L3' waypipe / Wawona Swinging Bridge / vms / containers / ssh / wasm / ports
 L4 Wawona ──► all required lower layers
 ```
 

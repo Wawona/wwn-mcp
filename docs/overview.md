@@ -27,7 +27,7 @@ or any other stdio MCP client.
 - Android Jetpack Compose + Material 3, NDK graphics.
 - App Store / Play policies; Wawona Runtime Wasm packages (not StoreKit apt).
 - Wawona integration + extracted `wwn-*` repos (toolchain, iland, weston,
-  niri, kmscube, waypipe, anowaW, vms, containers, ssh, zsh, wasm, …).
+  niri, kmscube, waypipe, Wawona Swinging Bridge, vms, containers, ssh, zsh, wasm, …).
 
 ## Architecture
 

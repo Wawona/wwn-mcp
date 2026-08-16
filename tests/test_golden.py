@@ -43,8 +43,9 @@ def test_contribute_capability_gates():
     assert get_capability("watchos", "gpu")["state"] == "blocked"
     assert get_capability("tvos", "gpu")["state"] == "planned"
     assert get_capability("visionos", "vm")["state"] == "forbidden"
-    assert get_capability("ios", "anowaw")["state"] == "planned"
-    assert get_capability("ipados", "anowaw")["state"] == "planned"
+    assert get_capability("ios", "swinging_bridge")["state"] == "forbidden"
+    assert get_capability("ipados", "anowaw")["state"] == "forbidden"
+    assert get_capability("macos", "swinging_bridge")["state"] == "planned"
     assert where_to_edit("ANGLE ownership")["repo"] == "wwn-iland"
     assert where_to_edit("niri recipe")["repo"] == "wwn-niri"
     assert where_to_edit("zsh patch")["repo"] == "wwn-zsh"
@@ -64,7 +65,7 @@ def test_golden_knowledge_search(knowledge_index):
         ("who owns ANGLE", "wawona"),
         ("kmscube must not depend on weston", "wawona"),
         ("waypipe equivalence port fidelity", "wawona"),
-        ("anowaW is not Desktop", "wawona"),
+        ("Swinging Bridge is not Desktop", "wawona"),
         ("Mode A libiland_userland", "wawona"),
         ("contribute development branch", "wawona"),
         ("four-state capability gate planned blocked", "wawona"),

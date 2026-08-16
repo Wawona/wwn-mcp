@@ -42,7 +42,7 @@ Indexed summary for WWN-MCP. Full doc:
 
 ## Android
 
-No SIP and no `libwayland-mac.dylib`. anowaW uses rootless/baseline
+No SIP and no `libwayland-mac.dylib`. Wawona Swinging Bridge uses rootless/baseline
 MediaProjection or an optional Shizuku/root power mode, with automatic fallback
 when power access is unavailable. This Android power tier is not the macOS
 injected-dylib implementation.

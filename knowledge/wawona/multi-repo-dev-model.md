@@ -23,7 +23,7 @@ Wawona development is split across the **Wawona GitHub organization**
 ├── wwn-weston/
 ├── wwn-niri/
 ├── wwn-waypipe/
-├── wwn-anowaW/
+├── Wawona-Swinging-Bridge/
 ├── wwn-vms/
 ├── wwn-containers/
 ├── wwn-ssh/
@@ -57,7 +57,7 @@ Wawona development is split across the **Wawona GitHub organization**
 | iland / ANGLE / ICDs | `wwn-iland` |
 | kmscube | `wwn-kmscube` |
 | waypipe-rs | `wwn-waypipe` |
-| anowaW | `wwn-anowaW` |
+| Wawona Swinging Bridge | `Wawona-Swinging-Bridge` |
 | SSH / libssh2 | `wwn-ssh` |
 | VMs / containers | `wwn-vms` / `wwn-containers` |
 | WASI Runtime / Wasm packages | `wwn-wasm` (+ Wawona docs) |

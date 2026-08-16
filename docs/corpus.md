@@ -58,7 +58,7 @@ inputs and merges each repo's `registryFragment` over `wwn-toolchain`'s
   `wwn-wasm` (`project=wawona`) — Wawona Runtime (WASI); optional Wasm packages
   (not StoreKit ODR apt; `wwn-apt` retired).
 - Local siblings (preferred on `~/Wawona/` checkouts) plus disabled `*-git`
-  mirrors: `wwn-niri`, `wwn-kmscube`, `wwn-anowaW`, `wwn-vms`, `wwn-containers`,
+  mirrors: `wwn-niri`, `wwn-kmscube`, `Wawona-Swinging-Bridge`, `wwn-vms`, `wwn-containers`,
   `wwn-ssh`, `wwn-neovim`, `wwn-phoon-rs`, `wawona-io`.
 
 `list_patches` / `get_patch` scan **`dependencies/` in all of the above** (not

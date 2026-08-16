@@ -24,7 +24,7 @@ product targets.
 | Nested compositors + bundled clients | available | available | available | macOS parity | available | limited | limited |
 | Vulkan / OpenGL / ANGLE | available | available | available | available | available | **planned** | **blocked** |
 | Desktop / LockScreen replacement | planned | planned | **forbidden** (App Store) | forbidden | **forbidden** (App Store) | forbidden | forbidden |
-| anowaW app bridge | planned | planned | **planned** | forbidden | **planned** | forbidden | forbidden |
+| Wawona Swinging Bridge | planned | planned | **planned** | forbidden | **planned** | forbidden | forbidden |
 
 ## Non-negotiable target rules
 
@@ -35,9 +35,9 @@ product targets.
 - **tvOS GPU is planned** (Metal + OpenGLES in the SDK). **watchOS GPU is
   blocked** (no Metal / OpenGLES / CAMetalLayer on watchOS).
 - **visionOS VMs/containers are forbidden** (same class as tvOS/watchOS).
-- iOS and iPadOS share anowaW: Mode A in store; Mode B only via
+- iOS and iPadOS share Wawona Swinging Bridge: Mode A in store; Mode B only via
   `repo.wawona.io` (website). App Store binaries must never mention jailbreak.
-- Desktop / LockScreen is **not** anowaW. anowaW is a host-app → Wayland bridge.
+- Desktop / LockScreen is **not** Wawona Swinging Bridge. Wawona Swinging Bridge is a host-app → Wayland bridge.
 - KosmicKrisp remains macOS-only. MoltenVK on iOS/iPadOS/visionOS.
 
 ## Host window-manager policy

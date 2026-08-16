@@ -249,10 +249,10 @@ exclude = ["**/.git/**"]
 enabled = false
 
 [[source]]
-name = "wwn-anowaW"
-project = "anowaw"
+name = "Wawona-Swinging-Bridge"
+project = "swinging-bridge"
 kind = "local"
-path = "../wwn-anowaW"
+path = "../Wawona-Swinging-Bridge"
 description = "Host-app → Wayland bridge (not Desktop/LockScreen). Planned."
 license = "MIT"
 platform = ["macos", "android", "ios", "ipados"]
@@ -260,10 +260,10 @@ include = ["**/*.{nix,md,swift,kt,rs}", "flake.nix"]
 exclude = ["**/.git/**", "**/target/**"]
 
 [[source]]
-name = "wwn-anowaW-git"
-project = "anowaw"
+name = "Wawona-Swinging-Bridge-git"
+project = "swinging-bridge"
 kind = "git"
-url = "https://github.com/Wawona/wwn-anowaW"
+url = "https://github.com/Wawona/Wawona-Swinging-Bridge"
 ref = "development"
 license = "MIT"
 include = ["**/*.{nix,md,swift,kt,rs}", "flake.nix"]

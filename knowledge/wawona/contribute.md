@@ -14,7 +14,7 @@ spawns `wwn-mcp` like `uvx mcp-nixos`. There is no `mcp.wawona.io`.
 | Weston | `wwn-weston` |
 | Niri | `wwn-niri` |
 | waypipe | `wwn-waypipe` |
-| anowaW bridge | `wwn-anowaW` |
+| Wawona Swinging Bridge bridge | `Wawona-Swinging-Bridge` |
 | SSH / libssh2 | `wwn-ssh` |
 | zsh / RootFS | `wwn-zsh` |
 | Machines UI, SwiftUI, Android app, Smithay | `Wawona` |
@@ -38,11 +38,11 @@ of L0–L3. See [`wwn-repo-dag.md`](wwn-repo-dag.md).
 Every product target ships **real** Weston and **real** Niri (native ABI,
 real entry points). No stubs, fake mains, or permanent target exclusions.
 
-## Mode A / B / anowaW (do not conflate)
+## Mode A / B / Wawona Swinging Bridge (do not conflate)
 
 - **Mode A** — store-safe in-window iland (`libiland_userland.a`).
 - **Mode B** — macOS desktop-host dylib only (`libwayland-mac.dylib`), SIP-gated.
-- **anowaW** — host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
+- **Wawona Swinging Bridge** — host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
 
 ## MCP host wiring
 

@@ -54,11 +54,11 @@ _REPOS: list[dict[str, Any]] = [
         "project": "waypipe",
     },
     {
-        "repo": "wwn-anowaW",
+        "repo": "Wawona-Swinging-Bridge",
         "layer": "L3'",
-        "role": "Host-app → Wayland bridge (not Desktop/LockScreen)",
-        "when": "anowaW bridge, host UIKit/AppKit/Android as Wayland clients",
-        "project": "anowaw",
+        "role": "Wawona Swinging Bridge — host apps → Wayland (not Desktop/LockScreen)",
+        "when": "Swinging Bridge, Cocoa/Android/UIKit as Wayland clients, waypipe to Linux",
+        "project": "swinging-bridge",
     },
     {
         "repo": "wwn-vms",
@@ -161,7 +161,7 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"weston", re.I), "wwn-weston", "Weston ports and patches"),
     (re.compile(r"niri", re.I), "wwn-niri", "Niri compositor recipe"),
     (re.compile(r"waypipe", re.I), "wwn-waypipe", "waypipe-rs port"),
-    (re.compile(r"anowaw", re.I), "wwn-anowaW", "App bridge (not Desktop)"),
+    (re.compile(r"anowaw|swinging.?bridge", re.I), "Wawona-Swinging-Bridge", "Swinging Bridge (not Desktop)"),
     (re.compile(r"\bvm\b|virtual.?machine", re.I), "wwn-vms", "VM machine kinds"),
     (re.compile(r"container", re.I), "wwn-containers", "Container machine kinds"),
     (re.compile(r"ssh|libssh2|openssh", re.I), "wwn-ssh", "SSH backend split"),
@@ -184,42 +184,42 @@ _CAPS: dict[str, dict[str, str]] = {
     "macos": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "planned", "anowaw": "planned",
+        "desktop": "planned", "swinging_bridge": "planned",
     },
     "android": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "planned", "anowaw": "planned",
+        "desktop": "planned", "swinging_bridge": "planned",
     },
     "ios": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "anowaw": "planned",
+        "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "ipados": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "anowaw": "planned",
+        "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "visionos": {
         "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "anowaw": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "tvos": {
         "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "forbidden", "nested_compositors": "available", "gpu": "planned",
-        "desktop": "forbidden", "anowaw": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "watchos": {
         "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "forbidden", "nested_compositors": "available", "gpu": "blocked",
-        "desktop": "forbidden", "anowaw": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "linux": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "anowaw": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
 }
 
@@ -234,6 +234,9 @@ _FEATURE_ALIASES = {
     "angle": "gpu",
     "lockscreen": "desktop",
     "desktop_replacement": "desktop",
+    "anowaw": "swinging_bridge",
+    "anowaW": "swinging_bridge",
+    "swinging-bridge": "swinging_bridge",
 }
 
 
@@ -254,7 +257,7 @@ def where_to_edit(change: str) -> dict[str, Any]:
             "repo": "Wawona",
             "note": "No specific match; default to L4 integration. Refine the query.",
             "matches": [],
-            "hint": "Try: zsh, ANGLE, niri, weston, Machines UI, waypipe, anowaW",
+            "hint": "Try: zsh, ANGLE, niri, weston, Machines UI, waypipe, Swinging Bridge",
         }
     primary = matches[0]
     return {"repo": primary["repo"], "note": primary["note"], "matches": matches}
