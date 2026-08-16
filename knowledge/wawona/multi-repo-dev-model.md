@@ -9,7 +9,7 @@ Wawona development is split across the **Wawona GitHub organization**
 - **`wwn-toolchain`** owns the cross-compile framework, substrate libraries, and
   `wawona-pty`.
 - **`wwn-*` repos** own headline patched upstreams and compositors (iland,
-  weston, **niri**, kmscube, waypipe, zsh, ssh, apt, …).
+  weston, **niri**, kmscube, waypipe, zsh, ssh, wasm, containers, …).
 
 ## Local checkout layout
 
@@ -33,17 +33,19 @@ Wawona development is split across the **Wawona GitHub organization**
 ├── wwn-fastfetch/
 ├── wwn-neovim/
 ├── wwn-phoon-rs/
-├── wwn-apt/
+├── wwn-wasm/         # Wawona Runtime (WASI); optional package path
 └── wawona.io/
 ```
+
+`wwn-apt` is **retired** (tombstone only if the GitHub repo remains).
 
 ## Documentation firewall (App Store vs jailbreak)
 
 | Surface | Rule |
 |---------|------|
-| **`wwn-apt`** | App Store module catalog. **Zero** jailbreak / `repo.wawona.io`. |
+| **Wawona / wwn-wasm** | App Store Runtime + Wasm packages. **Zero** jailbreak / `repo.wawona.io`. |
 | **`repo.wawona.io`** | Jailbreak `.deb` only. Not in default wwn-mcp corpus. |
-| **Wawona App Store docs** | Same as `wwn-apt`. |
+| **Wawona App Store docs** | Native ports + Wasm documents/packages; no StoreKit ODR `apt`. |
 
 ## Where to edit what
 
@@ -58,7 +60,7 @@ Wawona development is split across the **Wawona GitHub organization**
 | anowaW | `wwn-anowaW` |
 | SSH / libssh2 | `wwn-ssh` |
 | VMs / containers | `wwn-vms` / `wwn-containers` |
-| App Store apt catalog | `wwn-apt` |
+| WASI Runtime / Wasm packages | `wwn-wasm` (+ Wawona docs) |
 | XcodeGen, Android APK, Rust backend, Machines | `Wawona` |
 | Public website | `wawona.io` |
 | Agent RAG / corpus | `wwn-mcp` |

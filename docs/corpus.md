@@ -55,8 +55,8 @@ inputs and merges each repo's `registryFragment` over `wwn-toolchain`'s
   `verify-zsh-ios-patches.py`.
 - `wwn-waypipe` (`project=waypipe`), `wwn-coreutils` (`project=coreutils`),
   `wwn-foot` (`project=wawona`), `wwn-fastfetch` (`project=wawona`),
-  `wwn-apt` (`project=wawona`) — App Store module catalog + `apt` CLI (StoreKit +
-  ODR; optional modules foot/neovim/fastfetch) — the remaining patched apps.
+  `wwn-wasm` (`project=wawona`) — Wawona Runtime (WASI); optional Wasm packages
+  (not StoreKit ODR apt; `wwn-apt` retired).
 - Local siblings (preferred on `~/Wawona/` checkouts) plus disabled `*-git`
   mirrors: `wwn-niri`, `wwn-kmscube`, `wwn-anowaW`, `wwn-vms`, `wwn-containers`,
   `wwn-ssh`, `wwn-neovim`, `wwn-phoon-rs`, `wawona-io`.

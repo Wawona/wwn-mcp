@@ -25,9 +25,9 @@ or any other stdio MCP client.
 - Swift / Rust language books + MCP SDKs.
 - XcodeGen, crate2nix, Fastlane, GitHub Actions, Determinate Nix.
 - Android Jetpack Compose + Material 3, NDK graphics.
-- App Store / Play policies; wwn-apt module delivery.
+- App Store / Play policies; Wawona Runtime Wasm packages (not StoreKit apt).
 - Wawona integration + extracted `wwn-*` repos (toolchain, iland, weston,
-  niri, kmscube, waypipe, anowaW, vms, containers, ssh, zsh, …).
+  niri, kmscube, waypipe, anowaW, vms, containers, ssh, zsh, wasm, …).
 
 ## Architecture
 

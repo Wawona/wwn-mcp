@@ -185,16 +185,18 @@ include = ["dependencies/**/*.{nix,sh,py,c,h,m}", "dependencies/**/*.patch", "de
 exclude = ["**/.git/**", "**/__pycache__/**", "**/target/**", "**/result/**"]
 
 [[source]]
-name = "wwn-apt"
+name = "wwn-wasm"
 project = "wawona"
 kind = "git"
-url = "https://github.com/Wawona/wwn-apt"
+url = "https://github.com/Wawona/wwn-wasm"
 ref = "main"
-description = "App Store module delivery: apt CLI compatibility layer over embedded catalog, StoreKit 2 + On-Demand Resources (ODR). Optional modules: foot, neovim, fastfetch. Bundled (non-removable): zsh, coreutils, waypipe, apt. registryFragment: apt-rootfs. CI: validate-catalog + check-app-store-firewall. Knowledge: knowledge/wawona/wwn-apt-appstore-modules.md."
+description = "Wawona Runtime: in-process WASI P1/P2 interpreter (Pulley on Apple mobile). Optional software = .wasm documents / OCI Wasm artifacts — NOT StoreKit ODR apt. Distinct from wwn-containers (Linux OCI) and wwn-vms."
 license = "MIT"
-platform = ["ios", "ipados", "tvos", "watchos", "visionos"]
-include = ["catalog/**/*.{yaml,yml,json}", "apt/**/*.{sh,8}", "docs/**/*.md", "scripts/**/*.py", "dependencies/**/*.nix", "flake.nix", ".github/scripts/*.py", "**/*.md"]
-exclude = ["**/.git/**", "**/__pycache__/**", "**/.venv/**", "**/result/**"]
+platform = ["ios", "ipados", "tvos", "visionos", "android", "macos"]
+include = ["**/*.md", "flake.nix", "dependencies/**/*.{nix,rs,toml,h,c}", "examples/**/*", "include/**/*.h"]
+exclude = ["**/.git/**", "**/target/**", "**/result/**"]
+
+# wwn-apt was retired (tombstone README only). Do not re-add as a product corpus source.
 
 # ---------------------------------------------------------------------------
 # Additional org repos (mandatory compositors, L2 acceptance, planned surfaces)

@@ -22,7 +22,7 @@ compositor/shell/toolchain development.
 | **wwn-fastfetch** | L3′ | fastfetch port | |
 | **wwn-neovim** | L3′ | neovim / optional module | |
 | **wwn-phoon-rs** | L3′ | phoon client | |
-| **wwn-apt** | L3′ | App Store apt catalog (StoreKit + ODR) | No jailbreak mentions |
+| **wwn-wasm** | L3′ | Wawona Runtime (WASI P1/P2); optional software path | Files + package client |
 | **wwn-mcp** | tooling | Stdio RAG + MCP for agents | This repo |
 | **wawona.io** | docs | Public site | Not a product flake input |
 
@@ -33,7 +33,7 @@ L0 wwn-toolchain
   └─ L1 wwn-iland
        └─ L2 wwn-kmscube
             └─ L3 wwn-weston / wwn-niri
-L0 ──► L3' waypipe / anowaW / vms / containers / ssh / apt / ports
+L0 ──► L3' waypipe / anowaW / vms / containers / ssh / wasm / ports
 L4 Wawona ──► all required lower layers
 ```
 
