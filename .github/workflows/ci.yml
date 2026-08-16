@@ -6,6 +6,13 @@ on:
   pull_request:
 
 jobs:
+  readme-badge:
+    name: README CI badge
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: README has CI status badge
+        run: grep -E 'actions/workflows/.+/badge\.svg' README.md
   nix:
     name: nix (${{ matrix.os }})
     strategy:
