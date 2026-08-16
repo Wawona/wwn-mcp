@@ -4,6 +4,11 @@ Agents: query **wwn-mcp** (`list_repos`, `where_to_edit`, `get_capability`,
 `search_docs`) before editing. Transport is **stdio only** — any MCP host
 spawns `wwn-mcp` like `uvx mcp-nixos`. There is no `mcp.wawona.io`.
 
+**Human contributors using AI:** start with the public guide
+[AI + MCP](https://wawona.io/docs/contributor/wwn-mcp/) and the indexed
+[`ai-contributors-mcp.md`](ai-contributors-mcp.md). Wire `wwn-mcp` (and
+usually `nixos`) in your editor’s MCP config before relying on an agent.
+
 ## Which repo
 
 | Change | Repo |
