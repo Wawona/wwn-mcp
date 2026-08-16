@@ -1,0 +1,21 @@
+---
+description: wwn-mcp — keep RAG/corpus aligned with product map and Mode A/B gates
+alwaysApply: true
+---
+
+# This repo: `wwn-mcp`
+
+Knowledge / MCP for agents. Answers must match the product map.
+
+## Accuracy checklist
+
+- **Wawona Swinging Bridge** (not anowaW in new prose; alias OK). Not Desktop.
+- Desktop/LockScreen ≠ Swinging Bridge ≠ VMs ≠ containers ≠ Wasm Runtime packages.
+- Capability gates: iOS/iPadOS Swinging Bridge store = **forbidden** (Mode B only);
+  macOS/Android Swinging Bridge = planned; VMs/containers forbidden on
+  tvOS/watchOS/visionOS.
+- **Wawona Runtime / `wpm`**: always Mode A–safe; `/wasm/` only for store clients.
+- Repo id: `Wawona-Swinging-Bridge` (not `wwn-anowaW`).
+
+When corpus or `contribute.py` drifts from `Wawona/docs/mode-a-b.md` or
+`wawona-product-map`, fix the knowledge — do not invent a third Mode B story.
