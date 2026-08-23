@@ -8,8 +8,9 @@ Indexed summary for WWN-MCP. Full doc:
 
 - **Wrong:** “Wawona always injects libwayland-mac.dylib / always needs SIP off.”
 - **Right:** Default product path is **Mode A** (`libiland_userland.a`, in-window
-  present callback). Mode B dylib is **optional**, macOS desktop-host only,
-  SIP-gated in Settings.
+  present callback). Mode B dylib is **optional**, macOS desktop-host only.
+  Mode B Desktop replacement needs SIP **fully disabled** (`csrutil disable`).
+  `csrutil enable --without debug` is not enough.
 
 ## Mode A
 
@@ -29,8 +30,8 @@ Indexed summary for WWN-MCP. Full doc:
   `macos-baremetal.nix` (CMake + Dobby; CoreBedtime load model).
 - Bundled only in `wawona-macos-desktop-host` at
   `Contents/Library/Wawona/iland/libwayland-mac.dylib`.
-- Engage when `WWNSipStatus` allows (Disabled or PartiallyDisabled =
-  `Debugging Restrictions: disabled`) **and** `DesktopReplacementEnabled`
+- Engage when `WWNSipStatus` allows (SIP fully disabled =
+  `csrutil disable`) **and** `DesktopReplacementEnabled`
   **and** connecting the Desktop machine → `WWNDesktopReplacementController`.
 - Root required for dylib constructor; privileged launch via admin dialog.
 - Never in the default `wawona-macos` product, Apple-mobile family, or Android
