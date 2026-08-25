@@ -13,8 +13,10 @@ L1  wwn-iland. Complete graphics stack:
 L2  wwn-kmscube. Graphics acceptance clients. Depends on toolchain + iland.
 L3  wwn-weston / wwn-niri. Compositors. Depends on toolchain + iland + kmscube
     (weston); niri merges toolchain (+ iland when GPU requires it).
-L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-vms / wwn-containers / wwn-ssh / wwn-wasm -
-    toolchain; merge iland only when GPU support requires it.
+L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-vms / wwn-containers / wwn-ssh /
+    wwn-wasm / wwn-iowatchdog / wwn-igetty -
+    toolchain (or nixpkgs-only for Watchdog); merge iland only when GPU
+    support requires it. igetty presents via iland DRM after Classic.
 L4  Wawona. Product integration. Merges lower fragments and is never their input.
 ```
 

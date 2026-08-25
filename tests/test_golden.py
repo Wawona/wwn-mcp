@@ -42,15 +42,26 @@ def test_contribute_capability_gates():
 
     assert get_capability("watchos", "gpu")["state"] == "blocked"
     assert get_capability("tvos", "gpu")["state"] == "planned"
-    assert get_capability("visionos", "vm")["state"] == "forbidden"
+    assert get_capability("visionos", "vm")["state"] == "planned"
+    assert get_capability("visionos", "container")["state"] == "planned"
+    assert get_capability("tvos", "vm")["state"] == "forbidden"
+    assert get_capability("watchos", "vm")["state"] == "forbidden"
     assert get_capability("ios", "swinging_bridge")["state"] == "forbidden"
     assert get_capability("ipados", "anowaw")["state"] == "forbidden"
     assert get_capability("macos", "swinging_bridge")["state"] == "planned"
+    macos_desktop = get_capability("macos", "desktop")
+    assert macos_desktop["state"] == "planned"
+    assert "Classic Take Over" in macos_desktop["note"]
+    assert get_capability("macos", "desktop_replacement")["state"] == "planned"
     assert where_to_edit("ANGLE ownership")["repo"] == "wwn-iland"
     assert where_to_edit("niri recipe")["repo"] == "wwn-niri"
     assert where_to_edit("zsh patch")["repo"] == "wwn-zsh"
+    assert where_to_edit("Path B claim-ok")["repo"] == "wwn-iowatchdog"
+    assert where_to_edit("igettyd F7 overlay")["repo"] == "wwn-igetty"
+    assert where_to_edit("Desktop Replacement Take Over")["repo"] == "Wawona"
     repos = {r["repo"] for r in list_repos()}
     assert "wwn-niri" in repos and "wwn-kmscube" in repos and "Wawona" in repos
+    assert "wwn-igetty" in repos and "wwn-iowatchdog" in repos
 
 
 def test_golden_knowledge_search(knowledge_index):
@@ -61,12 +72,18 @@ def test_golden_knowledge_search(knowledge_index):
     cases = [
         ("repo DAG L0 toolchain", "wawona"),
         ("watchOS GPU blocked", "wawona"),
-        ("visionOS VMs forbidden", "wawona"),
+        ("visionOS VMs planned", "wawona"),
         ("who owns ANGLE", "wawona"),
         ("kmscube must not depend on weston", "wawona"),
         ("waypipe equivalence port fidelity", "wawona"),
         ("Swinging Bridge is not Desktop", "wawona"),
         ("Mode A libiland_userland", "wawona"),
+        ("SIP fully disabled csrutil disable Mode B", "wawona"),
+        ("Path B claim-ok sticky IOWatchdog", "wawona"),
+        ("never kickstart watchdogd after Classic", "wawona"),
+        ("Enable Desktop Replacement is not Take Over", "wawona"),
+        ("Aqua nested wayland Classic weston drm", "wawona"),
+        ("kmscube HUD restore GL attribs", "wawona"),
         ("contribute development branch", "wawona"),
         ("four-state capability gate planned blocked", "wawona"),
     ]
@@ -83,6 +100,10 @@ def test_golden_knowledge_search(knowledge_index):
                 "platform-capability",
                 "contribute",
                 "iland-mode",
+                "desktop-replacement",
+                "mode-b-watchdog",
+                "compositor-backend",
+                "host-csd",
                 "multi-repo",
                 "wwn-repos-catalog",
                 "wwn-iland-graphics",

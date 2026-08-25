@@ -28,7 +28,10 @@ Install: `nix profile install github:Wawona/WWN-MCP` then `wwn-mcp info`.
 
 1. `where_to_edit` / `list_repos`. Correct org repo (never invert the DAG).
 2. `get_capability(platform, feature)`. `available` | `planned` | `blocked` | `forbidden`.
-3. `search_docs` / `get_architecture`. Mission, Mode A/B, port fidelity.
+   macOS `desktop` stays planned (LockScreen unfinished) even though Classic
+   Take Over is implemented. Read the `note` field.
+3. `search_docs` / `get_architecture`. Mission, Mode A/B, Classic Desktop
+   Replacement (Enable vs Replace now, Path B `claim-ok`), port fidelity.
 4. `search_code` / `find_symbol` / `get_patch`. Implementation + patches.
 5. `get_protocol` when touching Wayland surfaces.
 6. Trust citations over priors.
@@ -47,6 +50,8 @@ Install: `nix profile install github:Wawona/WWN-MCP` then `wwn-mcp info`.
 
 Wawona Swinging Bridge ≠ Desktop/LockScreen ≠ VMs/containers ≠ Wawona Runtime
 Wasm (`wpm`). Runtime is always Mode A (store-compliant); no Mode B Runtime.
+macOS Classic Take Over is implemented; the `desktop` gate stays planned until
+LockScreen. Enable Desktop Replacement is not Take Over.
 
 ## Index
 

@@ -19,12 +19,12 @@ product targets.
 |---|---|---|---|---|---|---|---|
 | Native machines | available | available | available | available | available | available | available |
 | Remote SSH/waypipe | available | available | available | available | available | available | available |
-| VM / containers | planned | planned | planned | **forbidden** | planned | **forbidden** | **forbidden** |
+| VM / containers | planned | planned | planned | **planned** | planned | **forbidden** | **forbidden** |
 | Multi-window (1 host window per Wayland client) | available | when OS allows | **required** | **required** | single primary | forbidden | forbidden |
 | Nested compositors + bundled clients | available | available | available | macOS parity | available | limited | limited |
 | Vulkan / OpenGL / ANGLE | available | available | available | available | available | **planned** | **blocked** |
-| Desktop / LockScreen replacement | planned | planned | **forbidden** (App Store) | forbidden | **forbidden** (App Store) | forbidden | forbidden |
-| Wawona Swinging Bridge | planned | planned | **planned** | forbidden | **planned** | forbidden | forbidden |
+| Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** (App Store) | forbidden | **forbidden** (App Store) | forbidden | forbidden |
+| Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Mode B via repo) | forbidden | **forbidden** (App Store; Mode B via repo) | forbidden | forbidden |
 
 ## Non-negotiable target rules
 
@@ -34,10 +34,14 @@ product targets.
   Fake entry points do not count.
 - **tvOS GPU is planned** (Metal + OpenGLES in the SDK). **watchOS GPU is
   blocked** (no Metal / OpenGLES / CAMetalLayer on watchOS).
-- **visionOS VMs/containers are forbidden** (same class as tvOS/watchOS).
-- iOS and iPadOS share Wawona Swinging Bridge: Mode A in store; Mode B only via
-  `repo.wawona.io` (website). App Store binaries must never mention jailbreak.
+- **visionOS VMs/containers are planned** (same class as iOS/iPadOS). tvOS and
+  watchOS remain forbidden.
+- iOS and iPadOS Swinging Bridge is **forbidden** in the App Store IPA. Mode B
+  only via `repo.wawona.io`. App Store binaries must never mention jailbreak.
 - Desktop / LockScreen is **not** Wawona Swinging Bridge. Wawona Swinging Bridge is a host-app → Wayland bridge.
+- macOS Desktop product gate stays **planned** (LockScreen / greeter). Classic
+  Take Over on `.#wawona-macos-desktop-host` is implemented. See
+  [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 - KosmicKrisp remains macOS-only. MoltenVK on iOS/iPadOS/visionOS.
 
 ## Host window-manager policy
@@ -47,4 +51,6 @@ Android use fill-primary. watchOS ignores host-WM requests.
 
 Graphics: [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md).
 Mode B: [`iland-mode-a-b-desktop.md`](iland-mode-a-b-desktop.md).
+How-to: [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
+Watchdog: [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).
 Contribute: [`contribute.md`](contribute.md).

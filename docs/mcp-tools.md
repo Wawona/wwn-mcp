@@ -45,7 +45,9 @@ Map a natural-language change (`zsh patch`, `ANGLE`, `niri recipe`,
 
 ### `get_capability(platform, feature)`
 Four-state gate (`available` | `planned` | `blocked` | `forbidden`) for a
-platform + feature (e.g. `watchos` + `gpu`, `visionos` + `vm`).
+platform + feature (e.g. `watchos` + `gpu`, `visionos` + `vm`). Some cells
+include a `note`: macOS `desktop` stays **planned** (LockScreen unfinished)
+even though Classic Take Over is implemented on desktop-host.
 
 ### `list_projects()`
 Indexed projects + chunk counts: `[{ "project": "...", "chunks": N }]`.

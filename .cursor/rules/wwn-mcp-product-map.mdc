@@ -13,7 +13,7 @@ Knowledge / MCP for agents. Answers must match the product map.
 - Desktop/LockScreen ≠ Swinging Bridge ≠ VMs ≠ containers ≠ Wasm Runtime packages.
 - Capability gates: iOS/iPadOS Swinging Bridge store = **forbidden** (Mode B only);
   macOS/Android Swinging Bridge = planned; VMs/containers forbidden on
-  tvOS/watchOS/visionOS.
+  tvOS/watchOS; visionOS VMs/containers = **planned** (same class as iOS).
 - **Wawona Runtime / `wpm`**: always Mode A-safe; `/wasm/` only for store clients.
 - Repo id: `Wawona-Swinging-Bridge` (not `wwn-anowaW`).
 

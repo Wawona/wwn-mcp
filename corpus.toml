@@ -313,6 +313,50 @@ exclude = ["**/.git/**"]
 enabled = false
 
 [[source]]
+name = "wwn-iowatchdog"
+project = "wawona"
+kind = "local"
+path = "../wwn-iowatchdog"
+description = "macOS IOWatchdog Path B tools for Desktop Mode B (nixpkgs-only; never Apple-mobile)."
+license = "MIT"
+platform = ["macos"]
+include = ["**/*.{nix,md,rs,c,h}", "flake.nix"]
+exclude = ["**/.git/**", "**/target/**"]
+
+[[source]]
+name = "wwn-iowatchdog-git"
+project = "wawona"
+kind = "git"
+url = "https://github.com/Wawona/wwn-iowatchdog"
+ref = "development"
+license = "MIT"
+include = ["**/*.{nix,md,rs,c,h}", "flake.nix"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
+name = "wwn-igetty"
+project = "wawona"
+kind = "local"
+path = "../wwn-igetty"
+description = "Linux-shaped VT switching + Doorman getty on iland DRM after Classic Take Over."
+license = "MIT"
+platform = ["macos"]
+include = ["**/*.{nix,md,rs,c,h,sh}", "flake.nix"]
+exclude = ["**/.git/**", "**/target/**"]
+
+[[source]]
+name = "wwn-igetty-git"
+project = "wawona"
+kind = "git"
+url = "https://github.com/Wawona/wwn-igetty"
+ref = "development"
+license = "MIT"
+include = ["**/*.{nix,md,rs,c,h,sh}", "flake.nix"]
+exclude = ["**/.git/**"]
+enabled = false
+
+[[source]]
 name = "wwn-ssh"
 project = "ssh"
 kind = "local"
@@ -1348,7 +1392,7 @@ name = "wwn-knowledge-wawona"
 project = "wawona"
 kind = "local"
 path = "knowledge/wawona"
-description = "Curated WWN-MCP knowledge: L0-L4 repo DAG, complete wwn-iland graphics stack, Mode A/B, minimal EGL/Vulkan-to-Metal paths, full Apple/Android capability matrix, toolkit readiness and software SHM fallback, plus multi-repo/device/debug workflows."
+description = "Curated WWN-MCP knowledge: L0-L4 repo DAG, complete wwn-iland graphics stack, Mode A/B, Classic Desktop Replacement, Path B watchdog safety, Aqua vs Classic compositor backends, full Apple/Android capability matrix, toolkit readiness and software SHM fallback, plus multi-repo/device/debug workflows."
 license = "MIT"
 platform = ["all"]
 include = ["**/*.md"]

@@ -16,6 +16,8 @@ compositor/shell/toolchain development.
 | **wwn-vms** | L3′ | VM machine kinds | Planned |
 | **wwn-containers** | L3′ | Container machine kinds | Planned |
 | **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
+| **wwn-iowatchdog** | L3′ | macOS IOWatchdog Path B (Desktop Mode B) | nixpkgs-only; never Apple-mobile |
+| **wwn-igetty** | L3′ | VT / Doorman getty after Classic Take Over | not the Mode B dylib |
 | **wwn-zsh** | L3′ | In-process App Store zsh + RootFS | |
 | **wwn-coreutils** | L3′ | uutils in-process multicall | |
 | **wwn-foot** | L3′ | foot terminal | |
@@ -33,7 +35,7 @@ L0 wwn-toolchain
   └─ L1 wwn-iland
        └─ L2 wwn-kmscube
             └─ L3 wwn-weston / wwn-niri
-L0 ──► L3' waypipe / Wawona Swinging Bridge / vms / containers / ssh / wasm / ports
+L0 ──► L3' waypipe / Wawona Swinging Bridge / vms / containers / ssh / wasm / iowatchdog / igetty / ports
 L4 Wawona ──► all required lower layers
 ```
 

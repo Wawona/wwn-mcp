@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-# L0–L4 catalog (stdio RAG; not a flake input graph).
+# L0-L4 catalog (stdio RAG; not a flake input graph).
 _REPOS: list[dict[str, Any]] = [
     {
         "repo": "wwn-toolchain",
@@ -56,7 +56,7 @@ _REPOS: list[dict[str, Any]] = [
     {
         "repo": "Wawona-Swinging-Bridge",
         "layer": "L3'",
-        "role": "Wawona Swinging Bridge — host apps → Wayland (not Desktop/LockScreen)",
+        "role": "Wawona Swinging Bridge: host apps to Wayland (not Desktop/LockScreen)",
         "when": "Swinging Bridge, Cocoa/Android/UIKit as Wayland clients, waypipe to Linux",
         "project": "swinging-bridge",
     },
@@ -80,6 +80,20 @@ _REPOS: list[dict[str, Any]] = [
         "role": "SSH / libssh2 vs OpenSSH split",
         "when": "remote SSH, Apple-mobile libssh2, macOS OpenSSH",
         "project": "ssh",
+    },
+    {
+        "repo": "wwn-iowatchdog",
+        "layer": "L3'",
+        "role": "macOS IOWatchdog Path B tools (Desktop Mode B; nixpkgs-only)",
+        "when": "claim-ok, Path B, wwn-iowatchdog status/doctor, never unload watchdogd without ACK",
+        "project": "wawona",
+    },
+    {
+        "repo": "wwn-igetty",
+        "layer": "L3'",
+        "role": "VT switching + Doorman getty on iland DRM after Classic Take Over",
+        "when": "igettyd, F1-F9, DesktopReplacementGuiVt, Classic session VTs",
+        "project": "wawona",
     },
     {
         "repo": "wwn-zsh",
@@ -162,6 +176,12 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"niri", re.I), "wwn-niri", "Niri compositor recipe"),
     (re.compile(r"waypipe", re.I), "wwn-waypipe", "waypipe-rs port"),
     (re.compile(r"anowaw|swinging.?bridge", re.I), "Wawona-Swinging-Bridge", "Swinging Bridge (not Desktop)"),
+    (re.compile(r"iowatchdog|watchdogd|claim-ok|path.?b", re.I),
+     "wwn-iowatchdog", "macOS IOWatchdog Path B (Desktop Mode B; never lldb watchdogd)"),
+    (re.compile(r"igetty|igettyd|doorman", re.I),
+     "wwn-igetty", "Classic VTs / getty after WindowServer is gone"),
+    (re.compile(r"desktop.?replacement|take.?over|keep.?ws|libwayland-mac", re.I),
+     "Wawona", "Desktop Replacement Settings/helper (dylib is wwn-iland; watchdog is wwn-iowatchdog)"),
     (re.compile(r"\bvm\b|virtual.?machine", re.I), "wwn-vms", "VM machine kinds"),
     (re.compile(r"container", re.I), "wwn-containers", "Container machine kinds"),
     (re.compile(r"ssh|libssh2|openssh", re.I), "wwn-ssh", "SSH backend split"),
@@ -202,7 +222,7 @@ _CAPS: dict[str, dict[str, str]] = {
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "visionos": {
-        "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
+        "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
@@ -221,6 +241,31 @@ _CAPS: dict[str, dict[str, str]] = {
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
+}
+
+# Extra prose on a gate that agents otherwise treat as "not implemented".
+_CAP_NOTES: dict[tuple[str, str], str] = {
+    ("macos", "desktop"): (
+        "Product gate stays planned until LockScreen/greeter. Classic Take Over "
+        "is implemented on .#wawona-macos-desktop-host (SIP fully disabled; "
+        "Enable arms Path B; Replace now takes over). See knowledge/wawona/"
+        "desktop-replacement-macos.md."
+    ),
+    ("android", "desktop"): (
+        "Still planned: Default Home + LockScreen APIs. No root. Not the macOS dylib."
+    ),
+    ("ios", "desktop"): (
+        "Forbidden in App Store IPA. Jailbreak tweak from repo.wawona.io only."
+    ),
+    ("ipados", "desktop"): (
+        "Forbidden in App Store IPA. Jailbreak tweak from repo.wawona.io only."
+    ),
+    ("ios", "swinging_bridge"): (
+        "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
+    ),
+    ("ipados", "swinging_bridge"): (
+        "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
+    ),
 }
 
 _FEATURE_ALIASES = {
@@ -257,7 +302,7 @@ def where_to_edit(change: str) -> dict[str, Any]:
             "repo": "Wawona",
             "note": "No specific match; default to L4 integration. Refine the query.",
             "matches": [],
-            "hint": "Try: zsh, ANGLE, niri, weston, Machines UI, waypipe, Swinging Bridge",
+            "hint": "Try: zsh, ANGLE, niri, weston, Machines UI, waypipe, Swinging Bridge, igetty, iowatchdog",
         }
     primary = matches[0]
     return {"repo": primary["repo"], "note": primary["note"], "matches": matches}
@@ -285,14 +330,18 @@ def get_capability(platform: str, feature: str) -> dict[str, Any]:
         }
     state = row[feat]
     legend = {
-        "available": "Shipping — keep green",
-        "planned": "Platform allows it; our work unfinished — finish it",
-        "blocked": "No public platform API — re-check on SDK bumps; no private API",
-        "forbidden": "Product/store policy — never enable",
+        "available": "Shipping. Keep green.",
+        "planned": "Platform allows it; our work unfinished. Finish it.",
+        "blocked": "No public platform API. Re-check on SDK bumps; no private API.",
+        "forbidden": "Product/store policy. Never enable.",
     }
-    return {
+    out = {
         "platform": plat,
         "feature": feat,
         "state": state,
         "meaning": legend.get(state, state),
     }
+    note = _CAP_NOTES.get((plat, feat))
+    if note:
+        out["note"] = note
+    return out

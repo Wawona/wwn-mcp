@@ -21,6 +21,9 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | waypipe | `wwn-waypipe` |
 | Wawona Swinging Bridge bridge | `Wawona-Swinging-Bridge` |
 | SSH / libssh2 | `wwn-ssh` |
+| IOWatchdog Path B / claim-ok | `wwn-iowatchdog` |
+| Classic VTs / igettyd / Doorman | `wwn-igetty` |
+| Desktop Replacement Settings / Take Over helper | `Wawona` (dylib: `wwn-iland`) |
 | zsh / RootFS | `wwn-zsh` |
 | Machines UI, SwiftUI, Android app, Smithay | `Wawona` |
 | Public docs site | `wawona.io` |
@@ -46,7 +49,9 @@ real entry points). No stubs, fake mains, or permanent target exclusions.
 ## Mode A / B / Wawona Swinging Bridge (do not conflate)
 
 - **Mode A**. Store-safe in-window iland (`libiland_userland.a`).
-- **Mode B**. MacOS desktop-host dylib only (`libwayland-mac.dylib`), SIP-gated.
+- **Mode B**. MacOS desktop-host dylib only (`libwayland-mac.dylib`). SIP
+  **fully disabled**. Enable arms Path B; Replace now is Classic Take Over.
+  LockScreen greeter still planned. See [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 - **Wawona Swinging Bridge**. Host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
 
 ## MCP host wiring

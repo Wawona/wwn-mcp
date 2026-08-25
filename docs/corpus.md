@@ -32,7 +32,9 @@ Each `[[source]]` entry supports:
   apps live in `wwn-*` repos (below).
 - `wawona-git` (git, **disabled locally**) — deploy-time git mirror of integration.
 - `wwn-knowledge-wawona` (local) — canonical mirrors for the L0-L4 repo DAG,
-  complete iland graphics stack, Mode A/B, platform capability matrix, toolkit
+  complete iland graphics stack, Mode A/B, Classic Desktop Replacement how-to,
+  Path B watchdog safety, Aqua vs Classic compositor backends, platform
+  capability matrix, toolkit
   readiness/software SHM fallback, plus multi-repo and device/debug workflows
   (`knowledge/wawona/`; start with `wwn-iland-graphics-stack.md`,
   `platform-capability-matrix.md`, and `ios-device-dev-workflow.md`).
@@ -59,7 +61,7 @@ inputs and merges each repo's `registryFragment` over `wwn-toolchain`'s
   (not StoreKit ODR apt; `wwn-apt` retired).
 - Local siblings (preferred on `~/Wawona/` checkouts) plus disabled `*-git`
   mirrors: `wwn-niri`, `wwn-kmscube`, `Wawona-Swinging-Bridge`, `wwn-vms`, `wwn-containers`,
-  `wwn-ssh`, `wwn-neovim`, `wwn-phoon-rs`, `wawona-io`.
+  `wwn-ssh`, `wwn-iowatchdog`, `wwn-igetty`, `wwn-neovim`, `wwn-phoon-rs`, `wawona-io`.
 
 `list_patches` / `get_patch` scan **`dependencies/` in all of the above** (not
 just Wawona integration). Paths are repo-qualified, e.g.
