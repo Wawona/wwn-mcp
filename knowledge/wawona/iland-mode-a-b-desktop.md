@@ -34,9 +34,9 @@ LockScreen APIs are still planned.
 - **Wrong:** Enable Desktop Replacement takes over the screen.
 - **Right:** Enable arms Path B (doctor, heal, claim-install). **Replace now**
   (Settings or menubar) is the only activate step.
-- **Wrong:** `nix run .#install` restages the Mode B helper.
-- **Right:** Restage is opt-in: `WAWONA_MODEB_STAGE=1 nix run .#install` or
-  `Wawona --mode-b-stage`.
+- **Wrong:** `nix run .#install` does not sync the Mode B helper.
+- **Right:** `nix run .#install` always syncs helper + dylib. Opening
+  desktop-host Wawona also syncs when the helper is stale.
 - **Wrong:** Mode B is kernel DRM / a kernel module.
 - **Right:** Userspace only. Virtual `/dev/dri` terminates in iland.
   `framebufferd` presents over Mach IPC.
@@ -74,20 +74,19 @@ LockScreen APIs are still planned.
 1. Install `.#wawona-macos-desktop-host`. SIP fully disabled (`csrutil disable`
    in Recovery).
 2. Settings → Desktop → **Enable Desktop Replacement**. That runs doctor, heal,
-   and Path B (`claim-install --path-b`), then the native Restart sheet. It
-   does **not** Take Over.
+   Path B (`claim-install --path-b`), and syncs helper + dylib for this build,
+   then the native Restart sheet. It does **not** Take Over.
 3. After reboot, confirm `/var/db/wwn-iowatchdog/claim-ok` (`path=b sticky=1`)
    **and** live Disable (marker or Path B sock `done=1`). `claim-ok` alone is
    stale.
-4. Opt-in restage once per store: `WAWONA_MODEB_STAGE=1 nix run .#install`.
-5. Pick a Desktop machine (weston or niri; not `weston-terminal` / foot).
-6. **Replace now**. Classic unloads WindowServer only after IOWatchdog Disable
+4. Pick a Desktop machine (weston or niri; not `weston-terminal` / foot).
+5. **Replace now**. Classic unloads WindowServer only after IOWatchdog Disable
    ACK (`WWN_MODEB_WD=iowatchdog-then-unload`).
-7. Logout returns Aqua. Next login does not auto-engage. Ctrl+Option+Backspace
+6. Logout returns Aqua. Next login does not auto-engage. Ctrl+Option+Backspace
    restores Aqua (Fn+Ctrl+Option+Backspace on MacBook).
 
 CLI: `Wawona --mode-b-prepare` (same as Enable), `--mode-b-ready`,
-`--mode-b-engage` / Replace now, `--mode-b-probe` (KEEP_WS), `--mode-b-stage`.
+`--mode-b-engage` / Replace now, `--mode-b-probe` (KEEP_WS).
 
 ## Classic session (after Take Over)
 
