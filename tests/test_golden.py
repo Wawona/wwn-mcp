@@ -41,6 +41,9 @@ def test_contribute_capability_gates():
     from wwn_mcp.contribute import get_capability, where_to_edit, list_repos
 
     assert get_capability("watchos", "gpu")["state"] == "blocked"
+    assert get_capability("watchos", "present_accelerator")["state"] == "available"
+    assert get_capability("watchos", "watch_present")["state"] == "available"
+    assert get_capability("macos", "present_accelerator")["state"] == "forbidden"
     assert get_capability("tvos", "gpu")["state"] == "planned"
     assert get_capability("visionos", "vm")["state"] == "planned"
     assert get_capability("visionos", "container")["state"] == "planned"

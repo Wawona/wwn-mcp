@@ -165,7 +165,7 @@ def build_server(settings: Settings):  # -> FastMCP
         States: available | planned | blocked | forbidden.
         Platforms: macos, ios, ipados, tvos, watchos, visionos, android, linux.
         Features: native, remote, vm, container, multi_window, nested_compositors,
-        gpu, desktop, swinging_bridge (alias: anowaw).
+        gpu, present_accelerator, desktop, swinging_bridge (alias: anowaw).
         """
         from .contribute import get_capability as _cap
 

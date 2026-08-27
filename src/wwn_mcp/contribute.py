@@ -204,41 +204,49 @@ _CAPS: dict[str, dict[str, str]] = {
     "macos": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
+        "present_accelerator": "forbidden",
         "desktop": "planned", "swinging_bridge": "planned",
     },
     "android": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
+        "present_accelerator": "forbidden",
         "desktop": "planned", "swinging_bridge": "planned",
     },
     "ios": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
+        "present_accelerator": "forbidden",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "ipados": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
+        "present_accelerator": "forbidden",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "visionos": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
+        "present_accelerator": "forbidden",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "tvos": {
         "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "forbidden", "nested_compositors": "available", "gpu": "planned",
+        "present_accelerator": "forbidden",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "watchos": {
         "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "forbidden", "nested_compositors": "available", "gpu": "blocked",
+        "present_accelerator": "available",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
     "linux": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
+        "present_accelerator": "forbidden",
         "desktop": "forbidden", "swinging_bridge": "forbidden",
     },
 }
@@ -266,6 +274,20 @@ _CAP_NOTES: dict[tuple[str, str], str] = {
     ("ipados", "swinging_bridge"): (
         "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
     ),
+    ("watchos", "gpu"): (
+        "GPU GL/VK stack blocked: no Metal.framework in the watchOS SDK. "
+        "Software GLES/VK (CPU SwiftShader + ANGLE, SHM present) is a separate "
+        "bundled path when WWN_WATCH_SWIFTSHADER_BUNDLED. Present accelerator "
+        "is SpriteKit, not GLES/Vulkan."
+    ),
+    ("watchos", "software_gles_vk"): (
+        "CPU ANGLE-on-Vulkan + SwiftShader ICD; wl_shm readback into the mini "
+        "server; SpriteKit present. No Metal. KMS clients deferred."
+    ),
+    ("watchos", "present_accelerator"): (
+        "SpriteKit SKTexture blit of Wayland SHM frames. Not GLES/Vulkan. "
+        "WWN_WATCHOS_METAL=1 is research only and never in the store Watch IPA."
+    ),
 }
 
 _FEATURE_ALIASES = {
@@ -282,6 +304,8 @@ _FEATURE_ALIASES = {
     "anowaw": "swinging_bridge",
     "anowaW": "swinging_bridge",
     "swinging-bridge": "swinging_bridge",
+    "watch_present": "present_accelerator",
+    "spritekit_present": "present_accelerator",
 }
 
 

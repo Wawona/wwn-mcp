@@ -23,6 +23,8 @@ product targets.
 | Multi-window (1 host window per Wayland client) | available | when OS allows | **required** | **required** | single primary | forbidden | forbidden |
 | Nested compositors + bundled clients | available | available | available | macOS parity | available | limited | limited |
 | Vulkan / OpenGL / ANGLE | available | available | available | available | available | **planned** | **blocked** |
+| Watch SpriteKit present | n/a | n/a | n/a | n/a | n/a | n/a | **available** |
+| Watch software GLES/VK | n/a | n/a | n/a | n/a | n/a | n/a | **available** (CPU ANGLE + SwiftShader; `WWN_WATCH_SWIFTSHADER_BUNDLED`) |
 | Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** (App Store) | forbidden | **forbidden** (App Store) | forbidden | forbidden |
 | Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Mode B via repo) | forbidden | **forbidden** (App Store; Mode B via repo) | forbidden | forbidden |
 
@@ -32,8 +34,10 @@ product targets.
   and ship. Android remains equally covered.
 - Weston and **Niri** are real native bundled compositors on **every** row.
   Fake entry points do not count.
-- **tvOS GPU is planned** (Metal + OpenGLES in the SDK). **watchOS GPU is
-  blocked** (no Metal / OpenGLES / CAMetalLayer on watchOS).
+- **tvOS GPU is planned** (Metal + OpenGLES in the SDK). **watchOS GPU GL/VK
+  stack stays blocked** (no Metal / OpenGLES / CAMetalLayer). **watchOS software
+  GLES/VK is available** when bundled (CPU SwiftShader + ANGLE, SHM present).
+  **watchOS present is available** (SpriteKit blit of SHM frames).
 - **visionOS VMs/containers are planned** (same class as iOS/iPadOS). tvOS and
   watchOS remain forbidden.
 - iOS and iPadOS Swinging Bridge is **forbidden** in the App Store IPA. Mode B
