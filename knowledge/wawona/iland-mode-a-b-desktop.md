@@ -115,8 +115,12 @@ See [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).
 Android Desktop: Default Home + LockScreen APIs. **No root.** Not the macOS
 dylib. Still planned.
 
-iOS / iPadOS Desktop: jailbreak tweak from `repo.wawona.io` only. **Forbidden**
-in App Store IPA. Never mention jailbreak in store binaries.
+iOS / iPadOS Desktop: **forbidden** in App Store IPA. Outside store:
+**TrollStore** `.tipa` (JIT + IOMobileFramebuffer + Desktop/LockScreen in-app)
+and **Sileo** (`repo.wawona.io`, same plus ElleKit SpringBoard tweaks).
+Swinging Bridge is **Sileo-only**. Never treat TrollStore as JIT-only. Never
+mention jailbreak / TrollStore / Sileo in store binaries. See
+[`ios-mode-b-channels.md`](ios-mode-b-channels.md).
 
 ## Verify
 

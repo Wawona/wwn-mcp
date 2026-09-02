@@ -68,7 +68,8 @@ hits a missing real node).
 - LockScreen greeter
 - Path C parked WindowServer (needed for Swinging Bridge + Desktop together)
 - Android Default Home + LockScreen APIs
-- iOS/iPadOS jailbreak tweak (`repo.wawona.io` only)
+- iOS/iPadOS Desktop via TrollStore (IOMFB) and Sileo (`repo.wawona.io`);
+  App Store forbidden. See [`ios-mode-b-channels.md`](ios-mode-b-channels.md)
 
 Capability gate `get_capability("macos", "desktop")` stays **planned** until
 those land. Classic Take Over is still the implemented macOS path. Agents

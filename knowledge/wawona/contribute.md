@@ -49,10 +49,16 @@ real entry points). No stubs, fake mains, or permanent target exclusions.
 ## Mode A / B / Wawona Swinging Bridge (do not conflate)
 
 - **Mode A**. Store-safe in-window iland (`libiland_userland.a`).
-- **Mode B**. MacOS desktop-host dylib only (`libwayland-mac.dylib`). SIP
+- **Mode B (macOS)**. Desktop-host dylib (`libwayland-mac.dylib`). SIP
   **fully disabled**. Enable arms Path B; Replace now is Classic Take Over.
   LockScreen greeter still planned. See [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
-- **Wawona Swinging Bridge**. Host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
+- **Mode B (iOS/iPadOS)**. Three channels: App Store Mode A only; TrollStore
+  `.tipa` = JIT + IOMFB + Desktop (not JIT-only); Sileo = full Mode B including
+  Swinging Bridge. See [`ios-mode-b-channels.md`](ios-mode-b-channels.md).
+- **Wawona Swinging Bridge**. Host-app → Wayland bridge (planned). Not Desktop.
+  Not LockScreen. On iOS/iPadOS: Sileo-only.
+- **dmabuf zero-copy**. `zwp_linux_dmabuf_v1` + IOSurface/AHB; never LINEAR on
+  Apple/Android. See [`dma-buf-zero-copy.md`](dma-buf-zero-copy.md).
 
 ## MCP host wiring
 
