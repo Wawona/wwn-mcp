@@ -23,8 +23,8 @@ product targets.
 | Multi-window (1 host window per Wayland client) | available | when OS allows | **required** | **required** | single primary | forbidden | forbidden |
 | Nested compositors + bundled clients | available | available | available | macOS parity | available | limited | limited |
 | Vulkan / OpenGL / ANGLE | available | available | available | available | available | **planned** | **blocked** |
-| Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** (App Store) | forbidden | **forbidden** (App Store) | forbidden | forbidden |
-| Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Mode B via repo) | forbidden | **forbidden** (App Store; Mode B via repo) | forbidden | forbidden |
+| Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** (App Store; TrollStore IOMFB + Sileo) | forbidden | **forbidden** (App Store; TrollStore IOMFB + Sileo) | forbidden | forbidden |
+| Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Sileo Mode B only) | forbidden | **forbidden** (App Store; Sileo Mode B only) | forbidden | forbidden |
 
 ## Non-negotiable target rules
 
@@ -36,8 +36,10 @@ product targets.
   blocked** (no Metal / OpenGLES / CAMetalLayer on watchOS).
 - **visionOS VMs/containers are planned** (same class as iOS/iPadOS). tvOS and
   watchOS remain forbidden.
-- iOS and iPadOS Swinging Bridge is **forbidden** in the App Store IPA. Mode B
-  only via `repo.wawona.io`. App Store binaries must never mention jailbreak.
+- iOS and iPadOS Desktop outside store: TrollStore (JIT + IOMFB + Desktop) and
+  Sileo. Swinging Bridge is **Sileo-only** (`repo.wawona.io`). TrollStore is
+  **not** JIT-only. App Store binaries must never mention jailbreak / TrollStore
+  / Sileo. See [`ios-mode-b-channels.md`](ios-mode-b-channels.md).
 - Desktop / LockScreen is **not** Wawona Swinging Bridge. Wawona Swinging Bridge is a host-app → Wayland bridge.
 - macOS Desktop product gate stays **planned** (LockScreen / greeter). Classic
   Take Over on `.#wawona-macos-desktop-host` is implemented. See
@@ -50,7 +52,9 @@ macOS uses AppKit zoom/fullscreen/miniaturize. iOS/iPadOS/tvOS/visionOS and
 Android use fill-primary. watchOS ignores host-WM requests.
 
 Graphics: [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md).
-Mode B: [`iland-mode-a-b-desktop.md`](iland-mode-a-b-desktop.md).
+Mode B (macOS): [`iland-mode-a-b-desktop.md`](iland-mode-a-b-desktop.md).
+iOS channels: [`ios-mode-b-channels.md`](ios-mode-b-channels.md).
+dmabuf: [`dma-buf-zero-copy.md`](dma-buf-zero-copy.md).
 How-to: [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 Watchdog: [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).
 Contribute: [`contribute.md`](contribute.md).

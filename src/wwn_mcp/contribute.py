@@ -169,6 +169,8 @@ _REPOS: list[dict[str, Any]] = [
 
 _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"zsh|rootfs", re.I), "wwn-zsh", "zsh / RootFS patches live in wwn-zsh"),
+    (re.compile(r"dma.?buf|dmabuf|zwp_linux_dmabuf|linux.?dmabuf|iomfb|iomobileframebuffer", re.I),
+     "wwn-iland", "dmabuf zero-copy / IOSurface-AHB export is L1 wwn-iland; compositor import also touches Wawona"),
     (re.compile(r"angle|swiftshader|moltenvk|kosmickrisp|iland|drm|kms|gbm|egl", re.I),
      "wwn-iland", "Graphics stack ownership is L1 wwn-iland"),
     (re.compile(r"kmscube", re.I), "wwn-kmscube", "L2 acceptance client"),
@@ -176,6 +178,8 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"niri", re.I), "wwn-niri", "Niri compositor recipe"),
     (re.compile(r"waypipe", re.I), "wwn-waypipe", "waypipe-rs port"),
     (re.compile(r"anowaw|swinging.?bridge", re.I), "Wawona-Swinging-Bridge", "Swinging Bridge (not Desktop)"),
+    (re.compile(r"\btipa\b|trollstore|sileo|repo\.wawona\.io|ios.?mode.?b.?channel", re.I),
+     "Wawona", "iOS Mode B channels: TrollStore tipa = JIT+IOMFB+Desktop; Swinging Bridge = Sileo only"),
     (re.compile(r"iowatchdog|watchdogd|claim-ok|path.?b", re.I),
      "wwn-iowatchdog", "macOS IOWatchdog Path B (Desktop Mode B; never lldb watchdogd)"),
     (re.compile(r"igetty|igettyd|doorman", re.I),
@@ -255,16 +259,26 @@ _CAP_NOTES: dict[tuple[str, str], str] = {
         "Still planned: Default Home + LockScreen APIs. No root. Not the macOS dylib."
     ),
     ("ios", "desktop"): (
-        "Forbidden in App Store IPA. Jailbreak tweak from repo.wawona.io only."
+        "Forbidden in App Store IPA. Outside store: TrollStore .tipa is Mode B for "
+        "JIT + IOMobileFramebuffer + Desktop/LockScreen (not JIT-only); Sileo from "
+        "repo.wawona.io adds ElleKit SpringBoard tweaks. See knowledge/wawona/"
+        "ios-mode-b-channels.md and dma-buf-zero-copy.md (IOMFB present sink)."
     ),
     ("ipados", "desktop"): (
-        "Forbidden in App Store IPA. Jailbreak tweak from repo.wawona.io only."
+        "Forbidden in App Store IPA. Outside store: TrollStore .tipa is Mode B for "
+        "JIT + IOMobileFramebuffer + Desktop/LockScreen (not JIT-only); Sileo from "
+        "repo.wawona.io adds ElleKit SpringBoard tweaks. See knowledge/wawona/"
+        "ios-mode-b-channels.md and dma-buf-zero-copy.md (IOMFB present sink)."
     ),
     ("ios", "swinging_bridge"): (
-        "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
+        "Forbidden in App Store IPA and in TrollStore .tipa. Swinging Bridge on "
+        "iOS/iPadOS is Sileo-only (repo.wawona.io / jailbreak). See knowledge/"
+        "wawona/ios-mode-b-channels.md."
     ),
     ("ipados", "swinging_bridge"): (
-        "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
+        "Forbidden in App Store IPA and in TrollStore .tipa. Swinging Bridge on "
+        "iOS/iPadOS is Sileo-only (repo.wawona.io / jailbreak). See knowledge/"
+        "wawona/ios-mode-b-channels.md."
     ),
 }
 

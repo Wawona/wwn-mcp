@@ -53,12 +53,26 @@ def test_contribute_capability_gates():
     assert macos_desktop["state"] == "planned"
     assert "Classic Take Over" in macos_desktop["note"]
     assert get_capability("macos", "desktop_replacement")["state"] == "planned"
+    ios_desktop = get_capability("ios", "desktop")
+    assert ios_desktop["state"] == "forbidden"
+    assert "TrollStore" in ios_desktop["note"]
+    assert "not JIT-only" in ios_desktop["note"]
+    assert "IOMobileFramebuffer" in ios_desktop["note"]
+    ipados_desktop = get_capability("ipados", "desktop")
+    assert "TrollStore" in ipados_desktop["note"]
+    ios_sb = get_capability("ios", "swinging_bridge")
+    assert "Sileo-only" in ios_sb["note"]
+    assert "TrollStore" in ios_sb["note"]
     assert where_to_edit("ANGLE ownership")["repo"] == "wwn-iland"
     assert where_to_edit("niri recipe")["repo"] == "wwn-niri"
     assert where_to_edit("zsh patch")["repo"] == "wwn-zsh"
     assert where_to_edit("Path B claim-ok")["repo"] == "wwn-iowatchdog"
     assert where_to_edit("igettyd F7 overlay")["repo"] == "wwn-igetty"
     assert where_to_edit("Desktop Replacement Take Over")["repo"] == "Wawona"
+    assert where_to_edit("zwp_linux_dmabuf zero-copy")["repo"] == "wwn-iland"
+    assert where_to_edit("dma-buf IOSurface import")["repo"] == "wwn-iland"
+    assert where_to_edit("TrollStore tipa entitlements")["repo"] == "Wawona"
+    assert where_to_edit("Sileo Mode B deb")["repo"] == "Wawona"
     repos = {r["repo"] for r in list_repos()}
     assert "wwn-niri" in repos and "wwn-kmscube" in repos and "Wawona" in repos
     assert "wwn-igetty" in repos and "wwn-iowatchdog" in repos
@@ -86,6 +100,10 @@ def test_golden_knowledge_search(knowledge_index):
         ("kmscube HUD restore GL attribs", "wawona"),
         ("contribute development branch", "wawona"),
         ("four-state capability gate planned blocked", "wawona"),
+        ("linux-dmabuf zero-copy IOSurface AHB", "wawona"),
+        ("TrollStore tipa JIT IOMFB Desktop not JIT-only", "wawona"),
+        ("Sileo Swinging Bridge Mode B only", "wawona"),
+        ("never advertise DRM_FORMAT_MOD_LINEAR on Apple", "wawona"),
     ]
     for query, project in cases:
         hits = store.search(query, kind="docs", project=project, top_k=5)
@@ -107,6 +125,8 @@ def test_golden_knowledge_search(knowledge_index):
                 "multi-repo",
                 "wwn-repos-catalog",
                 "wwn-iland-graphics",
+                "dma-buf-zero-copy",
+                "ios-mode-b-channels",
             )
         ), f"unexpected paths for {query!r}: {paths}"
 
@@ -141,7 +161,7 @@ def test_cli_serve_on_tty_prints_usage(tmp_path, monkeypatch, capsys):
 
 
 def test_cli_serve_stdout_tty_only_is_not_interactive(monkeypatch):
-    """MCP hosts may leave stdout on a TTY while stdin is a pipe — still serve."""
+    """MCP hosts may leave stdout on a TTY while stdin is a pipe; still serve."""
     import wwn_mcp.cli as cli
 
     monkeypatch.delenv("WWN_MCP_FORCE_STDIO", raising=False)
