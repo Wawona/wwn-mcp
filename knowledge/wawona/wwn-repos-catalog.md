@@ -17,6 +17,7 @@ compositor/shell/toolchain development.
 | **wwn-containers** | L3′ | Container machine kinds | Planned |
 | **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
 | **wwn-iowatchdog** | L3′ | macOS IOWatchdog Path B (Desktop Mode B) | nixpkgs-only; never Apple-mobile |
+| **wwn-vphone** | L3′ | Jailbroken iOS research lab (vphone-cli wrap) | nixpkgs-only; never ship Disk.img/IPSW |
 | **wwn-igetty** | L3′ | VT / Doorman getty after Classic Take Over | not the Mode B dylib |
 | **wwn-zsh** | L3′ | In-process App Store zsh + RootFS | |
 | **wwn-coreutils** | L3′ | uutils in-process multicall | |

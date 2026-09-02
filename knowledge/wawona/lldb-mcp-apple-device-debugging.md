@@ -246,6 +246,24 @@ The symfile path comes from xcodebuild DerivedData or the build products path
 xcodebuild-mcp exposes. Prefer Workflow A (attach) when the app is already
 installed and running.
 
+## Workflow D. vphone-jb (jailbroken research guest)
+
+Mode B lab VM from `nix run github:Wawona/wwn-vphone#vphone-jb-lab`. agent-device
+owns discovery; **user-lldb** owns debug. Do not attach `watchdogd` / IOWatchdog.
+
+```bash
+agent-device packages debug attach com.example.app --device "vphone wawona-jb"
+# prints: ssh -L <local>:127.0.0.1:12345 … and connect://127.0.0.1:<local>
+```
+
+Then:
+
+1. Keep the SSH forward alive.
+2. `lldb_start` → `lldb_command` with `gdb-remote` / `process connect connect://127.0.0.1:<local>`.
+3. `lldb_backtrace`, breakpoints, etc. as usual.
+
+See `agent-device help vphone-packages` and `vphone-jb-lab-and-packages.md`.
+
 ## Wawona-specific debugging patterns
 
 ### In-process shell tool crash (fastfetch, zsh, neovim)

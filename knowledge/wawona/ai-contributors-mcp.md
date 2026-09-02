@@ -43,8 +43,10 @@ Install: `nix profile install github:Wawona/WWN-MCP` then `wwn-mcp info`.
 | `wwn-mcp` | Wawona + wwn-* RAG, patches, gates, protocols |
 | `nixos` | Live nixpkgs / options (not Wawona recipes) |
 | `xcodebuild` | Apple build / install / run |
-| `lldb` | Device attach / backtrace |
-| `agent-device` | UI automation (not osascript / screencapture) |
+| `lldb` | Device attach / backtrace (Workflow D: vphone via packages debug) |
+| `agent-device` | UI automation + vphone `packages` tipa/apt/debug |
+
+Lab for Mode B tipa: `nix run github:Wawona/wwn-vphone#vphone-jb-lab`.
 
 ## Do not conflate
 

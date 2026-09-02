@@ -324,6 +324,54 @@ include = ["**/*.{nix,md,rs,c,h}", "flake.nix"]
 exclude = ["**/.git/**", "**/target/**"]
 
 [[source]]
+name = "wwn-vphone"
+project = "wawona"
+kind = "git"
+url = "https://github.com/Wawona/wwn-vphone"
+ref = "development"
+description = "L3' jailbroken iOS Mode B lab (vphone-cli wrap). Never ships Disk.img/IPSW; nix run #vphone-jb-lab."
+license = "MIT"
+platform = ["macos"]
+include = ["**/*.{nix,md,sh}", "flake.nix", "patches/**", "docs/**"]
+exclude = ["**/.git/**", "**/*.img", "**/*.ipsw"]
+
+[[source]]
+name = "wwn-vphone-local"
+project = "wawona"
+kind = "local"
+path = "../wwn-vphone"
+description = "Optional local checkout of wwn-vphone (toggle for offline index)."
+license = "MIT"
+platform = ["macos"]
+include = ["**/*.{nix,md,sh}", "flake.nix", "patches/**", "docs/**"]
+exclude = ["**/.git/**", "**/*.img", "**/*.ipsw"]
+enabled = false
+
+[[source]]
+name = "agent-device-wawona"
+project = "wawona"
+kind = "git"
+url = "https://github.com/Wawona/agent-device"
+ref = "development"
+description = "Wawona fork of agent-device (0.18.3-wawona.N): vphone packages tipa/apt/debug."
+license = "MIT"
+platform = ["all"]
+include = ["src/**/*.{ts,md}", "docs/**/*.md", "README.md", "package.json"]
+exclude = ["**/.git/**", "**/node_modules/**", "**/dist/**"]
+
+[[source]]
+name = "agent-device-wawona-local"
+project = "wawona"
+kind = "local"
+path = "../agent-device"
+description = "Optional local checkout of Wawona agent-device fork."
+license = "MIT"
+platform = ["all"]
+include = ["src/**/*.{ts,md}", "docs/**/*.md", "README.md", "package.json"]
+exclude = ["**/.git/**", "**/node_modules/**", "**/dist/**"]
+enabled = false
+
+[[source]]
 name = "wwn-iowatchdog-git"
 project = "wawona"
 kind = "git"
