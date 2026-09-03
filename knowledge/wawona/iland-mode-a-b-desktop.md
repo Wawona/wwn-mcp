@@ -115,8 +115,28 @@ See [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).
 Android Desktop: Default Home + LockScreen APIs. **No root.** Not the macOS
 dylib. Still planned.
 
-iOS / iPadOS Desktop: jailbreak tweak from `repo.wawona.io` only. **Forbidden**
-in App Store IPA. Never mention jailbreak in store binaries.
+iOS / iPadOS Desktop has two Mode B channels and remains **forbidden** in the
+App Store IPA:
+
+- TrollStore: `com.aspauldingcode.Wawona.ModeB` `.tipa`, signed with `ldid`.
+  Includes JIT QEMU, JIT container-in-VM, IOMobileFramebuffer own-display
+  Desktop foundations, and bundled Wawona zsh logical PTYs.
+- Sileo: full jailbreak provider from `repo.wawona.io`. May add Doorman,
+  Procursus host PTYs/APT, ElleKit, and Swinging Bridge.
+
+TrollStore does not imply Sileo. It does not ship Doorman, host APT, ElleKit,
+or Swinging Bridge. Wasm JIT is deferred.
+
+The TrollStore output path is Rust-owned:
+
+```text
+IOSurface dma-buf -> wwn-iland-iomfb -> IOMobileFramebuffer
+Rust Machines greeter -> wwn-igetty logical sessions -> native/VM/container/PTYs
+```
+
+UIKit remains input and lifecycle glue. Native IOSurface buffers stay
+zero-copy; `wl_shm` and non-IOSurface Metal textures use explicit fallback
+routes. See `Wawona/docs/linux-dmabuf-zero-copy.md`.
 
 ## Verify
 
