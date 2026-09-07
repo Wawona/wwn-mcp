@@ -34,7 +34,8 @@ Wawona development is split across the **Wawona GitHub organization**
 ├── wwn-neovim/
 ├── wwn-phoon-rs/
 ├── wwn-wasm/         # Wawona Runtime (WASI); optional package path
-└── wawona.io/
+├── wawona.io/
+└── repo.wawona.io/   # human /search/ catalogs + wasm/v1 + Sileo APT
 ```
 
 `wwn-apt` is **retired** (tombstone only if the GitHub repo remains).
@@ -61,6 +62,7 @@ Wawona development is split across the **Wawona GitHub organization**
 | SSH / libssh2 | `wwn-ssh` |
 | VMs / containers | `wwn-vms` / `wwn-containers` |
 | WASI Runtime / Wasm packages | `wwn-wasm` (+ Wawona docs) |
+| Wasm / Sileo catalog host | `repo.wawona.io` |
 | XcodeGen, Android APK, Rust backend, Machines | `Wawona` |
 | Public website | `wawona.io` |
 | Agent RAG / corpus | `wwn-mcp` |

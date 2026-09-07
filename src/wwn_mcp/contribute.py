@@ -91,8 +91,8 @@ _REPOS: list[dict[str, Any]] = [
     {
         "repo": "wwn-igetty",
         "layer": "L3'",
-        "role": "VT switching + Doorman getty on iland DRM after Classic Take Over",
-        "when": "igettyd, F1-F9, DesktopReplacementGuiVt, Classic session VTs",
+        "role": "Session switching: macOS Classic VTs, iOS TrollStore logical zsh PTYs",
+        "when": "igettyd, F1-F9, DesktopReplacementGuiVt, iOS Mode B zsh PTYs",
         "project": "wawona",
     },
     {
@@ -165,11 +165,18 @@ _REPOS: list[dict[str, Any]] = [
         "when": "public docs, download, FAQ",
         "project": "wawona",
     },
+    {
+        "repo": "repo.wawona.io",
+        "layer": "docs",
+        "role": "Dual catalog host: Mode A wasm (/wasm/v1) and Mode B Sileo APT",
+        "when": "human /search/ catalogs, wasm index.json, Packages, jailbreak landing",
+        "project": "wawona",
+    },
 ]
 
 _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"zsh|rootfs", re.I), "wwn-zsh", "zsh / RootFS patches live in wwn-zsh"),
-    (re.compile(r"angle|swiftshader|moltenvk|kosmickrisp|iland|drm|kms|gbm|egl", re.I),
+    (re.compile(r"angle|swiftshader|moltenvk|kosmickrisp|iland|drm|kms|gbm|egl|iomfb", re.I),
      "wwn-iland", "Graphics stack ownership is L1 wwn-iland"),
     (re.compile(r"kmscube", re.I), "wwn-kmscube", "L2 acceptance client"),
     (re.compile(r"weston", re.I), "wwn-weston", "Weston ports and patches"),
@@ -179,9 +186,9 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"iowatchdog|watchdogd|claim-ok|path.?b", re.I),
      "wwn-iowatchdog", "macOS IOWatchdog Path B (Desktop Mode B; never lldb watchdogd)"),
     (re.compile(r"igetty|igettyd|doorman", re.I),
-     "wwn-igetty", "Classic VTs / getty after WindowServer is gone"),
-    (re.compile(r"desktop.?replacement|take.?over|keep.?ws|libwayland-mac", re.I),
-     "Wawona", "Desktop Replacement Settings/helper (dylib is wwn-iland; watchdog is wwn-iowatchdog)"),
+     "wwn-igetty", "macOS Classic VTs or iOS TrollStore logical zsh PTYs"),
+    (re.compile(r"desktop.?replacement|take.?over|keep.?ws|libwayland-mac|trollstore|mode.?b.?tipa", re.I),
+     "Wawona", "Desktop Replacement (macOS helper or iOS TrollStore tipa)"),
     (re.compile(r"\bvm\b|virtual.?machine", re.I), "wwn-vms", "VM machine kinds"),
     (re.compile(r"container", re.I), "wwn-containers", "Container machine kinds"),
     (re.compile(r"ssh|libssh2|openssh", re.I), "wwn-ssh", "SSH backend split"),
@@ -196,6 +203,11 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"machine|swiftui|xcodegen|android.?ui|smithay|compositor.?core", re.I),
      "Wawona", "L4 product integration"),
     (re.compile(r"mcp|rag|corpus|knowledge", re.I), "wwn-mcp", "This RAG server"),
+    (re.compile(
+        r"repo\.wawona\.io|sileo|/wasm/v1|/search/\?channel|(wasm|deb) catalog",
+        re.I,
+    ), "repo.wawona.io", "Dual catalog host: /search wasm vs deb. APT at repo root."),
+    (re.compile(r"\bwpm\b", re.I), "wwn-wasm", "Wawona Runtime package client"),
     (re.compile(r"website|wawona\.io|docs.?site", re.I), "wawona.io", "Public site"),
 ]
 
@@ -255,10 +267,16 @@ _CAP_NOTES: dict[tuple[str, str], str] = {
         "Still planned: Default Home + LockScreen APIs. No root. Not the macOS dylib."
     ),
     ("ios", "desktop"): (
-        "Forbidden in App Store IPA. Jailbreak tweak from repo.wawona.io only."
+        "Forbidden in the App Store IPA. Current Mode B product is the "
+        "TrollStore tipa com.aspauldingcode.Wawona.ModeB (IOMFB Desktop, "
+        "JIT QEMU, container-in-VM, Wawona zsh PTYs). Sileo/Doorman/ElleKit "
+        "and Wasm JIT are deferred, not the current Desktop path."
     ),
     ("ipados", "desktop"): (
-        "Forbidden in App Store IPA. Jailbreak tweak from repo.wawona.io only."
+        "Forbidden in the App Store IPA. Current Mode B product is the "
+        "TrollStore tipa com.aspauldingcode.Wawona.ModeB (IOMFB Desktop, "
+        "JIT QEMU, container-in-VM, Wawona zsh PTYs). Sileo/Doorman/ElleKit "
+        "and Wasm JIT are deferred, not the current Desktop path."
     ),
     ("ios", "swinging_bridge"): (
         "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."

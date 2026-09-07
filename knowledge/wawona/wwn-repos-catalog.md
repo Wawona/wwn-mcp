@@ -25,7 +25,8 @@ compositor/shell/toolchain development.
 | **wwn-fastfetch** | L3′ | fastfetch port | |
 | **wwn-neovim** | L3′ | neovim / optional module | |
 | **wwn-phoon-rs** | L3′ | phoon client | |
-| **wwn-wasm** | L3′ | Wawona Runtime (WASI P1/P2); optional software path | Files + package client |
+| **wwn-wasm** | L3′ | Wawona Runtime (WASI P1/P2); optional software path | Files + `wpm` client |
+| **repo.wawona.io** | docs | Dual catalog: `/search/?channel=wasm` + `/wasm/v1`; Sileo APT at repo root | Never one mixed list |
 | **wwn-mcp** | tooling | Stdio RAG + MCP for agents | This repo |
 | **wawona.io** | docs | Public site | Not a product flake input |
 

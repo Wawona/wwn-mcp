@@ -48,6 +48,14 @@ def test_contribute_capability_gates():
     assert get_capability("watchos", "vm")["state"] == "forbidden"
     assert get_capability("ios", "swinging_bridge")["state"] == "forbidden"
     assert get_capability("ipados", "anowaw")["state"] == "forbidden"
+    ios_desktop = get_capability("ios", "desktop")
+    assert ios_desktop["state"] == "forbidden"
+    assert "TrollStore" in ios_desktop["note"]
+    assert "com.aspauldingcode.Wawona.ModeB" in ios_desktop["note"]
+    assert "jailbreak tweak from repo.wawona.io only" not in ios_desktop["note"]
+    ipados_desktop = get_capability("ipados", "desktop")
+    assert ipados_desktop["state"] == "forbidden"
+    assert "TrollStore" in ipados_desktop["note"]
     assert get_capability("macos", "swinging_bridge")["state"] == "planned"
     macos_desktop = get_capability("macos", "desktop")
     assert macos_desktop["state"] == "planned"
@@ -62,6 +70,10 @@ def test_contribute_capability_gates():
     repos = {r["repo"] for r in list_repos()}
     assert "wwn-niri" in repos and "wwn-kmscube" in repos and "Wawona" in repos
     assert "wwn-igetty" in repos and "wwn-iowatchdog" in repos
+    assert "repo.wawona.io" in repos
+    assert where_to_edit("repo.wawona.io wasm catalog")["repo"] == "repo.wawona.io"
+    assert where_to_edit("sileo deb catalog")["repo"] == "repo.wawona.io"
+    assert where_to_edit("wpm install hello")["repo"] == "wwn-wasm"
 
 
 def test_golden_knowledge_search(knowledge_index):
@@ -86,6 +98,8 @@ def test_golden_knowledge_search(knowledge_index):
         ("kmscube HUD restore GL attribs", "wawona"),
         ("contribute development branch", "wawona"),
         ("four-state capability gate planned blocked", "wawona"),
+        ("TrollStore Mode B Desktop IOMFB", "wawona"),
+        ("repo.wawona.io two catalogs never mixed", "wawona"),
     ]
     for query, project in cases:
         hits = store.search(query, kind="docs", project=project, top_k=5)
@@ -107,6 +121,7 @@ def test_golden_knowledge_search(knowledge_index):
                 "multi-repo",
                 "wwn-repos-catalog",
                 "wwn-iland-graphics",
+                "repo-wawona-io",
             )
         ), f"unexpected paths for {query!r}: {paths}"
 
