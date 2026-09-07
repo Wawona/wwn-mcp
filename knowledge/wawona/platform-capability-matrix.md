@@ -25,6 +25,7 @@ product targets.
 | Vulkan / OpenGL / ANGLE | available | available | available | available | available | **planned** | **blocked** |
 | Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** (App Store) | forbidden | **forbidden** (App Store) | forbidden | forbidden |
 | Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Mode B via repo) | forbidden | **forbidden** (App Store; Mode B via repo) | forbidden | forbidden |
+| Relay Wasm (WASI / wpm) | available | available | available | available | available | available | available |
 
 ## Non-negotiable target rules
 
@@ -32,6 +33,11 @@ product targets.
   and ship. Android remains equally covered.
 - Weston and **Niri** are real native bundled compositors on **every** row.
   Fake entry points do not count.
+- **Relay Wasm** is a real native bundle on **every** row including watchOS
+  and Linux. Pulley on Apple mobile store artifacts. Do not size-gate it off.
+- **hello-wasi-gui** (`wl_shm` + xdg) must **run** on every target, including
+  Apple Watch Machines Start. Transfer-only WatchConnectivity is not enough.
+  Watch GPU wasm (GLES/Vulkan/Metal) is blocked; present is SpriteKit of SHM.
 - **tvOS GPU is planned** (Metal + OpenGLES in the SDK). **watchOS GPU is
   blocked** (no Metal / OpenGLES / CAMetalLayer on watchOS).
 - **visionOS VMs/containers are planned** (same class as iOS/iPadOS). tvOS and
