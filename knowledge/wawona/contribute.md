@@ -32,7 +32,7 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | zsh / RootFS | `wwn-zsh` |
 | Machines UI, SwiftUI, Android app, Smithay | `Wawona` |
 | Public docs site | `wawona.io` |
-| Wasm / Sileo catalogs (`/search/`, `/wasm/v1`, APT) | `repo.wawona.io` |
+| Wasm / Sileo / Termux catalogs (`/search/`, `/wasm/v1`, APT) | `repo.wawona.io` |
 | This RAG / corpus | `wwn-mcp` |
 
 Never invert the DAG: L0 ↚ L1+; L1 ↚ weston/kmscube; Wawona is never an input

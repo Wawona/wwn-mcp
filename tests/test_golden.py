@@ -73,6 +73,7 @@ def test_contribute_capability_gates():
     assert "repo.wawona.io" in repos
     assert where_to_edit("repo.wawona.io wasm catalog")["repo"] == "repo.wawona.io"
     assert where_to_edit("sileo deb catalog")["repo"] == "repo.wawona.io"
+    assert where_to_edit("termux android sideload debs")["repo"] == "repo.wawona.io"
     assert where_to_edit("repo.wawona.io Cursor agent skills")["repo"] == "repo.wawona.io"
     assert where_to_edit("wawona.io homepage Search packages")["repo"] == "wawona.io"
     assert where_to_edit("wpm install hello")["repo"] == "wwn-wasm"

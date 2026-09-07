@@ -35,7 +35,7 @@ Wawona development is split across the **Wawona GitHub organization**
 ├── wwn-phoon-rs/
 ├── wwn-wasm/         # Wawona Runtime (WASI); optional package path
 ├── wawona.io/
-└── repo.wawona.io/   # human /search/ catalogs + wasm/v1 + Sileo APT
+└── repo.wawona.io/   # human /search/ catalogs + wasm/v1 + Sileo/Termux APT
 ```
 
 `wwn-apt` is **retired** (tombstone only if the GitHub repo remains).
@@ -44,8 +44,8 @@ Wawona development is split across the **Wawona GitHub organization**
 
 | Surface | Rule |
 |---------|------|
-| **Wawona / wwn-wasm** | App Store Runtime + Wasm packages. Store `wpm` may use `repo.wawona.io/wasm/v1` only. **Never** APT, `/Packages`, or `/jailbreak/`. |
-| **`repo.wawona.io`** | Two catalogs, never one list. Humans: `/search/?channel=wasm` (Mode A) and `/search/?channel=deb` (Mode B). Machine APIs: `/wasm/v1` vs root APT. `/jailbreak/` is a human landing onto the deb catalog, not a second APT tree. |
+| **Wawona / wwn-wasm** | App Store Runtime + Wasm packages. Store `wpm` may use `repo.wawona.io/wasm/v1` only. **Never** APT, `/Packages`, `/jailbreak/`, or `/termux/`. |
+| **`repo.wawona.io`** | Two catalogs, never one list. Wasm: App Store / Play. Debs: Sileo on jailbroken iOS (rootless/rootful) and Termux on sideloaded Android (**not** jailbreak, **not** Play). Machine APIs: `/wasm/v1` vs root APT. `/jailbreak/` and `/termux/` are bookmarks, not extra APT trees. |
 | **Wawona App Store docs** | Native ports + Wasm documents/packages; no StoreKit ODR `apt`. |
 
 ## Where to edit what
@@ -62,7 +62,7 @@ Wawona development is split across the **Wawona GitHub organization**
 | SSH / libssh2 | `wwn-ssh` |
 | VMs / containers | `wwn-vms` / `wwn-containers` |
 | WASI Runtime / Wasm packages | `wwn-wasm` (+ Wawona docs) |
-| Wasm / Sileo catalog host | `repo.wawona.io` |
+| Wasm / Sileo / Termux catalog host | `repo.wawona.io` |
 | XcodeGen, Android APK, Rust backend, Machines | `Wawona` |
 | Public website | `wawona.io` |
 | Agent RAG / corpus | `wwn-mcp` |

@@ -168,8 +168,8 @@ _REPOS: list[dict[str, Any]] = [
     {
         "repo": "repo.wawona.io",
         "layer": "docs",
-        "role": "Dual catalog host: Mode A wasm (/wasm/v1) and Mode B Sileo APT",
-        "when": "human /search/ catalogs, wasm index.json, Packages, jailbreak landing",
+        "role": "Dual catalog host: store wasm (/wasm/v1) plus APT debs (Sileo iOS jailbreak and Termux Android sideload)",
+        "when": "human /search/ catalogs, wasm index.json, Packages, jailbreak landing, termux landing",
         "project": "wawona",
     },
 ]
@@ -204,9 +204,9 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
      "Wawona", "L4 product integration"),
     (re.compile(r"mcp|rag|corpus|knowledge", re.I), "wwn-mcp", "This RAG server"),
     (re.compile(
-        r"repo\.wawona\.io|sileo|/wasm/v1|/search/\?channel|(wasm|deb) catalog",
+        r"repo\.wawona\.io|sileo|termux|/wasm/v1|/search/\?channel|(wasm|deb) catalog",
         re.I,
-    ), "repo.wawona.io", "Dual catalog host: /search wasm vs deb. APT at repo root."),
+    ), "repo.wawona.io", "Dual catalog host: wasm for stores; Sileo iOS jailbreak debs and Termux Android sideload debs. APT at repo root."),
     (re.compile(r"\bwpm\b", re.I), "wwn-wasm", "Wawona Runtime package client"),
     (re.compile(r"website|(?<!repo\.)wawona\.io|docs.?site", re.I), "wawona.io", "Public site"),
 ]

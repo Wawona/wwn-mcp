@@ -26,7 +26,7 @@ compositor/shell/toolchain development.
 | **wwn-neovim** | L3′ | neovim / optional module | |
 | **wwn-phoon-rs** | L3′ | phoon client | |
 | **wwn-wasm** | L3′ | Wawona Runtime (WASI P1/P2); optional software path | Files + `wpm` client |
-| **repo.wawona.io** | docs | Dual catalog: `/search/?channel=wasm` + `/wasm/v1`; Sileo APT at repo root | Never one mixed list |
+| **repo.wawona.io** | docs | Dual catalog: store wasm `/wasm/v1`; Sileo iOS jailbreak debs + Termux Android sideload debs at APT root | Never one mixed list. Termux is not jailbreak. |
 | **wwn-mcp** | tooling | Stdio RAG + MCP for agents | This repo |
 | **wawona.io** | docs | Public site | Not a product flake input |
 
@@ -47,7 +47,7 @@ How to contribute: [`contribute.md`](contribute.md).
 ## Deleted / renamed
 
 - **`Wawona/iland`**. Deleted; use **wwn-iland** (credits CoreBedtime/iland).
-- **`Wawona/Wawona-repo`** → **repo.wawona.io** (Mode A wasm `/wasm/v1` + Mode B Sileo APT at repo root; humans search at `/search/`).
+- **`Wawona/Wawona-repo`** → **repo.wawona.io** (store wasm `/wasm/v1`; Sileo iOS jailbreak APT + Termux Android sideload APT at repo root; humans search at `/search/`).
 - **`Wawona/wawona.github.io`** → **wawona.io**.
 
 ## Standalone build examples
