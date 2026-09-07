@@ -31,6 +31,7 @@ platform = ["all"]
 include = [
   "docs/**/*.md",
   "docs/agent-rules/**",
+  "docs/agent-skills/**",
   "src/**/*.rs",
   "src/**/*.{c,h,m,mm}",
   "Sources/**/*.swift",
@@ -69,6 +70,7 @@ license = "MIT"
 include = [
   "docs/**",
   "docs/agent-rules/**",
+  "docs/agent-skills/**",
   "src/**",
   "Sources/**",
   "dependencies/**",
@@ -1440,7 +1442,7 @@ name = "wwn-knowledge-wawona"
 project = "wawona"
 kind = "local"
 path = "knowledge/wawona"
-description = "Curated WWN-MCP knowledge: L0-L4 repo DAG, complete wwn-iland graphics stack, Mode A/B, Classic Desktop Replacement, Path B watchdog safety, Aqua vs Classic compositor backends, full Apple/Android capability matrix, toolkit readiness and software SHM fallback, plus multi-repo/device/debug workflows."
+description = "Curated WWN-MCP knowledge: L0-L4 repo DAG, complete wwn-iland graphics stack, Mode A/B, Classic Desktop Replacement, Path B watchdog safety, Aqua vs Classic compositor backends, full Apple/Android capability matrix, toolkit readiness and software SHM fallback, agent learn loop (skills + RAG capture), plus multi-repo/device/debug workflows."
 license = "MIT"
 platform = ["all"]
 include = ["**/*.md"]

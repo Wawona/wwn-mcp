@@ -35,6 +35,10 @@ Install: `nix profile install github:Wawona/WWN-MCP` then `wwn-mcp info`.
 4. `search_code` / `find_symbol` / `get_patch`. Implementation + patches.
 5. `get_protocol` when touching Wayland surfaces.
 6. Trust citations over priors.
+7. Read matching Cursor skill (`.cursor/skills/wawona-*`, tracked
+   `Wawona/docs/agent-skills/`). Software must improve on prior knowledge.
+   After a durable finding: update skill + `knowledge/wawona/` + reindex.
+   See `agent-learn.md`. Voice: caveman-lite.
 
 ## Companion MCPs (separate processes)
 

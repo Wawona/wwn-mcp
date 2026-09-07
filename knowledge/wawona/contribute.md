@@ -4,6 +4,11 @@ Agents: query **wwn-mcp** (`list_repos`, `where_to_edit`, `get_capability`,
 `search_docs`) before editing. Transport is **stdio only**. Any MCP host
 spawns `wwn-mcp` like `uvx mcp-nixos`. There is no `mcp.wawona.io`.
 
+Read matching `.cursor/skills/wawona-*` (tracked
+`Wawona/docs/agent-skills/`). Software must improve on documented prior
+knowledge. Capture new findings into a skill, `docs/agent-rules/` when it is a
+hard gate, and `knowledge/wawona/`, then reindex. See [`agent-learn.md`](agent-learn.md).
+
 **Human contributors using AI:** start with the public guide
 [AI + MCP](https://wawona.io/docs/contributor/wwn-mcp/) and the indexed
 [`ai-contributors-mcp.md`](ai-contributors-mcp.md). Wire `wwn-mcp` (and
