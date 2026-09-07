@@ -12,6 +12,8 @@ Indexed summary for WWN-MCP. Full copies:
 1. Query **wwn-mcp** before coding (`where_to_edit`, `get_capability`,
    `search_docs` / `search_code`). Trust citations over priors.
 2. Read matching `.cursor/skills/wawona-*`. Index in `wawona-priors`.
+   Catalog host: `repo.wawona.io/.cursor/skills/repo-wawona-io-priors`.
+   `where_to_edit` must not treat `repo.wawona.io` as the `wawona.io` website.
 3. Software must **improve on** documented prior knowledge. Do not re-ship a
    rejected path (Mode B in store, DAG invert, KMS-rehost of a Wayland client,
    `watchdogd` Take Over without Path B ACK).

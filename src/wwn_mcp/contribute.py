@@ -208,7 +208,7 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
         re.I,
     ), "repo.wawona.io", "Dual catalog host: /search wasm vs deb. APT at repo root."),
     (re.compile(r"\bwpm\b", re.I), "wwn-wasm", "Wawona Runtime package client"),
-    (re.compile(r"website|wawona\.io|docs.?site", re.I), "wawona.io", "Public site"),
+    (re.compile(r"website|(?<!repo\.)wawona\.io|docs.?site", re.I), "wawona.io", "Public site"),
 ]
 
 # platform → feature → state (available|planned|blocked|forbidden)
