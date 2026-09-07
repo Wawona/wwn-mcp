@@ -13,8 +13,7 @@ compositor/shell/toolchain development.
 | **wwn-niri** | L3 | Niri compositor | Mandatory native bundle |
 | **wwn-waypipe** | L3′ | waypipe-rs remote | |
 | **Wawona-Swinging-Bridge** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
-| **wwn-vms** | L3′ | VM machine kinds | Planned |
-| **wwn-containers** | L3′ | Container machine kinds | Planned |
+| **Relay** (`wwn-relay`) | L3′ | Linux VMs + OCI-in-VM + Mode A WASI | Never QEMU/UTM. Edit here, not wwn-vms/containers/wasm |
 | **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
 | **wwn-iowatchdog** | L3′ | macOS IOWatchdog Path B (Desktop Mode B) | nixpkgs-only; never Apple-mobile |
 | **wwn-vphone** | L3′ | Jailbroken iOS research lab (vphone-cli wrap) | nixpkgs-only; never ship Disk.img/IPSW |
@@ -25,7 +24,7 @@ compositor/shell/toolchain development.
 | **wwn-fastfetch** | L3′ | fastfetch port | |
 | **wwn-neovim** | L3′ | neovim / optional module | |
 | **wwn-phoon-rs** | L3′ | phoon client | |
-| **wwn-wasm** | L3′ | Wawona Runtime (WASI P1/P2); optional software path | Files + `wpm` client |
+| **wwn-wasm** (legacy) | L3′ | Merged into **Relay**. Do not start new work here | Redirect |
 | **repo.wawona.io** | docs | Dual catalog: store wasm `/wasm/v1`; Sileo iOS jailbreak debs + Termux Android sideload debs at APT root | Never one mixed list. Termux is not jailbreak. |
 | **wwn-mcp** | tooling | Stdio RAG + MCP for agents | This repo |
 | **wawona.io** | docs | Public site | Not a product flake input |
@@ -37,7 +36,7 @@ L0 wwn-toolchain
   └─ L1 wwn-iland
        └─ L2 wwn-kmscube
             └─ L3 wwn-weston / wwn-niri
-L0 ──► L3' waypipe / Wawona Swinging Bridge / vms / containers / ssh / wasm / iowatchdog / igetty / ports
+L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty / ports
 L4 Wawona ──► all required lower layers
 ```
 
