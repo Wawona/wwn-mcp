@@ -43,8 +43,8 @@ Wawona development is split across the **Wawona GitHub organization**
 
 | Surface | Rule |
 |---------|------|
-| **Wawona / wwn-wasm** | App Store Runtime + Wasm packages. **Zero** jailbreak / `repo.wawona.io`. |
-| **`repo.wawona.io`** | Jailbreak `.deb` only. Not in default wwn-mcp corpus. |
+| **Wawona / wwn-wasm** | App Store Runtime + Wasm packages. Store `wpm` may use `repo.wawona.io/wasm/v1` only. **Never** APT, `/Packages`, or `/jailbreak/`. |
+| **`repo.wawona.io`** | Two catalogs, never one list. Humans: `/search/?channel=wasm` (Mode A) and `/search/?channel=deb` (Mode B). Machine APIs: `/wasm/v1` vs root APT. `/jailbreak/` is a human landing onto the deb catalog, not a second APT tree. |
 | **Wawona App Store docs** | Native ports + Wasm documents/packages; no StoreKit ODR `apt`. |
 
 ## Where to edit what

@@ -46,7 +46,7 @@ How to contribute: [`contribute.md`](contribute.md).
 ## Deleted / renamed
 
 - **`Wawona/iland`**. Deleted; use **wwn-iland** (credits CoreBedtime/iland).
-- **`Wawona/Wawona-repo`** → **repo.wawona.io** (jailbreak only; not in default RAG).
+- **`Wawona/Wawona-repo`** → **repo.wawona.io** (Mode A wasm `/wasm/v1` + Mode B Sileo APT at repo root; humans search at `/search/`).
 - **`Wawona/wawona.github.io`** → **wawona.io**.
 
 ## Standalone build examples
