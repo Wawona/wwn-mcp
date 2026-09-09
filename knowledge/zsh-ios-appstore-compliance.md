@@ -97,8 +97,18 @@ coreutils** into the app and runs them as functions.
 - A `wwn_inproc` command is dispatched via **`wawona_dispatch_inprocess()`**
   (**`wwn-toolchain/dependencies/libs/wawona-pty/src/wawona-dispatch.c`**), which forwards a
   **safe-subset** basename to Rust **`wawona_coreutils_main()`**. A patched
-  **uutils coreutils** built as a static lib (≈39 utils: `ls`, `cat`, `cp`, …).
-  Anything not in the subset prints a sandbox-aware **"command not found"**.
+  **uutils coreutils** built as a static lib (including `chmod`, `ls`, `cat`,
+  `cp`, …).
+-   If dispatch returns **not handled**, the same exec hook interprets **user
+  shell scripts in-process** (`./file.sh`, `file.sh`, a full path, `zsh file.sh`,
+  `sh -c`). `usr/bin/zsh` and `usr/bin/sh` are 755 comment placeholders.
+  `wwn_is_interpreter_placeholder` never sources them. Bare `zsh`/`sh` is the
+  current interpreter (the archive is not re-entrant). Scripts are **data** for
+  the signed zsh interpreter (same 2.5.2 class as Pulley wasm). Mach-O / ELF
+  magic is refused (exit 126). `chmod +x` only changes Unix file modes inside
+  the container. It does not make unsigned Mach-O runnable. `hashcmd` uses
+  `wwn_inproc_runnable_path` so scripts and wasm do not need Unix `X_OK`.
+- Anything else prints a sandbox-aware **"command not found"**.
 - CI (**`wwn-zsh/.github/scripts/verify-zsh-ios-patches.py`**) **bans** `fork(`, `execve(`,
   `posix_spawn`, `system(`, `dlopen(`, `mmap(`, `MAP_JIT` in the dispatch shim,
   and keeps the safe-utility list in sync across `Cargo.toml` ↔
@@ -117,15 +127,16 @@ coreutils** into the app and runs them as functions.
 
 - Built by **`wwn-zsh/dependencies/wawona/ios-rootfs.nix`** as **`wawona-rootfs`**: zsh
   `share/` (Functions, Completion), and `.zshenv`/`.zshrc`/`.zlogin` **templates**.
-  `usr/bin/zsh` is a **comment placeholder only** (the real zsh is in the app
-  binary).
+  `usr/bin/zsh` and `usr/bin/sh` are **755 comment placeholders** so
+  `command -v zsh` resolves. Never sourced. The real zsh is in the app binary.
 - Embedded read-only at the bundle root (`Wawona.app/wawona-rootfs/`), then on
   first launch `WWNRootfsManager` copies/refreshes it into a **writable** copy at
   `Application Support/Wawona/wawona-rootfs/` (writable `home/` for dotfiles &
   `.zsh_history`).
 - The shell env is virtual: `HOME`/`ZDOTDIR` point into the rootfs `home/`,
-  `WAWONA_SHELL` is a virtual `/usr/bin/zsh`, and `PATH=/usr/bin:/bin` contains
-  **no real executables**. Commands are resolved by the exec hook, not `PATH`.
+  `WAWONA_SHELL` is a virtual `/usr/bin/zsh`. `PATH` lists comment stubs
+  (`usr/bin/zsh`, `usr/bin/sh`, uutils names). Commands still run in the exec
+  hook, never via `execve` of those files.
 - **No chroot, no mount namespace.** It is a *logical prefix* inside the app
   sandbox; it never reads or writes iOS system tools/paths.
 
@@ -157,19 +168,21 @@ coreutils** into the app and runs them as functions.
   static libs in the app binary). Nothing is downloaded or generated at runtime.
 - **No JIT, no `dlopen` of user code, no `fork`/`exec`/`posix_spawn`** on the
   shell path (enforced by CI patch-verification).
-- **The shell cannot run arbitrary binaries**. Only the in-process safe-subset
-  utilities. And writes only inside the app container.
+- **The shell cannot run arbitrary native binaries**. Mach-O and ELF are
+  refused. User **shell scripts** and **wasm documents** are interpreted by
+  engines that shipped in the signed binary (`source` / Pulley). Writes stay
+  inside the app container.
 - Treat the **Apple-strict** answer as the baseline; Android (Play) permits real
   `fork`/`exec` and dynamic native loading, so the Android build deliberately
   drops all of this machinery.
 
 ## Caveat: stale in-repo docs
 
-Some `docs/ios-local-shell/` files (`APP-STORE-COMPLIANCE.md`,
-`WAWONA-PTY-SPEC.md`, `ios-local-shell-spike.md`) still describe an older
-**`posix_spawn` of a bundled zsh** model. That is **superseded**. The shipping
-design is **in-process `wawona_zsh_main` on a pthread**. `ARCHITECTURE.md` and the
-C sources are authoritative; trust the in-process description above.
+`APP-STORE-COMPLIANCE.md`, `SECURITY-SPAWN-POLICY.md`, and `ROOTFS-AND-ZSH.md`
+describe the in-process model (placeholders, script `source`, Mach-O refuse).
+Older spike notes (`WAWONA-PTY-SPEC.md`, `ios-local-shell-spike.md`) may still
+mention `posix_spawn` of a bundled zsh. That path is **superseded**. Trust
+`ARCHITECTURE.md` and the C sources.
 
 ## Where to look (canonical files)
 
