@@ -14,6 +14,7 @@ compositor/shell/toolchain development.
 | **wwn-waypipe** | L3′ | waypipe-rs remote | |
 | **Wawona-Swinging-Bridge** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
 | **Relay** (`wwn-relay`) | L3′ | Linux VMs + OCI-in-VM + Mode A WASI | Never QEMU/UTM. Edit here, not wwn-vms/containers/wasm |
+| **nixpkgs2wasi** | L3′ | Curated nixpkgs → WASI P1/P2 / WPM (`n2w`) | nixpkgs-only. Not the interpreter. Not an auto-mirror. Host at `/wasm/v1` |
 | **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
 | **wwn-iowatchdog** | L3′ | macOS IOWatchdog Path B (Desktop Mode B) | nixpkgs-only; never Apple-mobile |
 | **wwn-vphone** | L3′ | Jailbroken iOS research lab (vphone-cli wrap) | nixpkgs-only; never ship Disk.img/IPSW |
@@ -36,7 +37,7 @@ L0 wwn-toolchain
   └─ L1 wwn-iland
        └─ L2 wwn-kmscube
             └─ L3 wwn-weston / wwn-niri
-L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty / ports
+L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty / nixpkgs2wasi / ports
 L4 Wawona ──► all required lower layers
 ```
 

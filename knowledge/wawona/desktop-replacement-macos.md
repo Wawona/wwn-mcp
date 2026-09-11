@@ -7,6 +7,9 @@ https://wawona.io/docs/macos/. Engineering:
 
 This is **not** Wawona Swinging Bridge.
 
+wwn-igetty is the Doorman PAM console (Linux framebuffer/TTY). It is **not**
+a Machines profile. Machine Configuration must never show Mode B TTY.
+
 ## What shipped
 
 Classic Desktop Replacement **exists** on macOS desktop-host builds. For one
@@ -22,7 +25,7 @@ Android Home/LockScreen is still planned.
 | Mode A archive | `wwn-iland` | `libiland_userland.a`, in-window present |
 | Mode B dylib | `wwn-iland` `iland-baremetal` | `libwayland-mac.dylib`, Mach → `framebufferd` |
 | IOWatchdog Path B | `wwn-iowatchdog` | Sticky Disable ACK before unloading `watchdogd` |
-| VTs / getty | `wwn-igetty` | `igettyd`, Doorman session, F1-F9 |
+| VTs / getty | `wwn-igetty` | `igettyd`, Doorman PAM console, F1-F9. Not a Machines profile |
 | SIP + Settings + Take Over | `Wawona` L4 | `WWNSipStatus`, `WWNDesktopReplacementController`, `WWNWaypipeRunner` |
 | Session weston DRM | `wwn-weston` | `--backend=drm` over iland |
 | Session niri DRM | `wwn-niri` | `NIRI_BACKEND=tty` after Classic |
@@ -68,7 +71,9 @@ hits a missing real node).
 - LockScreen greeter
 - Path C parked WindowServer (needed for Swinging Bridge + Desktop together)
 - Android Default Home + LockScreen APIs
-- iOS/iPadOS jailbreak tweak (`repo.wawona.io` only)
+- iOS/iPadOS TrollStore Mode B tipa (`com.aspauldingcode.Wawona.ModeB`) is
+  the current IOMFB Desktop product. Sileo/Doorman from `repo.wawona.io`
+  remains a later jailbreak provider, not the current path.
 
 Capability gate `get_capability("macos", "desktop")` stays **planned** until
 those land. Classic Take Over is still the implemented macOS path. Agents

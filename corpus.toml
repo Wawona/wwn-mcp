@@ -198,6 +198,30 @@ platform = ["ios", "ipados", "tvos", "visionos", "android", "macos"]
 include = ["**/*.md", "flake.nix", "dependencies/**/*.{nix,rs,toml,h,c}", "examples/**/*", "include/**/*.h"]
 exclude = ["**/.git/**", "**/target/**", "**/result/**"]
 
+[[source]]
+name = "nixpkgs2wasi"
+project = "wawona"
+kind = "local"
+path = "../nixpkgs2wasi"
+description = "Curated nixpkgs → WASI P1/P2 / WPM (n2w). Not Relay. Not an auto-mirror."
+license = "MIT"
+platform = ["all"]
+include = ["**/*.md", "crates/**/*.rs", "packages/**/*.toml", "wit/**", "flake.nix", "AGENTS.md"]
+exclude = ["**/.git/**", "**/target/**", "**/result/**"]
+
+[[source]]
+name = "nixpkgs2wasi-git"
+project = "wawona"
+kind = "git"
+url = "https://github.com/Wawona/nixpkgs2wasi"
+ref = "development"
+description = "Git mirror of nixpkgs2wasi (enable when no local sibling)."
+license = "MIT"
+platform = ["all"]
+include = ["**/*.md", "crates/**/*.rs", "packages/**/*.toml", "wit/**", "flake.nix", "AGENTS.md"]
+exclude = ["**/.git/**", "**/target/**", "**/result/**"]
+enabled = false
+
 # wwn-apt was retired (tombstone README only). Do not re-add as a product corpus source.
 
 # ---------------------------------------------------------------------------

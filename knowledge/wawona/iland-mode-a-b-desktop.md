@@ -119,8 +119,9 @@ iOS / iPadOS Desktop has two Mode B channels and remains **forbidden** in the
 App Store IPA:
 
 - TrollStore: `com.aspauldingcode.Wawona.ModeB` `.tipa`, signed with `ldid`.
-  Includes JIT QEMU, JIT container-in-VM, IOMobileFramebuffer own-display
-  Desktop foundations, and bundled Wawona zsh logical PTYs.
+  Includes IOMobileFramebuffer own-display Desktop foundations, Relay
+  VM/container kinds (planned, fail closed, no QEMU), and bundled Wawona
+  zsh logical PTYs.
 - Sileo: full jailbreak provider from `repo.wawona.io`. May add Doorman,
   Procursus host PTYs/APT, ElleKit, and Swinging Bridge.
 
@@ -141,6 +142,12 @@ routes. See `Wawona/docs/linux-dmabuf-zero-copy.md`.
 ## Verify
 
 `Wawona/.github/scripts/verify-iland-mode-b-bundle.sh --mode present|absent <root>`
+
+iOS Mode B tipa / Mode A firewall:
+
+`Wawona/.github/scripts/verify-ios-modeb-artifacts.sh --mode-a Wawona.app`
+
+`Wawona/.github/scripts/verify-ios-modeb-artifacts.sh --mode-b Wawona-YY.M.D-iOS-arm64.tipa`
 
 How-to: [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 Watchdog: [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).

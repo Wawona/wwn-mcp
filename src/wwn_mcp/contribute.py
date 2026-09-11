@@ -61,17 +61,31 @@ _REPOS: list[dict[str, Any]] = [
         "project": "swinging-bridge",
     },
     {
+        "repo": "Relay",
+        "layer": "L3'",
+        "role": "Only Linux VM + OCI-in-VM + Mode A WASI engine (flake input wwn-relay)",
+        "when": "virtual_machine, container-in-VM, Pulley/Cranelift wasm runtime",
+        "project": "wawona",
+    },
+    {
+        "repo": "nixpkgs2wasi",
+        "layer": "L3'",
+        "role": "Curated nixpkgs → WASI P1/P2 / WPM (n2w). Not the interpreter.",
+        "when": "n2w, wasm32-wawona, nixpkgs Wayland to wasm, foot.wpm north star",
+        "project": "wawona",
+    },
+    {
         "repo": "wwn-vms",
         "layer": "L3'",
-        "role": "VM machine kinds (planned)",
-        "when": "virtual_machine profiles / engines",
+        "role": "Legacy VM recipes. New engines live in Relay (wwn-relay).",
+        "when": "historical wwn-vms paths only",
         "project": "vms",
     },
     {
         "repo": "wwn-containers",
         "layer": "L3'",
-        "role": "Container machine kinds (planned)",
-        "when": "container profiles / engines",
+        "role": "Legacy container recipes. New engines live in Relay (wwn-relay).",
+        "when": "historical wwn-containers paths only",
         "project": "containers",
     },
     {
@@ -187,10 +201,27 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
      "wwn-iowatchdog", "macOS IOWatchdog Path B (Desktop Mode B; never lldb watchdogd)"),
     (re.compile(r"igetty|igettyd|doorman", re.I),
      "wwn-igetty", "macOS Classic VTs or iOS TrollStore logical zsh PTYs"),
+    (re.compile(
+        r"hypervisor|\bhvf\b|ios.?hv|ios_hypervisor|hv_vm_create|relay.?ios.?hv|Hypervisor\.framework",
+        re.I,
+    ),
+     "Relay",
+     "Mode B iOS/iPadOS Hypervisor.framework window lives in Relay (not QEMU HVF, not UTM)"),
     (re.compile(r"desktop.?replacement|take.?over|keep.?ws|libwayland-mac|trollstore|mode.?b.?tipa", re.I),
      "Wawona", "Desktop Replacement (macOS helper or iOS TrollStore tipa)"),
-    (re.compile(r"\bvm\b|virtual.?machine", re.I), "wwn-vms", "VM machine kinds"),
-    (re.compile(r"container", re.I), "wwn-containers", "Container machine kinds"),
+    (re.compile(r"wwn-relay|relay runtime|relay cpu", re.I),
+     "Relay", "Linux VMs + OCI-in-VM + Mode A WASI (never QEMU/UTM)"),
+    (re.compile(
+        r"nixpkgs2wasi|\bn2w\b|wasm32-wawona|pkgsCross\.wawona|nixpkgs.*wasi|wasi.*nixpkgs",
+        re.I,
+    ),
+     "nixpkgs2wasi",
+     "Curated nixpkgs → WASI P1/P2 for repo.wawona.io/wasm. Not Relay. Not an auto-mirror."),
+    (re.compile(r"\bvm\b|virtual.?machine", re.I),
+     "Relay", "Linux VM engines live in Relay, not wwn-vms"),
+    (re.compile(r"container-in-vm|oci.?in.?vm|container.?machine", re.I),
+     "Relay", "Container-in-VM engines live in Relay, not wwn-containers"),
+    (re.compile(r"container", re.I), "wwn-containers", "Legacy container recipes; new work is Relay"),
     (re.compile(r"ssh|libssh2|openssh", re.I), "wwn-ssh", "SSH backend split"),
     (re.compile(r"coreutils|uutils", re.I), "wwn-coreutils", "coreutils in-process"),
     (re.compile(r"\bfoot\b", re.I), "wwn-foot", "foot terminal"),
@@ -200,6 +231,12 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"\bapt\b|storekit|odr", re.I), "wwn-apt", "App Store module catalog"),
     (re.compile(r"cairo|pango|pixman|fontconfig|harfbuzz|libwayland|toolchain|wawona-pty", re.I),
      "wwn-toolchain", "L0 substrate / toolchain"),
+    (re.compile(
+        r"iphoneos.?deployment|ios.?min(imum)?.?(os|version)|ios.?deployment.?target|wawona.?ios.?min",
+        re.I,
+    ),
+     "wwn-toolchain",
+     "iOS min OS 11.0 is one deploymentTarget in apple/default.nix; ANGLE/MoltenVK patches are wwn-iland; @available is Wawona"),
     (re.compile(r"machine|swiftui|xcodegen|android.?ui|smithay|compositor.?core", re.I),
      "Wawona", "L4 product integration"),
     (re.compile(r"mcp|rag|corpus|knowledge", re.I), "wwn-mcp", "This RAG server"),
@@ -216,42 +253,42 @@ _CAPS: dict[str, dict[str, str]] = {
     "macos": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "planned", "swinging_bridge": "planned",
+        "desktop": "planned", "swinging_bridge": "planned", "hypervisor": "forbidden",
     },
     "android": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "planned", "swinging_bridge": "planned",
+        "desktop": "planned", "swinging_bridge": "planned", "hypervisor": "forbidden",
     },
     "ios": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "swinging_bridge": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "planned",
     },
     "ipados": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "swinging_bridge": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "planned",
     },
     "visionos": {
-        "native": "available", "remote": "available", "vm": "planned", "container": "planned",
+        "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "swinging_bridge": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "forbidden",
     },
     "tvos": {
         "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "forbidden", "nested_compositors": "available", "gpu": "planned",
-        "desktop": "forbidden", "swinging_bridge": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "forbidden",
     },
     "watchos": {
         "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
         "multi_window": "forbidden", "nested_compositors": "available", "gpu": "blocked",
-        "desktop": "forbidden", "swinging_bridge": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "forbidden",
     },
     "linux": {
         "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
-        "desktop": "forbidden", "swinging_bridge": "forbidden",
+        "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "forbidden",
     },
 }
 
@@ -269,20 +306,62 @@ _CAP_NOTES: dict[tuple[str, str], str] = {
     ("ios", "desktop"): (
         "Forbidden in the App Store IPA. Current Mode B product is the "
         "TrollStore tipa com.aspauldingcode.Wawona.ModeB (IOMFB Desktop, "
-        "JIT QEMU, container-in-VM, Wawona zsh PTYs). Sileo/Doorman/ElleKit "
-        "and Wasm JIT are deferred, not the current Desktop path."
+        "Relay VM/container, Wawona zsh PTYs). Sileo/Doorman/ElleKit "
+        "and Wasm JIT are deferred, not the current Desktop path. VM HV is "
+        "Relay IosHv inside the UTM-era window (never HVF-via-qemu)."
     ),
     ("ipados", "desktop"): (
         "Forbidden in the App Store IPA. Current Mode B product is the "
         "TrollStore tipa com.aspauldingcode.Wawona.ModeB (IOMFB Desktop, "
-        "JIT QEMU, container-in-VM, Wawona zsh PTYs). Sileo/Doorman/ElleKit "
-        "and Wasm JIT are deferred, not the current Desktop path."
+        "Relay VM/container, Wawona zsh PTYs). Sileo/Doorman/ElleKit "
+        "and Wasm JIT are deferred, not the current Desktop path. VM HV is "
+        "Relay IosHv inside the UTM-era window (never HVF-via-qemu)."
+    ),
+    ("ios", "hypervisor"): (
+        "Planned Mode B only. Kernel HV on iOS/iPadOS 14.0-16.3.1; public "
+        "SoCs M1/M2/A16. Store IPA forbidden. Engine is Relay native "
+        "Hypervisor.framework (not HVF-via-qemu). See knowledge/wawona/"
+        "relay-ios-hypervisor.md."
+    ),
+    ("ipados", "hypervisor"): (
+        "Planned Mode B only. Same window as iOS. Store IPA forbidden. "
+        "Relay owns probe/resolve. Not QEMU. Not UTM-as-product."
+    ),
+    ("macos", "hypervisor"): (
+        "Forbidden as the product macOS VM backend (that is "
+        "Virtualization.framework). macOS hv_vm_create is lab-only for the "
+        "shared Relay FFI; entitlement com.apple.security.hypervisor."
+    ),
+    ("android", "hypervisor"): (
+        "Forbidden. Android VMs use Relay (AVF lab is separate and not "
+        "Hypervisor.framework)."
+    ),
+    ("linux", "hypervisor"): (
+        "Forbidden name. Linux product path is KVM via cloud-hypervisor or crosvm."
+    ),
+    ("visionos", "hypervisor"): (
+        "Forbidden. visionOS forbids VM/container kinds."
+    ),
+    ("tvos", "hypervisor"): (
+        "Forbidden. tvOS forbids VM/container kinds."
+    ),
+    ("watchos", "hypervisor"): (
+        "Forbidden. watchOS forbids VM/container kinds."
     ),
     ("ios", "swinging_bridge"): (
         "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
     ),
     ("ipados", "swinging_bridge"): (
         "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
+    ),
+    ("visionos", "vm"): (
+        "Forbidden. Same class as tvOS/watchOS. Swift virtualMachineGate and "
+        "wawona-platform-targets. User test of VMs on Vision is fail-closed, "
+        "not a gate flip. Wasm still required."
+    ),
+    ("visionos", "container"): (
+        "Forbidden. Same class as tvOS/watchOS. Swift containerGate. "
+        "Do not enable. Wasm still required."
     ),
 }
 
@@ -300,6 +379,10 @@ _FEATURE_ALIASES = {
     "anowaw": "swinging_bridge",
     "anowaW": "swinging_bridge",
     "swinging-bridge": "swinging_bridge",
+    "hvf": "hypervisor",
+    "ios_hypervisor": "hypervisor",
+    "ios-hv": "hypervisor",
+    "hypervisor.framework": "hypervisor",
 }
 
 

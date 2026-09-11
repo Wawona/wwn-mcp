@@ -42,8 +42,9 @@ def test_contribute_capability_gates():
 
     assert get_capability("watchos", "gpu")["state"] == "blocked"
     assert get_capability("tvos", "gpu")["state"] == "planned"
-    assert get_capability("visionos", "vm")["state"] == "planned"
-    assert get_capability("visionos", "container")["state"] == "planned"
+    assert get_capability("visionos", "vm")["state"] == "forbidden"
+    assert get_capability("visionos", "container")["state"] == "forbidden"
+    assert "fail-closed" in get_capability("visionos", "vm")["note"]
     assert get_capability("tvos", "vm")["state"] == "forbidden"
     assert get_capability("watchos", "vm")["state"] == "forbidden"
     assert get_capability("ios", "swinging_bridge")["state"] == "forbidden"
@@ -62,12 +63,27 @@ def test_contribute_capability_gates():
     assert "Classic Take Over" in macos_desktop["note"]
     assert get_capability("macos", "desktop_replacement")["state"] == "planned"
     assert where_to_edit("ANGLE ownership")["repo"] == "wwn-iland"
+    assert where_to_edit("IPHONEOS_DEPLOYMENT_TARGET")["repo"] == "wwn-toolchain"
+    assert where_to_edit("iOS minimum OS version")["repo"] == "wwn-toolchain"
     assert where_to_edit("niri recipe")["repo"] == "wwn-niri"
     assert where_to_edit("zsh patch")["repo"] == "wwn-zsh"
     assert where_to_edit("Path B claim-ok")["repo"] == "wwn-iowatchdog"
     assert where_to_edit("igettyd F7 overlay")["repo"] == "wwn-igetty"
     assert where_to_edit("Desktop Replacement Take Over")["repo"] == "Wawona"
+    assert where_to_edit("virtual machine engine")["repo"] == "Relay"
+    assert where_to_edit("Hypervisor Mode B")["repo"] == "Relay"
+    assert where_to_edit("ios hypervisor hvf")["repo"] == "Relay"
+    ios_hv = get_capability("ios", "hypervisor")
+    assert ios_hv["state"] == "planned"
+    assert "16.3.1" in ios_hv["note"]
+    assert get_capability("ios", "hvf")["state"] == "planned"
+    assert get_capability("macos", "hypervisor")["state"] == "forbidden"
+    assert "Virtualization.framework" in get_capability("macos", "hypervisor")["note"]
+    assert get_capability("visionos", "hypervisor")["state"] == "forbidden"
+    assert "QEMU" not in get_capability("ios", "desktop")["note"]
+    assert "Relay" in get_capability("ios", "desktop")["note"]
     repos = {r["repo"] for r in list_repos()}
+    assert "Relay" in repos
     assert "wwn-niri" in repos and "wwn-kmscube" in repos and "Wawona" in repos
     assert "wwn-igetty" in repos and "wwn-iowatchdog" in repos
     assert "repo.wawona.io" in repos
@@ -77,6 +93,9 @@ def test_contribute_capability_gates():
     assert where_to_edit("repo.wawona.io Cursor agent skills")["repo"] == "repo.wawona.io"
     assert where_to_edit("wawona.io homepage Search packages")["repo"] == "wawona.io"
     assert where_to_edit("wpm install hello")["repo"] == "wwn-wasm"
+    assert where_to_edit("n2w build foot")["repo"] == "nixpkgs2wasi"
+    assert where_to_edit("nixpkgs2wasi WASI catalog")["repo"] == "nixpkgs2wasi"
+    assert "nixpkgs2wasi" in repos
 
 
 def test_golden_knowledge_search(knowledge_index):

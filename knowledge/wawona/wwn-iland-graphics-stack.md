@@ -94,6 +94,10 @@ frames.
 - Every Apple target, including tvOS/watchOS, and Android still ships the real
   native Weston and Niri entry points. tvOS/watchOS use the constrained
   software/non-GL fallback; fake compositor entry points are never acceptable.
+- **iOS / iPadOS min OS is 11.0** against the **latest** iPhoneOS SDK only
+  (SDK 26 now; SDK 27 when it ships). Never downgrade the SDK. One ANGLE
+  (Metal) and one MoltenVK (Metal), with Wawona patches. See
+  [`ios-min-os.md`](ios-min-os.md).
 
 ## Acceptance
 

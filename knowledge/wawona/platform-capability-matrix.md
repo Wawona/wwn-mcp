@@ -19,12 +19,12 @@ product targets.
 |---|---|---|---|---|---|---|---|
 | Native machines | available | available | available | available | available | available | available |
 | Remote SSH/waypipe | available | available | available | available | available | available | available |
-| VM / containers | planned | planned | planned | **planned** | planned | **forbidden** | **forbidden** |
+| VM / containers | planned | planned | planned | **forbidden** | planned | **forbidden** | **forbidden** |
 | Multi-window (1 host window per Wayland client) | available | when OS allows | **required** | **required** | single primary | forbidden | forbidden |
 | Nested compositors + bundled clients | available | available | available | macOS parity | available | limited | limited |
 | Vulkan / OpenGL / ANGLE | available | available | available | available | available | **planned** | **blocked** |
-| Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** (App Store) | forbidden | **forbidden** (App Store) | forbidden | forbidden |
-| Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Mode B via repo) | forbidden | **forbidden** (App Store; Mode B via repo) | forbidden | forbidden |
+| Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** in App Store. TrollStore Mode B tipa is the current IOMFB Desktop product | forbidden | **forbidden** in App Store. TrollStore Mode B tipa is the current IOMFB Desktop product | forbidden | forbidden |
+| Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Sileo Mode B later) | forbidden | **forbidden** (App Store; Sileo Mode B later) | forbidden | forbidden |
 | Relay Wasm (WASI / wpm) | available | available | available | available | available | available | available |
 
 ## Non-negotiable target rules
@@ -40,15 +40,24 @@ product targets.
   Watch GPU wasm (GLES/Vulkan/Metal) is blocked; present is SpriteKit of SHM.
 - **tvOS GPU is planned** (Metal + OpenGLES in the SDK). **watchOS GPU is
   blocked** (no Metal / OpenGLES / CAMetalLayer on watchOS).
-- **visionOS VMs/containers are planned** (same class as iOS/iPadOS). tvOS and
-  watchOS remain forbidden.
-- iOS and iPadOS Swinging Bridge is **forbidden** in the App Store IPA. Mode B
-  only via `repo.wawona.io`. App Store binaries must never mention jailbreak.
+- **visionOS VMs/containers are forbidden** (same class as tvOS/watchOS).
+  Swift `virtualMachineGate` / `containerGate` match
+  `wawona-platform-targets`. Do not enable. macOS / iOS / iPadOS / Android
+  stay planned.
+- iOS and iPadOS Desktop is **forbidden** in the App Store IPA. The current
+  Mode B Desktop product is the TrollStore `.tipa`
+  `com.aspauldingcode.Wawona.ModeB` (IOMFB, Relay VMs planned/fail-closed,
+  zsh PTYs). Sileo/Doorman/ElleKit and Wasm JIT are deferred. App Store binaries
+  must never mention TrollStore, jailbreak, or JIT.
+- iOS and iPadOS Swinging Bridge is **forbidden** in the App Store IPA. It is
+  Sileo Mode B later, not TrollStore.
 - Desktop / LockScreen is **not** Wawona Swinging Bridge. Wawona Swinging Bridge is a host-app → Wayland bridge.
 - macOS Desktop product gate stays **planned** (LockScreen / greeter). Classic
   Take Over on `.#wawona-macos-desktop-host` is implemented. See
   [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 - KosmicKrisp remains macOS-only. MoltenVK on iOS/iPadOS/visionOS.
+- iOS / iPadOS Mach-O min OS is **11.0** against the latest iPhoneOS SDK only.
+  Older iOS is planned. See [`ios-min-os.md`](ios-min-os.md).
 
 ## Host window-manager policy
 

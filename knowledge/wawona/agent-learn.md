@@ -5,7 +5,8 @@ Indexed summary for WWN-MCP. Full copies:
 - Cursor rule: `wawona-agent-learn` (`alwaysApply`)
 - Tracked: `Wawona/docs/agent-rules/wawona-agent-learn.md`
 - Skills: `Wawona/docs/agent-skills/` (`wawona-rag`, `wawona-write`,
-  `wawona-learn`, `wawona-caveman`, `wawona-priors`)
+  `wawona-learn`, `wawona-caveman`, `wawona-priors`, `wawona-ios-min-os`,
+  `wawona-gh`)
 
 ## Always
 
@@ -17,7 +18,9 @@ Indexed summary for WWN-MCP. Full copies:
 3. Software must **improve on** documented prior knowledge. Do not re-ship a
    rejected path (Mode B in store, DAG invert, KMS-rehost of a Wayland client,
    `watchdogd` Take Over without Path B ACK).
-4. After a durable finding: update skill + rule mirrors + this `knowledge/wawona/`
+4. GitHub issues/milestones/PRs: skill `wawona-gh`. Shell + local `gh`. No
+   GitHub MCP. Do not refuse `gh` as git authorship.
+5. After a durable finding: update skill + rule mirrors + this `knowledge/wawona/`
    tree, then reindex.
 
 ## Reindex

@@ -20,6 +20,7 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 |--------|------|
 | Substrate (cairo/pango/pixman/libwayland) | `wwn-toolchain` |
 | ANGLE / MoltenVK / iland DRM/KMS/GBM | `wwn-iland` |
+| iOS min OS 11.0 vs latest iPhoneOS SDK | `wwn-toolchain` (`deploymentTarget`) + `wwn-iland` (ANGLE/MoltenVK patches) + `Wawona` (`@available`) |
 | kmscube acceptance | `wwn-kmscube` |
 | Weston | `wwn-weston` |
 | Niri | `wwn-niri` |
@@ -34,6 +35,7 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | Public docs site | `wawona.io` |
 | Wasm / Sileo / Termux catalogs (`/search/`, `/wasm/v1`, APT) | `repo.wawona.io` |
 | This RAG / corpus | `wwn-mcp` |
+| GitHub issues / milestones / PRs / `gh run` | `Wawona/Wawona` via local `gh` (Shell). No GitHub MCP. Repo `Wawona/issues` does not exist |
 
 Never invert the DAG: L0 ↚ L1+; L1 ↚ weston/kmscube; Wawona is never an input
 of L0-L3. See [`wwn-repo-dag.md`](wwn-repo-dag.md).
@@ -58,7 +60,7 @@ real entry points). No stubs, fake mains, or permanent target exclusions.
 - **Mode B**. Two products. macOS desktop-host dylib (`libwayland-mac.dylib`)
   needs SIP **fully disabled**. iOS/iPadOS TrollStore tipa
   `com.aspauldingcode.Wawona.ModeB` is the current IOMFB Desktop product
-  (JIT QEMU, container-in-VM, Wawona zsh PTYs). Sileo/Doorman/ElleKit and
+  (IOMFB own-display, Relay VMs planned/fail-closed, Wawona zsh PTYs). Sileo/Doorman/ElleKit and
   Wasm JIT are deferred. Never ship either flavor in App Store / Play
   artifacts. See [`iland-mode-a-b-desktop.md`](iland-mode-a-b-desktop.md).
 - **Wawona Swinging Bridge**. Host-app → Wayland bridge (planned). Not Desktop. Not LockScreen.
@@ -73,6 +75,10 @@ real entry points). No stubs, fake mains, or permanent target exclusions.
   }
 }
 ```
+
+There is **no GitHub MCP**. Cursor `mcp.json` PATH is stripped (often no
+Homebrew). Issues and milestones use the **Shell** tool and login-zsh `gh`
+(`gh auth`). See [`gh-cli.md`](gh-cli.md) and skill `wawona-gh`.
 
 First spawn auto-indexes shipped `knowledge/`. Full corpus:
 
