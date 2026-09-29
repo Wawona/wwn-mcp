@@ -7,8 +7,10 @@ protection, validity checks, non-provider patterns, extended metadata, and
 private vulnerability reporting for current and future repositories.
 
 The shared workflow validates changed files, parses changed data and scripts,
-checks root Rust workspace formatting, scans dependency locks with OSV, reviews
-new pull-request dependencies, and audits GitHub Actions with zizmor.
+checks root Rust workspace formatting when Rust changes, inventories dependency
+locks with OSV, reviews new pull-request dependencies, and rejects high-severity
+zizmor findings in changed GitHub Actions workflows. Existing security debt is
+visible; new high-severity dependency additions are blocked.
 
 Assurance is risk-tiered. Tier 3 covers VM memory, MMU, CPU, virtio, privilege,
 watchdog, and display ownership. Each obligation names production Rust,
