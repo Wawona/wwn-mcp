@@ -4,8 +4,9 @@ L3′ crate at `github.com/Wawona/ToolbarKeys`.
 
 Rootshell's keyboard toolbar (key catalog, drawer rows, custom sequences,
 width overflow) lives here as Rust. UniFFI exports `ToolbarSession`.
-UIKit, Jetpack, AppKit, and WatchKit draw the slots. They do not keep a
-second copy of the layout rules.
+`apple/Keyboard` is the UIKit drawing. Wawona compiles that directory
+from this repo. The Wayland accessory bridge stays in Wawona. Do not
+copy those Swift files back into the app.
 
 iOS deployment target stays 13.0. Android uses the same JSON document.
 `phone` and `pad` are the two default layouts (Rootshell version 14).

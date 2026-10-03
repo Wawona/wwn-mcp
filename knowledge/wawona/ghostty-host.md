@@ -12,7 +12,8 @@ Do not rewrite libghostty to Rust while those triples can emit objects.
 watchOS has no Metal. The grid there is software, presented with SpriteKit.
 
 iOS and iPadOS: static archive, deployment target 13.0, export `ghostty_*`
-only. No product `.dylib`. Published GhosttyKit (minimum OS 17) is not an
+only. No product `.dylib`. Wawona does not vendor GhosttyKit headers.
+Published GhosttyKit (minimum OS 17) is not an
 input. Do not rewrite `LC_BUILD_VERSION`.
 
 Rootshell is the reference iOS Metal host, not the Wawona product.

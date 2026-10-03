@@ -21,8 +21,10 @@ L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-relay / wwn-ssh /
     DRM after Classic. L1 must not import wwn-iomfb-rs.
     wwn-relay (github.com/Wawona/Relay) is Linux VMs + OCI-in-VM + Mode A WASI.
     Never QEMU. Never UTM.
-    ToolbarKeys (github.com/Wawona/ToolbarKeys) is the keyboard toolbar model.
-    Rust plus UniFFI. No UIKit or Android view. iOS 13 and Android share one document.
+    ToolbarKeys (github.com/Wawona/ToolbarKeys) is the keyboard toolbar.
+    Rust plus UniFFI, and UIKit views in apple/Keyboard. Wawona compiles
+    that directory. It does not keep a second copy. The Wayland accessory
+    bridge stays in Wawona. iOS 13 and Android share one document.
     Ghostty (github.com/Wawona/Ghostty, flake input wwn-ghostty) is the terminal
     grid on every product target. Zig 0.16 stays (ios, tvos, visionos, watchos,
     macos, and linux-android). Do not rewrite libghostty to Rust while those
