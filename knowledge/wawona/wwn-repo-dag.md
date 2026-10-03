@@ -22,11 +22,14 @@ L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-relay / wwn-ssh /
     wwn-relay (github.com/Wawona/Relay) is Linux VMs + OCI-in-VM + Mode A WASI.
     Never QEMU. Never UTM.
     ToolbarKeys (github.com/Wawona/ToolbarKeys) is the keyboard toolbar.
+    It starts from Rootshell (Copyright (c) 2026 Rootshell LLC, Kit Knox).
     Rust plus UniFFI, and UIKit views in apple/Keyboard. Wawona compiles
     that directory. It does not keep a second copy. The Wayland accessory
     bridge stays in Wawona. iOS 13 and Android share one document.
     Ghostty (github.com/Wawona/Ghostty, flake input wwn-ghostty) is the terminal
-    grid on every product target. Zig 0.16 stays (ios, tvos, visionos, watchos,
+    grid on every product target. libghostty is Ghostty (Copyright (c) 2024
+    Mitchell Hashimoto, Ghostty contributors). The iOS embed starts from
+    Rootshell. Zig 0.16 stays (ios, tvos, visionos, watchos,
     macos, and linux-android). Do not rewrite libghostty to Rust while those
     triples exist. watchOS has no Metal. Wawona does not own libghostty.
     nixpkgs2wasi is curated nixpkgs → WASI P1/P2 / WPM for repo.wawona.io/wasm.
