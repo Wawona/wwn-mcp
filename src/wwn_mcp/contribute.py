@@ -159,6 +159,20 @@ _REPOS: list[dict[str, Any]] = [
         "project": "wawona",
     },
     {
+        "repo": "ToolbarKeys",
+        "layer": "L3'",
+        "role": "Keyboard toolbar model (Rust + UniFFI). No platform view",
+        "when": "toolbar keys, drawer layout, custom key sequences",
+        "project": "wawona",
+    },
+    {
+        "repo": "Ghostty",
+        "layer": "L3'",
+        "role": "Terminal grid. Zig libghostty for every product target",
+        "when": "ghostty, libghostty, local shell terminal, Relay console grid",
+        "project": "wawona",
+    },
+    {
         "repo": "wwn-mcp",
         "layer": "tooling",
         "role": "Local-embeddings RAG + MCP (stdio)",
@@ -189,6 +203,10 @@ _REPOS: list[dict[str, Any]] = [
 ]
 
 _WHERE: list[tuple[re.Pattern[str], str, str]] = [
+    (re.compile(r"toolbar.?keys|keyboard.?toolbar", re.I),
+     "ToolbarKeys", "Keyboard toolbar model. Rust + UniFFI. Not a Wawona view"),
+    (re.compile(r"ghostty|libghostty", re.I),
+     "Ghostty", "Terminal grid. Zig stays. Not a Rust rewrite. Not Rootshell"),
     (re.compile(r"zsh|rootfs", re.I), "wwn-zsh", "zsh / RootFS patches live in wwn-zsh"),
     (re.compile(r"angle|swiftshader|moltenvk|kosmickrisp|iland|drm|kms|gbm|egl|iomfb", re.I),
      "wwn-iland", "Graphics stack ownership is L1 wwn-iland"),
@@ -236,7 +254,7 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
         re.I,
     ),
      "wwn-toolchain",
-     "iOS min OS 11.0 is one deploymentTarget in apple/default.nix; ANGLE/MoltenVK patches are wwn-iland; @available is Wawona"),
+     "iOS min OS 13.0 is one deploymentTarget in apple/default.nix; ANGLE/MoltenVK patches are wwn-iland; @available is Wawona"),
     (re.compile(r"machine|swiftui|xcodegen|android.?ui|smithay|compositor.?core", re.I),
      "Wawona", "L4 product integration"),
     (re.compile(r"mcp|rag|corpus|knowledge", re.I), "wwn-mcp", "This RAG server"),
@@ -271,7 +289,7 @@ _CAPS: dict[str, dict[str, str]] = {
         "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "planned",
     },
     "visionos": {
-        "native": "available", "remote": "available", "vm": "forbidden", "container": "forbidden",
+        "native": "available", "remote": "available", "vm": "planned", "container": "planned",
         "multi_window": "available", "nested_compositors": "available", "gpu": "available",
         "desktop": "forbidden", "swinging_bridge": "forbidden", "hypervisor": "forbidden",
     },
@@ -340,7 +358,7 @@ _CAP_NOTES: dict[tuple[str, str], str] = {
         "Forbidden name. Linux product path is KVM via cloud-hypervisor or crosvm."
     ),
     ("visionos", "hypervisor"): (
-        "Forbidden. visionOS forbids VM/container kinds."
+        "Planned. visionOS shares the iOS-family Relay VM/container profile lane; only tvOS/watchOS are forbidden."
     ),
     ("tvos", "hypervisor"): (
         "Forbidden. tvOS forbids VM/container kinds."
@@ -355,13 +373,12 @@ _CAP_NOTES: dict[tuple[str, str], str] = {
         "Forbidden in App Store IPA. Mode B only via repo.wawona.io / jailbreak."
     ),
     ("visionos", "vm"): (
-        "Forbidden. Same class as tvOS/watchOS. Swift virtualMachineGate and "
-        "wawona-platform-targets. User test of VMs on Vision is fail-closed, "
-        "not a gate flip. Wasm still required."
+        "Planned. visionOS follows the iOS/iPadOS Relay static CPU for Linux "
+        "NixOS guests. No QEMU. Guest UI is Wayland over vsock/waypipe into iland."
     ),
     ("visionos", "container"): (
-        "Forbidden. Same class as tvOS/watchOS. Swift containerGate. "
-        "Do not enable. Wasm still required."
+        "Planned. visionOS containers are OCI-in-the-same Relay static CPU Linux VM. "
+        "No host container runtime, QEMU, or proot."
     ),
 }
 

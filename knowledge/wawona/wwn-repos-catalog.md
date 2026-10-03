@@ -14,6 +14,8 @@ compositor/shell/toolchain development.
 | **wwn-waypipe** | L3′ | waypipe-rs remote | |
 | **Wawona-Swinging-Bridge** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
 | **Relay** (`wwn-relay`) | L3′ | Linux VMs + OCI-in-VM + Mode A WASI | Never QEMU/UTM. Edit here, not wwn-vms/containers/wasm |
+| **ToolbarKeys** | L3′ | Keyboard toolbar model (Rust + UniFFI). No platform view | iOS 13 and Android share one document. Rootshell is the behavior source |
+| **Ghostty** (`wwn-ghostty`) | L3′ | Terminal grid for local shell, SSH, and Relay console | Zig stays. No product dylib. watchOS is software, not Metal |
 | **nixpkgs2wasi** | L3′ | Curated nixpkgs → WASI P1/P2 / WPM (`n2w`) | nixpkgs-only. Not the interpreter. Not an auto-mirror. Host at `/wasm/v1` |
 | **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
 | **wwn-iowatchdog** | L3′ | macOS IOWatchdog Path B (Desktop Mode B) | nixpkgs-only; never Apple-mobile |

@@ -19,7 +19,7 @@ product targets.
 |---|---|---|---|---|---|---|---|
 | Native machines | available | available | available | available | available | available | available |
 | Remote SSH/waypipe | available | available | available | available | available | available | available |
-| VM / containers | planned | planned | planned | **forbidden** | planned | **forbidden** | **forbidden** |
+| VM / containers | planned | planned | planned | planned | planned | **forbidden** | **forbidden** |
 | Multi-window (1 host window per Wayland client) | available | when OS allows | **required** | **required** | single primary | forbidden | forbidden |
 | Nested compositors + bundled clients | available | available | available | macOS parity | available | limited | limited |
 | Vulkan / OpenGL / ANGLE | available | available | available | available | available | **planned** | **blocked** |
@@ -40,10 +40,10 @@ product targets.
   Watch GPU wasm (GLES/Vulkan/Metal) is blocked; present is SpriteKit of SHM.
 - **tvOS GPU is planned** (Metal + OpenGLES in the SDK). **watchOS GPU is
   blocked** (no Metal / OpenGLES / CAMetalLayer on watchOS).
-- **visionOS VMs/containers are forbidden** (same class as tvOS/watchOS).
-  Swift `virtualMachineGate` / `containerGate` match
-  `wawona-platform-targets`. Do not enable. macOS / iOS / iPadOS / Android
-  stay planned.
+- **visionOS VMs/containers are planned** with the iOS/iPadOS Relay static-CPU
+  profile path; tvOS/watchOS remain forbidden. Guest UI is Wayland over
+  vsock/waypipe into iland. Swift `virtualMachineGate` / `containerGate` and
+  Relay's backend resolver must match this matrix.
 - iOS and iPadOS Desktop is **forbidden** in the App Store IPA. The current
   Mode B Desktop product is the TrollStore `.tipa`
   `com.aspauldingcode.Wawona.ModeB` (IOMFB, Relay VMs planned/fail-closed,
@@ -56,8 +56,9 @@ product targets.
   Take Over on `.#wawona-macos-desktop-host` is implemented. See
   [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 - KosmicKrisp remains macOS-only. MoltenVK on iOS/iPadOS/visionOS.
-- iOS / iPadOS Mach-O min OS is **11.0** against the latest iPhoneOS SDK only.
+- iOS / iPadOS Mach-O min OS is **13.0** against the latest iPhoneOS SDK only. Do not raise that floor to link a newer dependency, and do not ship a product `.dylib` in an App Store IPA.
   Older iOS is planned. See [`ios-min-os.md`](ios-min-os.md).
+- Ghostty console is required on macOS, iOS, iPadOS, tvOS, watchOS, visionOS, Android, and Linux. Owner: `github.com/Wawona/Ghostty` (Zig, flake input `wwn-ghostty`). Keyboard keys above the software keyboard: `github.com/Wawona/ToolbarKeys` (Rust + UniFFI). Renderer: Metal where the SDK has Metal (static archive, iOS deployment 13.0, no product dylib). Android and Linux use OpenGL inside libghostty. watchOS uses a software grid presented with SpriteKit. VM kinds stay forbidden on tvOS, watchOS, and visionOS. Those consoles are the native shell and SSH.
 
 ## Host window-manager policy
 
