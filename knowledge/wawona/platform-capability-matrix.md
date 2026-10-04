@@ -34,7 +34,9 @@ product targets.
 - Weston and **Niri** are real native bundled compositors on **every** row.
   Fake entry points do not count.
 - **Relay Wasm** is a real native bundle on **every** row including watchOS
-  and Linux. Pulley on Apple mobile store artifacts. Do not size-gate it off.
+  and Linux. Pulley on Apple mobile through iOS 26. iOS and iPadOS 27 Mode A
+  may use Wasmer WASIX in a hidden WKWebView when WasmerSDK is linked. Do not
+  size-gate it off.
 - **hello-wasi-gui** (`wl_shm` + xdg) must **run** on every target, including
   Apple Watch Machines Start. Transfer-only WatchConnectivity is not enough.
   Watch GPU wasm (GLES/Vulkan/Metal) is blocked; present is SpriteKit of SHM.
