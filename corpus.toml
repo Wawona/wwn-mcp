@@ -199,36 +199,6 @@ include = ["**/*.md", "flake.nix", "dependencies/**/*.{nix,rs,toml,h,c}", "examp
 exclude = ["**/.git/**", "**/target/**", "**/result/**"]
 
 [[source]]
-name = "nixpkgs2wasi"
-project = "wawona"
-kind = "local"
-path = "../nixpkgs2wasi"
-description = "Curated nixpkgs → WASI P1/P2 / WPM (n2w). Not Relay. Not an auto-mirror."
-license = "MIT"
-platform = ["all"]
-include = ["**/*.md", "crates/**/*.rs", "packages/**/*.toml", "wit/**", "flake.nix", "AGENTS.md"]
-exclude = ["**/.git/**", "**/target/**", "**/result/**"]
-
-[[source]]
-name = "nixpkgs2wasi-git"
-project = "wawona"
-kind = "git"
-url = "https://github.com/Wawona/nixpkgs2wasi"
-ref = "development"
-description = "Git mirror of nixpkgs2wasi (enable when no local sibling)."
-license = "MIT"
-platform = ["all"]
-include = ["**/*.md", "crates/**/*.rs", "packages/**/*.toml", "wit/**", "flake.nix", "AGENTS.md"]
-exclude = ["**/.git/**", "**/target/**", "**/result/**"]
-enabled = false
-
-# wwn-apt was retired (tombstone README only). Do not re-add as a product corpus source.
-
-# ---------------------------------------------------------------------------
-# Additional org repos (mandatory compositors, L2 acceptance, planned surfaces)
-# Prefer local sibling checkouts under ~/Wawona/; git URL used when fetched.
-# ---------------------------------------------------------------------------
-[[source]]
 name = "wwn-niri"
 project = "niri"
 kind = "local"
@@ -446,27 +416,6 @@ name = "wwn-ssh-git"
 project = "ssh"
 kind = "git"
 url = "https://github.com/Wawona/wwn-ssh"
-ref = "development"
-license = "MIT"
-include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
-exclude = ["**/.git/**"]
-enabled = false
-
-[[source]]
-name = "wwn-neovim"
-project = "neovim"
-kind = "local"
-path = "../wwn-neovim"
-description = "Neovim port / optional App Store module."
-license = "MIT"
-include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]
-exclude = ["**/.git/**"]
-
-[[source]]
-name = "wwn-neovim-git"
-project = "neovim"
-kind = "git"
-url = "https://github.com/Wawona/wwn-neovim"
 ref = "development"
 license = "MIT"
 include = ["dependencies/**/*.{nix,sh,py,c,h}", "flake.nix", "**/*.md"]

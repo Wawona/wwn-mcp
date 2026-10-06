@@ -19,8 +19,6 @@ call Termux jailbreak.
 HTML landings onto `/search/`. APT does **not** live under `/jailbreak/`. Store
 `wpm` must never fetch `/jailbreak/`, `/termux/`, `/Packages`, or `.deb`.
 
-Curated WASI/WPM **builds** are `github.com/Wawona/nixpkgs2wasi` (`n2w`). This
-host publishes `/wasm/v1`. Do not auto-mirror nixpkgs. `n2w verify` is the
 runtime profile, not App Review.
 
 Repo: `github.com/Wawona/repo.wawona.io`. Site docs: wawona.io `/docs/packages/`.

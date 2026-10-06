@@ -16,7 +16,6 @@ compositor/shell/toolchain development.
 | **Relay** (`wwn-relay`) | L3′ | Linux VMs + OCI-in-VM + Mode A WASI | Never QEMU/UTM. Edit here, not wwn-vms/containers/wasm |
 | **ToolbarKeys** | L3′ | Keyboard toolbar model (Rust + UniFFI). No platform view | iOS 13 and Android share one document. Rootshell is the behavior source |
 | **Ghostty** (`wwn-ghostty`) | L3′ | Terminal grid for local shell, SSH, and Relay console | Zig stays. No product dylib. watchOS is software, not Metal |
-| **nixpkgs2wasi** | L3′ | Curated nixpkgs → WASI P1/P2 / WPM (`n2w`) | nixpkgs-only. Not the interpreter. Not an auto-mirror. Host at `/wasm/v1` |
 | **wwn-ssh** | L3′ | libssh2 (Apple mobile) vs OpenSSH | |
 | **wwn-iowatchdog** | L3′ | macOS IOWatchdog Path B (Desktop Mode B) | nixpkgs-only; never Apple-mobile |
 | **wwn-vphone** | L3′ | Jailbroken iOS research lab (vphone-cli wrap) | nixpkgs-only; never ship Disk.img/IPSW |
@@ -25,7 +24,6 @@ compositor/shell/toolchain development.
 | **wwn-coreutils** | L3′ | uutils in-process multicall | |
 | **wwn-foot** | L3′ | foot terminal | |
 | **wwn-fastfetch** | L3′ | fastfetch port | |
-| **wwn-neovim** | L3′ | neovim / optional module | |
 | **wwn-phoon-rs** | L3′ | phoon client | |
 | **wwn-wasm** (legacy) | L3′ | Merged into **Relay**. Do not start new work here | Redirect |
 | **repo.wawona.io** | docs | Dual catalog: store wasm `/wasm/v1`; Sileo iOS jailbreak debs + Termux Android sideload debs at APT root | Never one mixed list. Termux is not jailbreak. |
@@ -39,7 +37,7 @@ L0 wwn-toolchain
   └─ L1 wwn-iland
        └─ L2 wwn-kmscube
             └─ L3 wwn-weston / wwn-niri
-L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty / nixpkgs2wasi / ports
+L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty / ports
 L4 Wawona ──► all required lower layers
 ```
 

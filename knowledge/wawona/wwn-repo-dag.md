@@ -14,9 +14,9 @@ L2  wwn-kmscube. Graphics acceptance clients. Depends on toolchain + iland.
 L3  wwn-weston / wwn-niri. Compositors. Depends on toolchain + iland + kmscube
     (weston); niri merges toolchain (+ iland when GPU requires it).
 L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-relay / wwn-ssh /
-    wwn-iowatchdog / wwn-vphone / wwn-iomfb-rs / wwn-igetty / nixpkgs2wasi /
+    wwn-iowatchdog / wwn-vphone / wwn-iomfb-rs / wwn-igetty /
     ToolbarKeys / Ghostty.
-    toolchain (or nixpkgs-only for Watchdog / vphone / IOMFB / nixpkgs2wasi);
+    toolchain (or nixpkgs-only for Watchdog / vphone / IOMFB);
     merge iland only when GPU support requires it. igetty presents via iland
     DRM after Classic. L1 must not import wwn-iomfb-rs.
     wwn-relay (github.com/Wawona/Relay) is Linux VMs + OCI-in-VM + Mode A WASI.
@@ -32,8 +32,8 @@ L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-relay / wwn-ssh /
     Rootshell. Zig 0.16 stays (ios, tvos, visionos, watchos,
     macos, and linux-android). Do not rewrite libghostty to Rust while those
     triples exist. watchOS has no Metal. Wawona does not own libghostty.
-    nixpkgs2wasi is curated nixpkgs → WASI P1/P2 / WPM for repo.wawona.io/wasm.
     Not the interpreter. Not an auto-mirror. Never an L0-L3 flake input.
+    Runtime packages host at repo.wawona.io/wasm/v1. Do not auto-mirror nixpkgs.
 L4  Wawona. Product integration. Merges lower fragments and is never their input.
 ```
 

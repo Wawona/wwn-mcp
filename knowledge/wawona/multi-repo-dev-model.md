@@ -31,10 +31,8 @@ Wawona development is split across the **Wawona GitHub organization**
 ├── wwn-coreutils/
 ├── wwn-foot/
 ├── wwn-fastfetch/
-├── wwn-neovim/
 ├── wwn-phoon-rs/
 ├── wwn-wasm/         # Wawona Runtime (WASI); optional package path
-├── nixpkgs2wasi/     # curated nixpkgs → WASI / WPM (`n2w`); not the interpreter
 ├── wawona.io/
 └── repo.wawona.io/   # human /search/ catalogs + wasm/v1 + Sileo/Termux APT
 ```
@@ -63,7 +61,6 @@ Wawona development is split across the **Wawona GitHub organization**
 | SSH / libssh2 | `wwn-ssh` |
 | VMs / containers | `Relay` (`wwn-relay`). Not UTM. Not QEMU. |
 | WASI Runtime (Pulley / Cranelift) | `Relay` (`wwn-relay`) |
-| Curated nixpkgs → WASI / WPM | `nixpkgs2wasi` (`n2w`) |
 | Wasm / Sileo / Termux catalog host | `repo.wawona.io` |
 | XcodeGen, Android APK, Rust backend, Machines | `Wawona` |
 | Public website | `wawona.io` |
