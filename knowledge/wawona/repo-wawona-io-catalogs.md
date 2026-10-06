@@ -27,3 +27,7 @@ Cursor agents: read `repo.wawona.io/.cursor/skills/repo-wawona-io-priors/SKILL.m
 first. Write new catalog learnings into those skills. Never lump Sileo and
 Termux as one jailbreak product. `where_to_edit` must match `repo.wawona.io`
 before `wawona.io`.
+
+Wasm ABI labels and later Wasmer/WebC/wasinix registry (planned, not shipping):
+[`wasm-abi-registry.md`](./wasm-abi-registry.md) and
+`repo.wawona.io/docs/wasm-abi.md`. Do not revive `nixpkgs2wasi`.
