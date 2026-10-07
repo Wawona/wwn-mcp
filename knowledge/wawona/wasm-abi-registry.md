@@ -84,4 +84,4 @@ Do not package `/wasm/v1` twins of CLIs in `wasm-packages/scripts/native-all-tar
 
 ## Package version vs ABI
 
-Catalog `version` = upstream (or Wawona scratch) **package** version. ABI is separate (`wasi-p1`/`wasix`). Scratch must use `wawona-*` names. See `wasm-packages/docs/package-versioning.md`.
+Catalog `version` = upstream (or Wawona scratch) **package** version. ABI is separate (`wasi-p1`/`wasix`). Ports use the upstream release version (not a fake `0.1.0` for "just ported"). Scratch uses distinct unbranded names (never `wawona-` / `wwn-` brand). See `wasm-packages/docs/package-versioning.md` and `repo.wawona.io` rule `repo-wawona-io-ports`.

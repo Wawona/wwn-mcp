@@ -40,3 +40,10 @@ Pages deploys `development`. This host only catalogs `/wasm/v1`.
 
 Hard rejects: laptop-built blobs as production; revive `nixpkgs2wasi`;
 auto-mirror nixpkgs; mix wasm + deb search lists.
+
+## Wawona Ports
+
+Ports use the upstream software version and name. Never invent `0.1.0` for
+"just ported". Never brand with `wawona-` / `wwn-`. Require `website` +
+`source`. See [`wawona-ports.md`](./wawona-ports.md) and rule
+`repo-wawona-io-ports`.
