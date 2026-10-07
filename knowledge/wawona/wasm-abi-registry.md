@@ -1,16 +1,34 @@
-# Wasm ABI registry (later Wasmer / WebC)
+# Wasm ABI registry and GHA builds
 
 Canonical registry prose:
 [`repo.wawona.io/docs/wasm-abi.md`](https://github.com/Wawona/repo.wawona.io/blob/development/docs/wasm-abi.md).
+
+Builder repo: [`Wawona/wasm-packages`](https://github.com/Wawona/wasm-packages).
 
 ## Today vs later
 
 | | Today | Later (planned) |
 |---|---|---|
 | Machine API | `/wasm/v1/index.json` + `.wasm` | Wasmer/WebC via wasinix; keep store `wpm` clients working |
-| Producer | Curated blobs | Upstream wasinix + `wawona` publish profile at `repo.wawona.io` |
-| Unit | `.wasm` | `.webc` (`wasmer publish`) |
+| Producer | **GHA** in `Wawona/wasm-packages` (`ubuntu-24.04`) | wasinix + `wawona` publish profile |
+| Unit | `.wasm` (`component.wasm`) | `.webc` (`wasmer publish`) |
 | Converter | None. `nixpkgs2wasi` retired | Do not revive `n2w` |
+
+## GHA path (proven)
+
+```text
+recipes.json + packages/<name>/
+  → build-wasm.yml (matrix, wasmtime smoke, artifacts)
+  → publish-to-repo.yml (WAWONA_REPO_TOKEN) or staged PR
+  → repo.wawona.io/wasm/v1
+```
+
+Proven packages: `hello-wasi` 0.1.2, `wasi-true` 0.1.0.
+Local `cargo` is recipe debug only. Never publish laptop blobs as production.
+
+```bash
+gh workflow run build-wasm.yml --repo Wawona/wasm-packages
+```
 
 ## ABI labels
 
@@ -20,18 +38,13 @@ Canonical registry prose:
 | WASI P2 | `wasm32-wasip2` | Component Model (+ Preview 1 adapter when needed) |
 | WASIX | `wasm32-wasix` | **Wasmer only** |
 
-Names: `wawona/wasi-p1-grep`, `wawona/wasix-ripgrep`. Metadata in
-`wasmer.toml` `[package.metadata]`: `abi`, `abi-target`, `runtime`, `posix`,
-`wayland`, plus source revision and rebuild command.
+Names: `wawona/wasi-p1-grep`, `wawona/wasix-ripgrep`.
 
-## Phase order (not started)
+## Phase order (expand on GHA)
 
-1. Fork wasinix; point publication at `repo.wawona.io/wasm`
-2. P1 CLI set (coreutils, busybox, grep, sed, awk, gzip, curl, wget, jq, git,
-   make, cmake, CPython core, lua, sqlite3, openssl CLI)
-3. Five WASIX tools including bash and nix
-4. Wayland proof (Weston terminal client), then small GTK client (Mesa +
-   WASIX socket → Wawona still open)
+1. Grow P1 CLI matrix in `wasm-packages` (grep, sed, awk, …)
+2. Fork wasinix when public; WASIX lane on same runners (Wasmer-only labels)
+3. Wayland proof (Weston terminal client), then small GTK client
 
 ## Same-commit product gate
 
@@ -42,4 +55,5 @@ Before WASIX is “runnable everywhere”:
   `wawona-relay-wasm`. Do not link Wasmer early.
 - `wpm` stays Wasm package data. Never `docker pull`.
 
-Hard reject: claim WASIX/WebC/wasinix shipping on store Pulley.
+Hard rejects: claim WASIX on store Pulley; revive `nixpkgs2wasi`; treat
+laptop builds as the publish source of truth.

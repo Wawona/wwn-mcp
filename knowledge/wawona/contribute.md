@@ -33,6 +33,7 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | zsh / RootFS | `wwn-zsh` |
 | Machines UI, SwiftUI, Android app, Smithay | `Wawona` |
 | Public docs site | `wawona.io` |
+| Wasm package builds (GHA) | `wasm-packages` |
 | Wasm / Sileo / Termux catalogs (`/search/`, `/wasm/v1`, APT) | `repo.wawona.io` |
 | This RAG / corpus | `wwn-mcp` |
 | GitHub issues / milestones / PRs / `gh run` | `Wawona/Wawona` via local `gh` (Shell). No GitHub MCP. Repo `Wawona/issues` does not exist |

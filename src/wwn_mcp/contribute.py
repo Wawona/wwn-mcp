@@ -186,6 +186,13 @@ _REPOS: list[dict[str, Any]] = [
         "when": "human /search/ catalogs, wasm index.json, Packages, jailbreak landing, termux landing",
         "project": "wawona",
     },
+    {
+        "repo": "wasm-packages",
+        "layer": "tooling",
+        "role": "GHA WASI P1 (+ later WASIX) package builds for repo.wawona.io/wasm/v1",
+        "when": "wasm package recipe, build-wasm.yml, wasi-true, publish wasm blob",
+        "project": "wawona",
+    },
 ]
 
 _WHERE: list[tuple[re.Pattern[str], str, str]] = [
@@ -220,7 +227,13 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
         re.I,
     ),
      "repo.wawona.io",
-     "nixpkgs2wasi is retired. Wasm catalog is repo.wawona.io/wasm/v1. Do not auto-mirror nixpkgs."),
+     "nixpkgs2wasi is retired. Wasm catalog is repo.wawona.io/wasm/v1. Builds are Wawona/wasm-packages GHA."),
+    (re.compile(
+        r"wasm-packages|build-wasm\.yml|wasi-true|wasi.?p1.?recipe|gha.?wasm.?package",
+        re.I,
+    ),
+     "wasm-packages",
+     "GHA WASI P1 (+ later WASIX) package builds for repo.wawona.io/wasm/v1. Not laptop publish."),
     (re.compile(r"\bvm\b|virtual.?machine", re.I),
      "Relay", "Linux VM engines live in Relay, not wwn-vms"),
     (re.compile(r"container-in-vm|oci.?in.?vm|container.?machine", re.I),

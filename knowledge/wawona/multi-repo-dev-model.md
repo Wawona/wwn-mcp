@@ -33,6 +33,7 @@ Wawona development is split across the **Wawona GitHub organization**
 ├── wwn-fastfetch/
 ├── wwn-phoon-rs/
 ├── wwn-wasm/         # Wawona Runtime (WASI); optional package path
+├── wasm-packages/    # GHA WASI P1 (+ later WASIX) builds for /wasm/v1
 ├── wawona.io/
 └── repo.wawona.io/   # human /search/ catalogs + wasm/v1 + Sileo/Termux APT
 ```
@@ -61,6 +62,7 @@ Wawona development is split across the **Wawona GitHub organization**
 | SSH / libssh2 | `wwn-ssh` |
 | VMs / containers | `Relay` (`wwn-relay`). Not UTM. Not QEMU. |
 | WASI Runtime (Pulley / Cranelift) | `Relay` (`wwn-relay`) |
+| Wasm package **builds** (GHA) | `wasm-packages` |
 | Wasm / Sileo / Termux catalog host | `repo.wawona.io` |
 | XcodeGen, Android APK, Rust backend, Machines | `Wawona` |
 | Public website | `wawona.io` |
