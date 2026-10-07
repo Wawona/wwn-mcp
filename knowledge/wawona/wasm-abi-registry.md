@@ -65,6 +65,14 @@ allowlist.toml (curated P1; blocked rows skip)
 Every active package must emit pass/fail JSON. Empty pass set is red. Do not
 smoke WASIX with Wasmtime. Do not use Wasmer as the store P1/P2 gate.
 
+### Hydra-style UI
+
+`stage-for-repo.py` merges each `smoke-result.json` into
+`repo.wawona.io/wasm/v1/index.json` as `ci.status` (`pass`|`fail`|`unknown`)
+plus `ci.suites` (`smoke`, later `terminal` / `socket` / `wayland`). Summary
+file: `/wasm/v1/ci.json`. Search UI shows a green/red/gray dot beside the
+package version on `/search/?channel=wasm`.
+
 WASIX CI (`wasinix` on `development`/`main`): matrix over active `smokes.toml`
 rows → `nix build .#wasmer.<name>` → `wasmer run` smoke → summary artifact.
 
