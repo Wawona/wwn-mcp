@@ -6,10 +6,10 @@ Build law: rule/skill `wawona-wasm-cli-ports`. Catalog host rule:
 
 ## Two build lanes
 
-| Lane | When | Repo |
-|------|------|------|
-| WASI P1 (store / Pulley) | Fits Preview 1 | `Wawona/wasm-packages` GHA |
-| WASIX (Wasmer) | Needs POSIX process/socket/TTY | `Wawona/wasinix` (nixpkgs override + wasixcc) |
+| Lane | When | Repo | CI smoke |
+|------|------|------|----------|
+| WASI P1/P2 (store / Pulley) | Fits Preview 1/2 | `Wawona/wasm-packages` GHA | **Wasmtime** |
+| WASIX | Needs POSIX process/socket/TTY | `Wawona/wasinix` (nixpkgs override + wasixcc) | **Wasmer** |
 
 Never auto-mirror nixpkgs. Never revive `nixpkgs2wasi` / `n2w`. Never publish
 a stub under `sed` / `jq` / `grep` at invented `0.1.0`.

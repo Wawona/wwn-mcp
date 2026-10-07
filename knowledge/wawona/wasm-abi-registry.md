@@ -48,11 +48,25 @@ allowlist.toml (curated P1; blocked rows skip)
   → build-wasm.yml (push / dispatch / cron)
        nightly: select stale vs https://repo.wawona.io/wasm/v1/index.json
        cap: meta.max_new_per_nightly
-  → wasmtime smoke → artifact wasm-out
+  → Wasmtime smoke (P1/P2) → smoke-result.json per package
+  → summarize-smoke-results.py → artifact wasm-out
   → publish-to-repo.yml → stage-for-repo.py → check-packages.py
        push repo.wawona.io development (wawona-wasm-bot)
   → Pages on development → live /wasm/v1
 ```
+
+### Runtime test matrix (required)
+
+| ABI | CI runtime | Harness |
+|-----|------------|---------|
+| WASI P1 / P2 | **Wasmtime** | `wasm-packages/scripts/smoke-package.sh` |
+| WASIX | **Wasmer** | `wasinix/smokes.toml` + `scripts/smoke-wasix-package.sh` |
+
+Every active package must emit pass/fail JSON. Empty pass set is red. Do not
+smoke WASIX with Wasmtime. Do not use Wasmer as the store P1/P2 gate.
+
+WASIX CI (`wasinix` on `development`/`main`): matrix over active `smokes.toml`
+rows → `nix build .#wasmer.<name>` → `wasmer run` smoke → summary artifact.
 
 Secret: `WAWONA_REPO_TOKEN` on `Wawona/wasm-packages`.
 
@@ -67,19 +81,19 @@ gh secret set WAWONA_REPO_TOKEN --repo Wawona/wasm-packages
 python3 scripts/sync-recipes-from-allowlist.py
 gh workflow run build-wasm.yml --repo Wawona/wasm-packages
 # WASIX:
-nix build github:Wawona/wasinix#wasix.grep
 nix build github:Wawona/wasinix#wasmer.grep
+./scripts/smoke-wasix-package.sh grep result/pkg/grep/bin/grep.wasm
 ```
 
 Local `cargo` is recipe debug only. Never publish laptop blobs as production.
 
 ## ABI labels
 
-| Label | Target | Runtimes |
-|-------|--------|----------|
-| WASI P1 | `wasm32-wasip1` | Wasmtime, Wasmer, WAMR, WasmEdge; store Pulley |
-| WASI P2 | `wasm32-wasip2` | Component Model (+ Preview 1 adapter when needed) |
-| WASIX | `wasm32-wasix` | **Wasmer only** |
+| Label | Target | CI smoke runtime |
+|-------|--------|------------------|
+| WASI P1 | `wasm32-wasip1` | Wasmtime (`wasm-packages`) |
+| WASI P2 | `wasm32-wasip2` | Wasmtime (`wasm-packages`) |
+| WASIX | `wasm32-wasix` | Wasmer (`wasinix`) |
 
 Later Wasmer-style names: `wawona/wasi-p1-grep`, `wawona/wasix-ripgrep`.
 
