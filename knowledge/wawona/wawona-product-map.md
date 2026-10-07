@@ -1,0 +1,81 @@
+# Wawona product map (do not conflate)
+
+These are **separate** products. Mixing them in code, docs, UI, or packaging is a bug.
+
+| Product | What it is | Not |
+|---|---|---|
+| **Wawona Swinging Bridge** (formerly **anowaW**) | Cocoa / Android / (future UIKit) apps → **Wayland clients**, local or over **waypipe-rs** to Linux (resize, placement, HID) | Desktop/LockScreen; MediaProjection-as-desktop |
+| **Desktop + LockScreen replacement** | Host DE / greeter (machine picker). macOS + Android planned; iOS/iPadOS jailbreak via `repo.wawona.io` only | Swinging Bridge; Linux; store Apple-mobile |
+| **Wawona Relay** (`wwn-relay`) | Linux VMs + OCI-in-VM + Mode A WASI | Swinging Bridge; Desktop/LockScreen; host Docker |
+| **Wawona Runtime + `wpm`** (in Relay) | WASI P1/P2 **`.wasm` packages** for optional software | OCI containers; `.deb`; Mach-O modules (`wwn-apt` retired) |
+
+Canonical prose: `Wawona/docs/mode-a-b.md`, `swinging-bridge.md`, `iland-mode-a-b-desktop.md`, `vms-containers.md`, `wasm-package-manager.md`. Site: wawona.io `/docs/…`.
+
+## Mode A vs Mode B (product-wide)
+
+| | **Mode A** | **Mode B** |
+|---|---|---|
+| Who | App Store / TestFlight / Play / store-shaped | Jailbreak iOS/iPadOS; SIP **fully disabled** (`csrutil disable`) for macOS Desktop/LockScreen; root Android |
+| Ship | Store IPA/AAB; notarized macOS | `repo.wawona.io` Sileo `.deb` + **Mode B IPA**; desktop-host macOS. **never** in store |
+| Copy | Never mention jailbreak / JIT pitch in store UI | Website + repo may document Mode B |
+
+**Always design A and B together** for VMs, containers, Desktop, Swinging Bridge. **Never** ship Mode B into App Store / Play artifacts.
+
+### Swinging Bridge
+
+- Repo: `Wawona/Wawona-Swinging-Bridge` (flake `wwn-swinging-bridge`; legacy ABI/Nix `anowaw_*` OK temporarily).
+- Status: planned; **neither Mode A nor Mode B implemented**.
+- macOS + Android: Mode A + Mode B planned. **iOS/iPadOS: Mode B only** (forbidden in store IPA).
+- Helps Desktop later (e.g. Android home = Wawona, apps still Wayland surfaces in niri). Home path is still Desktop, not Swinging Bridge.
+
+### Desktop / LockScreen
+
+- macOS: Mode A present path = iland userspace; Mode B = SIP **fully disabled** (`csrutil disable`) + `libwayland-mac.dylib` in `.#wawona-macos-desktop-host` only. Partial SIP (`csrutil enable --without debug`) is refused.
+- Android: Default Home + LockScreen APIs (planned); no root required for baseline.
+- App Store Apple-mobile: **forbidden** in-app; never jailbreak strings in store IPA.
+
+### VMs / containers
+
+- Platforms: planned on macOS, iOS, iPadOS, Android, Linux. **Forbidden** on tvOS, watchOS, visionOS.
+- Guests are **Linux only** (NixOS prebuilts, OrbStack-style). Not arbitrary VMs.
+- Mode A: **only** Wawona’s App Store-compliant runtime (Relay). Mode B: that
+  runtime **plus** Wawona’s Mode B runtime. Never UTM. Guest GUI is Wayland
+  into Wawona (`wawona-guest-wayland-iland`, `wawona-linux-vms-relay-runtime`).
+- Not the same as on-device `wwn-zsh` shell or Wasm packages.
+
+### Machines UI kinds (do not expand the picker)
+
+Add/Edit exposes **three** kinds only: **Native Shell**, **Virtual Machine**,
+**Container**. Terminal (Wawona Terminal), Wayland clients, Wasm, and Waypipe
+(with optional SSH) are **Native Shell sessions**. Rule/skill:
+`wawona-machine-types`. Legacy storage `wasm` / `ssh_*` still loads.
+
+### Wawona Runtime packages (`wpm` / WASI). Mode A forever
+
+- **Wasm is not platform-native** (tradeoff vs a true Mach-O port). Payoff: one
+  **portable** Runtime + **`wpm`** with **full App Store / Play compliance**.
+- **Wawona Runtime is always App Store / Play compliant.** There is **no Mode B
+  flavor of the Runtime**. (`wpm` WASI bytecode. Linux VM CPUs are a different
+  engine: `wawona-linux-vms-relay-runtime`.) Relay Wasm **ships on every
+  product target**, including watchOS / tvOS / visionOS (`wawona-relay-wasm`).
+- Packages are **bytecode data** (`.wasm` / WASI P1/P2), not unsigned Mach-O/`dlopen`, not `.deb`.
+- Dual channel on `repo.wawona.io`:
+  - Humans: `/search/?channel=wasm` vs `/search/?channel=deb`. Never one list.
+  - `/wasm/v1`. Mode A machine API. **App Store / Play compliance is wasm only.**
+  - APT at `https://repo.wawona.io/`: Sileo on jailbroken iOS (rootless/rootful)
+    and Termux on sideloaded Android (**not** jailbreak, **not** Play).
+  - `/jailbreak/` is the Sileo bookmark. `/termux/` is the Termux bookmark.
+    Store binaries must **never** probe APT, `/jailbreak/`, or `/termux/`.
+- Do not put `.deb` and `.wasm` in one index. Do not auto-discover APT from `wpm`.
+  Do not call Termux debs jailbreak.
+
+## Hard rejects
+
+❌ Call Swinging Bridge “Desktop” or “LockScreen”  
+❌ Ship Mode B / JIT / jailbreak engage in store IPA/AAB  
+❌ Treat Wasm packages as containers/VMs (or vice versa)  
+❌ Put graphics/Desktop/Swinging Bridge ownership into `wwn-toolchain` (L0 substrate only)  
+❌ Document Runtime as needing Mode B for package install
+❌ Size-gate or stub wasm off watchOS / tvOS / visionOS / any product target
+❌ Treat wwn-igetty / Mode B TTY / Doorman console as a Machines profile
+❌ Re-add SSH / Wasm / Waypipe as top-level Machines type-picker kinds
