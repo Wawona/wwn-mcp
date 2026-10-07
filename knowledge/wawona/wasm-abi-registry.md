@@ -81,3 +81,7 @@ nixpkgs; treat laptop builds as the publish source of truth.
 ## Native over wasm
 
 Do not package `/wasm/v1` twins of CLIs in `wasm-packages/scripts/native-all-targets.txt` (uutils safe subset on every target). Rule: `wawona-native-over-wasm`.
+
+## Package version vs ABI
+
+Catalog `version` = upstream (or Wawona scratch) **package** version. ABI is separate (`wasi-p1`/`wasix`). Scratch must use `wawona-*` names. See `wasm-packages/docs/package-versioning.md`.
