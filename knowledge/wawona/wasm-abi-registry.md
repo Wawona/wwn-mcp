@@ -37,6 +37,8 @@ allowlist.toml (curated P1; blocked rows skip)
 Secret: `WAWONA_REPO_TOKEN` on `Wawona/wasm-packages` (prefer GitHub App /
 machine user `wawona-wasm-bot`; `contents:write` on `repo.wawona.io`).
 
+Wasinix fork: `github.com/Wawona/wasinix` (Nix→WASIX/WebC). Store P1 CLI kit in wasm-packages.
+
 First-wave active: `hello-wasi`, `wasi-true`, `jq`, `gzip`, `grep`, `sed`,
 `awk`. Blocked: `curl` (no store-safe WASI P1 HTTP recipe yet).
 
