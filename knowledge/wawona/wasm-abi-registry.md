@@ -14,6 +14,10 @@ Builder repo: [`Wawona/wasm-packages`](https://github.com/Wawona/wasm-packages).
 | Unit | `.wasm` (`component.wasm`) | `.webc` (`wasmer publish`) |
 | Converter | None. `nixpkgs2wasi` retired | Do not revive `n2w` |
 
+## Upstream freshness (updatable)
+
+Each allowlist row has `version_policy`: `local` | `cargo-deps` | `crates-io` | `git-tag`. Nightly runners run `check-upstream-versions.py` (catalog + crates.io / git tags / Cargo.lock deps), `bump-outdated.py` when ahead, rebuild, bot-commit `[skip ci]`. Artifact: `upstream-report`. Still allowlist-only.
+
 ## Auto-growth loop
 
 ```text
