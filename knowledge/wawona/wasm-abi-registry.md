@@ -77,3 +77,7 @@ Before WASIX is “runnable everywhere”:
 
 Hard rejects: claim WASIX on store Pulley; revive `nixpkgs2wasi`; auto-mirror
 nixpkgs; treat laptop builds as the publish source of truth.
+
+## Native over wasm
+
+Do not package `/wasm/v1` twins of CLIs in `wasm-packages/scripts/native-all-targets.txt` (uutils safe subset on every target). Rule: `wawona-native-over-wasm`.
