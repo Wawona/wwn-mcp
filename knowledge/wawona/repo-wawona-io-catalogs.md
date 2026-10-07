@@ -19,8 +19,6 @@ call Termux jailbreak.
 HTML landings onto `/search/`. APT does **not** live under `/jailbreak/`. Store
 `wpm` must never fetch `/jailbreak/`, `/termux/`, `/Packages`, or `.deb`.
 
-runtime profile, not App Review.
-
 Repo: `github.com/Wawona/repo.wawona.io`. Site docs: wawona.io `/docs/packages/`.
 
 Cursor agents: read `repo.wawona.io/.cursor/skills/repo-wawona-io-priors/SKILL.md`
@@ -32,6 +30,13 @@ Wasm ABI labels and later Wasmer/WebC/wasinix:
 [`wasm-abi-registry.md`](./wasm-abi-registry.md) and
 `repo.wawona.io/docs/wasm-abi.md`.
 
-Production P1 builds: **`Wawona/wasm-packages`** GHA (`ubuntu-24.04`,
-`build-wasm.yml`). This host only catalogs `/wasm/v1`. Do not publish
-laptop-built blobs. Do not revive `nixpkgs2wasi`.
+## Wasm auto-growth (Wawona/wasm-packages)
+
+Production P1 builds: **`Wawona/wasm-packages`** GHA (`ubuntu-24.04`).
+
+Curated `allowlist.toml` → GHA nightly/stale build → `publish-to-repo.yml`
+pushes `wasm/v1` on **development** (`WAWONA_REPO_TOKEN` / wawona-wasm-bot).
+Pages deploys `development`. This host only catalogs `/wasm/v1`.
+
+Hard rejects: laptop-built blobs as production; revive `nixpkgs2wasi`;
+auto-mirror nixpkgs; mix wasm + deb search lists.

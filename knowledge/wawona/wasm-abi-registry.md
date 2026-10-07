@@ -1,4 +1,4 @@
-# Wasm ABI registry and GHA builds
+# Wasm ABI registry and GHA auto-publish
 
 Canonical registry prose:
 [`repo.wawona.io/docs/wasm-abi.md`](https://github.com/Wawona/repo.wawona.io/blob/development/docs/wasm-abi.md).
@@ -10,25 +10,39 @@ Builder repo: [`Wawona/wasm-packages`](https://github.com/Wawona/wasm-packages).
 | | Today | Later (planned) |
 |---|---|---|
 | Machine API | `/wasm/v1/index.json` + `.wasm` | Wasmer/WebC via wasinix; keep store `wpm` clients working |
-| Producer | **GHA** in `Wawona/wasm-packages` (`ubuntu-24.04`) | wasinix + `wawona` publish profile |
+| Producer | **GHA allowlist** in `Wawona/wasm-packages` (`ubuntu-24.04`) | wasinix + `wawona` publish profile |
 | Unit | `.wasm` (`component.wasm`) | `.webc` (`wasmer publish`) |
 | Converter | None. `nixpkgs2wasi` retired | Do not revive `n2w` |
 
-## GHA path (proven)
+## Auto-growth loop
 
 ```text
-recipes.json + packages/<name>/
-  → build-wasm.yml (matrix, wasmtime smoke, artifacts)
-  → publish-to-repo.yml (WAWONA_REPO_TOKEN) or staged PR
-  → repo.wawona.io/wasm/v1
+allowlist.toml (curated P1; blocked rows skip)
+  → sync-recipes-from-allowlist.py → recipes.json
+  → build-wasm.yml (push / dispatch / cron 0 6 * * *)
+       nightly: select stale vs https://repo.wawona.io/wasm/v1/index.json
+       cap: meta.max_new_per_nightly (default 3)
+  → wasmtime smoke → artifact wasm-out
+  → publish-to-repo.yml (workflow_run on green development)
+       WAWONA_REPO_TOKEN → stage-for-repo.py → check-packages.py
+       direct push to repo.wawona.io development (wawona-wasm-bot)
+       optional open_pr=true dry-run
+  → Pages on development → live /wasm/v1
 ```
 
-Proven packages: `hello-wasi` 0.1.2, `wasi-true` 0.1.0.
-Local `cargo` is recipe debug only. Never publish laptop blobs as production.
+Secret: `WAWONA_REPO_TOKEN` on `Wawona/wasm-packages` (prefer GitHub App /
+machine user `wawona-wasm-bot`; `contents:write` on `repo.wawona.io`).
+
+First-wave active: `hello-wasi`, `wasi-true`, `jq`, `gzip`, `grep`, `sed`,
+`awk`. Blocked: `curl` (no store-safe WASI P1 HTTP recipe yet).
 
 ```bash
+gh secret set WAWONA_REPO_TOKEN --repo Wawona/wasm-packages
+python3 scripts/sync-recipes-from-allowlist.py
 gh workflow run build-wasm.yml --repo Wawona/wasm-packages
 ```
+
+Local `cargo` is recipe debug only. Never publish laptop blobs as production.
 
 ## ABI labels
 
@@ -40,9 +54,9 @@ gh workflow run build-wasm.yml --repo Wawona/wasm-packages
 
 Names: `wawona/wasi-p1-grep`, `wawona/wasix-ripgrep`.
 
-## Phase order (expand on GHA)
+## Phase order
 
-1. Grow P1 CLI matrix in `wasm-packages` (grep, sed, awk, …)
+1. Grow P1 CLI allowlist on GHA (grep/sed/awk/gzip/jq first wave)
 2. Fork wasinix when public; WASIX lane on same runners (Wasmer-only labels)
 3. Wayland proof (Weston terminal client), then small GTK client
 
@@ -55,5 +69,5 @@ Before WASIX is “runnable everywhere”:
   `wawona-relay-wasm`. Do not link Wasmer early.
 - `wpm` stays Wasm package data. Never `docker pull`.
 
-Hard rejects: claim WASIX on store Pulley; revive `nixpkgs2wasi`; treat
-laptop builds as the publish source of truth.
+Hard rejects: claim WASIX on store Pulley; revive `nixpkgs2wasi`; auto-mirror
+nixpkgs; treat laptop builds as the publish source of truth.
