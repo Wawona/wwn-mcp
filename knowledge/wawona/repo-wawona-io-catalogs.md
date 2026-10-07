@@ -30,16 +30,18 @@ Wasm ABI labels and later Wasmer/WebC/wasinix:
 [`wasm-abi-registry.md`](./wasm-abi-registry.md) and
 `repo.wawona.io/docs/wasm-abi.md`.
 
-## Wasm auto-growth (Wawona/wasm-packages)
+## Wasm builds (two lanes)
 
-Production P1 builds: **`Wawona/wasm-packages`** GHA (`ubuntu-24.04`).
+| Lane | Repo | Lands here |
+|------|------|------------|
+| Store P1 | `Wawona/wasm-packages` GHA | `/wasm/v1` |
+| Nixpkgs → WASIX | `Wawona/wasinix` | Wasmer/WebC (not Pulley P1 rows) |
 
-Curated `allowlist.toml` → GHA nightly/stale build → `publish-to-repo.yml`
-pushes `wasm/v1` on **development** (`WAWONA_REPO_TOKEN` / wawona-wasm-bot).
-Pages deploys `development`. This host only catalogs `/wasm/v1`.
+Law: `wawona-wasm-cli-ports`. P1: curated `allowlist.toml` → GHA →
+`publish-to-repo.yml` → `development`. Pages deploys `development`.
 
-Hard rejects: laptop-built blobs as production; revive `nixpkgs2wasi`;
-auto-mirror nixpkgs; mix wasm + deb search lists.
+Hard rejects: laptop blobs; revive `nixpkgs2wasi`; auto-mirror nixpkgs; stub
+CLIs under upstream names; mix wasm + deb search lists; claim WASIX on Pulley.
 
 ## Wawona Ports
 

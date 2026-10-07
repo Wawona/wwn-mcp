@@ -189,8 +189,15 @@ _REPOS: list[dict[str, Any]] = [
     {
         "repo": "wasm-packages",
         "layer": "tooling",
-        "role": "GHA WASI P1 (+ later WASIX) package builds for repo.wawona.io/wasm/v1",
-        "when": "wasm package recipe, build-wasm.yml, wasi-true, publish wasm blob",
+        "role": "GHA WASI P1 package builds for repo.wawona.io/wasm/v1 (store / Pulley)",
+        "when": "wasi-p1 allowlist, build-wasm.yml, store wpm blob, Preview 1 recipe",
+        "project": "wawona",
+    },
+    {
+        "repo": "wasinix",
+        "layer": "tooling",
+        "role": "Nix → WASIX / WebC (nixpkgs override + wasixcc). Wasmer publish to repo.wawona.io/wasm",
+        "when": "wasix recipe, wasixcc, WebC, wasmer package, nixpkgs cross to wasm32-wasix",
         "project": "wawona",
     },
 ]
@@ -223,17 +230,26 @@ _WHERE: list[tuple[re.Pattern[str], str, str]] = [
     (re.compile(r"wwn-relay|relay runtime|relay cpu", re.I),
      "Relay", "Linux VMs + OCI-in-VM + Mode A WASI (never QEMU/UTM)"),
     (re.compile(
-        r"nixpkgs2wasi|\bn2w\b|wasm32-wawona|pkgsCross\.wawona|nixpkgs.*wasi|wasi.*nixpkgs",
+        r"nixpkgs2wasi|\bn2w\b|wasm32-wawona|pkgsCross\.wawona",
         re.I,
     ),
-     "repo.wawona.io",
-     "nixpkgs2wasi is retired. Wasm catalog is repo.wawona.io/wasm/v1. Builds are Wawona/wasm-packages GHA."),
+     "wasinix",
+     "nixpkgs2wasi/n2w retired. Nixpkgs→WASIX is Wawona/wasinix. Store P1 is Wawona/wasm-packages GHA."),
     (re.compile(
-        r"wasm-packages|build-wasm\.yml|wasi-true|wasi.?p1.?recipe|gha.?wasm.?package",
+        r"wasinix|wasixcc|wasm32-wasix|\bwasix\b|webc|wasmer\.toml|makeWasmerPackage|"
+        r"nixpkgs.*was[ix]|was[ix].*nixpkgs|"
+        r"cross.?compil.*(wasm|wasi|wasix)|(wasm|wasi|wasix).*cross.?compil",
+        re.I,
+    ),
+     "wasinix",
+     "Nixpkgs → WASIX / WebC. Override nixpkgs with wasixcc. Not store Pulley P1."),
+    (re.compile(
+        r"wasm-packages|build-wasm\.yml|wasi-true|wasi.?p1.?recipe|gha.?wasm.?package|"
+        r"wasm32-wasip1|allowlist\.toml",
         re.I,
     ),
      "wasm-packages",
-     "GHA WASI P1 (+ later WASIX) package builds for repo.wawona.io/wasm/v1. Not laptop publish."),
+     "GHA WASI P1 builds for repo.wawona.io/wasm/v1 (store / Pulley). Not laptop publish."),
     (re.compile(r"\bvm\b|virtual.?machine", re.I),
      "Relay", "Linux VM engines live in Relay, not wwn-vms"),
     (re.compile(r"container-in-vm|oci.?in.?vm|container.?machine", re.I),

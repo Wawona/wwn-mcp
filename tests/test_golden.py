@@ -93,9 +93,13 @@ def test_contribute_capability_gates():
     assert where_to_edit("repo.wawona.io Cursor agent skills")["repo"] == "repo.wawona.io"
     assert where_to_edit("wawona.io homepage Search packages")["repo"] == "wawona.io"
     assert where_to_edit("wpm install hello")["repo"] == "wwn-wasm"
-    assert where_to_edit("n2w build foot")["repo"] == "nixpkgs2wasi"
-    assert where_to_edit("nixpkgs2wasi WASI catalog")["repo"] == "nixpkgs2wasi"
-    assert "nixpkgs2wasi" in repos
+    assert where_to_edit("n2w build foot")["repo"] == "wasinix"
+    assert where_to_edit("nixpkgs2wasi WASI catalog")["repo"] == "wasinix"
+    assert where_to_edit("wasixcc grep recipe")["repo"] == "wasinix"
+    assert where_to_edit("wasm-packages allowlist.toml")["repo"] == "wasm-packages"
+    assert "wasinix" in repos
+    assert "wasm-packages" in repos
+    assert "nixpkgs2wasi" not in repos
 
 
 def test_golden_knowledge_search(knowledge_index):

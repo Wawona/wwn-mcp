@@ -26,7 +26,8 @@ compositor/shell/toolchain development.
 | **wwn-fastfetch** | L3′ | fastfetch port | |
 | **wwn-phoon-rs** | L3′ | phoon client | |
 | **wwn-wasm** (legacy) | L3′ | Merged into **Relay**. Do not start new work here | Redirect |
-| **wasm-packages** | tooling | GHA WASI P1 (+ later WASIX) builds for `/wasm/v1` | `ubuntu-24.04`; not laptop publish |
+| **wasm-packages** | tooling | GHA store WASI P1 builds for `/wasm/v1` | Pulley / `wpm`; not laptop publish |
+| **wasinix** | tooling | Nix → WASIX / WebC (nixpkgs override + wasixcc) | Wasmer; not store Pulley P1 |
 | **repo.wawona.io** | docs | Dual catalog: store wasm `/wasm/v1`; Sileo iOS jailbreak debs + Termux Android sideload debs at APT root | Never one mixed list. Termux is not jailbreak. |
 | **wwn-mcp** | tooling | Stdio RAG + MCP for agents | This repo |
 | **wawona.io** | docs | Public site | Not a product flake input |
