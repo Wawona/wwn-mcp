@@ -43,7 +43,8 @@ auto-mirror nixpkgs; mix wasm + deb search lists.
 
 ## Wawona Ports
 
-Ports use the upstream software version and name. Never invent `0.1.0` for
-"just ported". Never brand with `wawona-` / `wwn-`. Require `website` +
-`source`. See [`wawona-ports.md`](./wawona-ports.md) and rule
-`repo-wawona-io-ports`.
+Ports use the upstream software version, name, and `homepage` (nixpkgs-style).
+Never invent `0.1.0` for "just ported". Never brand with `wawona-` / `wwn-`.
+Never blanket-link every package to `wawona.io/docs/wasm/`. Require
+`homepage` + `source`. Stubs are not ports. See
+[`wawona-ports.md`](./wawona-ports.md) and rule `repo-wawona-io-ports`.

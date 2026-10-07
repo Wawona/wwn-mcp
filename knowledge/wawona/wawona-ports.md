@@ -10,7 +10,11 @@ Almost every package on `repo.wawona.io` is a **port** of existing software.
   `0.1.0` because the port just landed on Wawona. Require `upstream_version`
   equal to `version`. Set `upstream_is_bootstrap` only when upstream itself
   publishes that bootstrap version.
-- Links: `website` = upstream homepage; `source` = port / packaging tree.
+- Field **`homepage`**: upstream project URL (nixpkgs `meta.homepage`). Not
+  `website`. Never a blanket `wawona.io/docs/wasm/` for every row.
+- Field **`source`**: the port / packaging tree used to build the catalog row.
+- A short reimplementation is not a port of GNU sed / jqlang jq. Keep stubs
+  out of the live index until the real upstream tree is packaged.
 
 ## Where
 
