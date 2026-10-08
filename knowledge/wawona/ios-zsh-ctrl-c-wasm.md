@@ -41,7 +41,9 @@ Settings key. It must stop the foreground in-process command (uutils
 - `wwn-toolchain/.../wawona-pty/src/wwn_pty.c` (flag + stdio interpose)
 - `wwn-toolchain/.../wawona-pty/src/wawona-dispatch.c` (begin/end)
 - `wwn-zsh/.../patch-zsh-exec.py` (`lastval == 130` → `errflag`)
-- `Wawona/src/platform/ios/WWNCompositorView_ios.m` (`copy:` / UIKeyCommand)
+- Present view is `Wawona/Sources/WawonaApple/Present/CompositorView.swift`.
+  Host pasteboard is `Wawona/Sources/WawonaApple/Shell/Pasteboard.swift`.
+  `WWNCompositorView_ios.m` is gone. Do not look for `copy:` / `UIKeyCommand` there.
 
 ## Hard rejects
 

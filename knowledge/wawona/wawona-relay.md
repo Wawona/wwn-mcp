@@ -430,14 +430,14 @@ unproven; internal symlink ancestors currently reject conservatively.
 
 The active shared Sources/WawonaUI settings already contain memory/storage
 sliders and guest-page selection; WWNVirtualMachineEditorSection is legacy.
-WWNRelay.m sends memory_mb/disk_gib/max_disk_gib. RelaySpec now retains these;
+`Sources/WawonaApple/Runners/RelayRunner.swift` (`WWNRelay`) sends memory_mb/disk_gib/max_disk_gib. RelaySpec now retains these;
 StaticCpu and VZ apply RAM and disk limits. App-owned machine disks publish
 without replacement, hold an exclusive advisory lock, grow only, and flush
 writes before virtio completion. This is not a crash-consistency or race proof.
 Shared UI labels storage, prevents configured-size shrink, and shows automatic
 connection instead of a nonfunctional port field. Swift package WawonaUI builds;
 actual iOS app/device settings validation remains open. Guest root autoResize
-is already on. The legacy iOS 11 UI path still needs separate coverage.
+is already on. There is no iOS 11 UI path. Coverage starts at iOS 13.
 
 ## 2026-09-30 conditional FP and persistence validation
 

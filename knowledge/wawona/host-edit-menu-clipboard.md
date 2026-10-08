@@ -53,5 +53,6 @@ mirrors client Copy onto `UIPasteboard` / `NSPasteboard` / `ClipboardManager`.
   only for nested weston/niri chrome, or the off-by-default
   `TouchPointerEmulation` pref.
 
-Code: `WWNCompositorBridge` `hostEdit*` (macOS Edit menu / hardware
-keyboard), `WWNCompositorView_ios` `copy:`/`paste:`, `WWNView` `copy:`/`paste:`.
+Code: `Sources/WawonaApple/Present/WWNCompositorBridge.swift` (macOS Edit menu /
+hardware keyboard), `Sources/WawonaApple/Shell/Pasteboard.swift` (`copy` /
+`paste`). `WWNCompositorView_ios.m` is gone.
