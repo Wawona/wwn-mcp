@@ -6,7 +6,9 @@ Wawona-owned Apple product code has three layers only:
    VM/container policy, keymap, shell dispatch.
 2. **Swift / SwiftUI** owns AppKit, UIKit, WatchKit, Metal, SpriteKit,
    CarPlay, ScreenCaptureKit, OpenDirectory. Lives in `Sources/WawonaUI`,
-   `Sources/WawonaWatch`, `Sources/WawonaApple`, and `Darwin/` (`@main`).
+   `Sources/WawonaWatch`, `Sources/WawonaApple`, and `Darwin/` (`@main` on
+   macOS and Apple-mobile). Mobile process entry is `UIApplicationMain`
+   (iOS 13 floor). See `ios-app-entry-and-sim-runtime.md`.
 3. **C poll ABI** (`WWNCore*` in `src/ffi/c_api.rs`) stays the compositor
    bridge. Swift calls those symbols. UniFFI owns the product domain only.
    Do not move the frame loop onto UniFFI callbacks.
