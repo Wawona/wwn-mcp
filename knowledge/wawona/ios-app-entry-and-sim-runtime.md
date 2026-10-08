@@ -35,6 +35,16 @@ Hard gate: `Wawona/docs/agent-rules/wawona-ios-app-entry.md` (Cursor
   trust stderr `WWN_AUTO_START_MACHINE: started …` and
   `/tmp/wawona_sim_$UID/wayland-0`.
 
+## Machines Start (host + sim)
+
+1. **Unlinked Wayland socket.** `wayland-0` path can vanish while the
+   listen fd stays open. Clients get `ENOENT`. `isRunning` must require a
+   connectable path; `ensureRunning` stops and rebinds. Heal: kill Wawona,
+   `rm` `/tmp/wawona-$UID/wayland-*` locks, relaunch, prove connect.
+2. **Wasm no-op.** `launchBundledClient("wawona-wasm")` must call
+   `launchWasmModule` (bundled `hello-wasi-gui.wasm` or `wasmModulePath`).
+   A bare `break` marks Connected without running the module.
+
 ## Verify snippets
 
 ```bash
