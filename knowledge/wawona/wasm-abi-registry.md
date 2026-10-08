@@ -11,8 +11,10 @@ Two build lanes (hard law): rule `wawona-wasm-cli-ports`, skill
 | Store P1 | [`Wawona/wasm-packages`](https://github.com/Wawona/wasm-packages) GHA | `wasm32-wasip1` | `/wasm/v1` for `wpm` / Pulley |
 | Nixpkgs → WASIX | [`Wawona/wasinix`](https://github.com/Wawona/wasinix) | `wasm32-wasix` | Wasmer/WebC → `repo.wawona.io/wasm` (not store Pulley) |
 
-`nixpkgs2wasi` / `n2w` are **retired**. Do not revive. Do not auto-mirror
-nixpkgs. Do not ship stub CLIs under upstream names.
+`nixpkgs2wasi` / `n2w` are **retired**. GitHub #172-#177 closed wontfix.
+Do not revive. Do not auto-mirror nixpkgs. A live `Wawona/nixpkgs2wasi`
+checkout is not a Wawona flake input and not the `/wasm/v1` producer.
+Do not ship stub CLIs under upstream names.
 
 ## Today vs later
 

@@ -9,8 +9,7 @@ is a Wawona product path.
   Wasm package client (OCI artifacts preferred).
 - Canonical product doc: `Wawona/docs/wasm-wasi.md`.
 - **Containers** (`wwn-containers` + Machines kind `container`): OCI Linux images
-  (e.g. Docker Hub), macOS Apple Container / iOS UTM-SE jitless container-in-VM -
-  **not** Wasm packages.
+  in a Relay VM. Not UTM-SE (GitHub #33 closed wontfix). **Not** Wasm packages.
 
 If a user asks about `apt` on iPhone in Wawona: explain it was removed; point at
 Wasm Runtime + shell.

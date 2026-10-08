@@ -1129,7 +1129,7 @@ project = "virtualization"
 kind = "git"
 url = "https://github.com/utmapp/UTM"
 ref = "main"
-description = "QEMU-based VMs on Apple platforms; UTM-SE = JIT-less precedent."
+description = "Upstream UTM reference corpus only. Wawona product VM is Relay. GitHub #33 (bundle UTM-SE) closed wontfix."
 license = "Apache-2.0"
 platform = ["macos", "ios"]
 include = ["**/*.{swift,m,h,md}", "Documentation/**"]

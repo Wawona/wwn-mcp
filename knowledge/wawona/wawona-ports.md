@@ -11,8 +11,9 @@ Build law: rule/skill `wawona-wasm-cli-ports`. Catalog host rule:
 | WASI P1/P2 (store / Pulley) | Fits Preview 1/2 | `Wawona/wasm-packages` GHA | **Wasmtime** |
 | WASIX | Needs POSIX process/socket/TTY | `Wawona/wasinix` (nixpkgs override + wasixcc) | **Wasmer** |
 
-Never auto-mirror nixpkgs. Never revive `nixpkgs2wasi` / `n2w`. Never publish
-a stub under `sed` / `jq` / `grep` at invented `0.1.0`.
+Never auto-mirror nixpkgs. Never revive `nixpkgs2wasi` / `n2w` (GitHub
+#172-#177 closed wontfix). A live `Wawona/nixpkgs2wasi` repo is not the
+producer. Never publish a stub under `sed` / `jq` / `grep` at invented `0.1.0`.
 
 ## Catalog laws
 
