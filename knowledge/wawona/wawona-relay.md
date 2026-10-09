@@ -25,6 +25,19 @@ NixOS MicroVM profiles are mandatory Relay machines. Their virtual disks resize
 only while stopped and only grow; Relay owns the validation plan and native UI
 uses a discrete slider.
 
+## macOS MicroVM dogfood (vfkit, not product engine)
+
+Linux-first breadth on the Mac without a native port of every app: microvm.nix
++ vfkit boots a NixOS guest; vsock port 1024 + waypipe forwards a Wayland
+*client* (default foot) into host Wawona. Guest module:
+`Relay/import/vms/dependencies/vms/microvm-guest.nix` (`sessionClient`,
+`WAWONA_RELAY_READY=1`). Preferred host command:
+`nix run .#wawona-microvm-session` (supervises bridge + microvm). Machines
+`virtual_machine` Start on macOS uses `WWNVirtualMachineRunner` for that
+session. Smoke: `Wawona/scripts/microvm-waypipe-session-smoke.sh`. Prose:
+`Wawona/docs/2026-nixos-vm-bridge.md`. Product engine remains Relay
+(VZ/StaticCpu/KVM). Never QEMU/UTM Start. Never treat vfkit as the iOS path.
+
 Mode A vs Mode B is which binary was installed. Not a Settings toggle.
 
 ## Rust + crate2nix
