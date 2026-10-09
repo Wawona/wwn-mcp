@@ -38,7 +38,7 @@ Install: `nix profile install github:Wawona/WWN-MCP` then `wwn-mcp info`.
 7. Read matching Cursor skill (`.cursor/skills/wawona-*`, tracked
    `Wawona/docs/agent-skills/`). Software must improve on prior knowledge.
    After a durable finding: update skill + `knowledge/wawona/` + reindex.
-   See `agent-learn.md`. Voice: caveman-lite.
+   See `agent-learn.md` and `caveman-full.md`. Voice: caveman-full.
 
 ## Companion MCPs (separate processes)
 
