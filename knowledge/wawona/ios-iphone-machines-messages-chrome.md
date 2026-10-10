@@ -11,8 +11,10 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
   `.searchable(text:)` (default placement) plus toolbar
   `DefaultToolbarItem(kind: .search, placement: .bottomBar)`,
   `ToolbarSpacer(.flexible, placement: .bottomBar)`, then
-  `ToolbarItem(placement: .bottomBar)` with a plain `Label(..., "plus")`,
+  `ToolbarItem(placement: .bottomBar)` with `Label(..., "plus")`,
+  `.buttonStyle(.glassProminent)`, `.buttonBorderShape(.circle)`,
   `.tint(accent)`, `.sharedBackgroundVisibility(.hidden)`.
+  Blue filled compose background (not accent glyph on clear glass).
   No custom capsule. No fixed 44/56pt frame on the +. The system sizes
   search and + to the same bottom chrome.
 - Top-trailing sort/Settings: `.buttonStyle(.automatic)` only. Do not put
@@ -33,3 +35,4 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
   the compose + (search goes full-width and overlaps the button)
 - Putting this chrome on iPad / visionOS
 - Gray / secondary tint on the new-machine +
+- Accent tint alone on Add (blue foreground / no filled background)
