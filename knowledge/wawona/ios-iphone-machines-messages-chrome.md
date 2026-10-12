@@ -18,17 +18,21 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
   Blue filled compose bubble (not a bare + glyph). Toolbar `Label` often
   drops the circle. No custom capsule. No fixed 44/56pt frame on the +.
   System sizes search and + to the same bottom chrome.
+- Top-trailing on phone: sort + Settings only. **Never** a second Add there.
+  Exactly one `+` (bottom compose on phone).
 - Top-trailing sort/Settings: `.buttonStyle(.automatic)` only. Do not put
   `.buttonStyle(.glass)` on toolbar items (glass-on-glass Liquid Glass bug).
 - Pre-iOS 26 fallback: 36pt capsule + 36pt circular + via
-  `safeAreaInset`. Not the iPad FAB. Not `GlassEffectContainer`.
-- iPad and visionOS keep the top magnifying glass overlay and the
-  trailing FAB. Do not move those.
+  `safeAreaInset` (sole phone Add on those OS versions). Not the iPad FAB.
+  Not `GlassEffectContainer`.
+- iPad and visionOS: top-trailing Add only (plus search overlay). Do not
+  also put Add in a bottom bar on those hosts.
 - Still dismiss sticky IME with `WWNHostKeyboard` on selection and
   column change.
 
 ## Hard rejects
 
+- **Two Add Machine buttons** (top-trailing + bottom compose on phone)
 - Custom glass capsule + oversized circular + (44/56pt) next to search on
   iOS 26 (or forcing `usesNativePhoneSearchToolbar = false` on 26+)
 - `.buttonStyle(.glass)` on top-trailing toolbar items on iOS 26

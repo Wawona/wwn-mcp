@@ -13,8 +13,9 @@ from `repo.wawona.io`.
 
 weston, niri, foot, weston-terminal, weston toys, GPU cubes → **deb**
 (jailbreak iOS rootless/rootful, Termux, Linux). No App Store patches in those
-recipes. GTK → deb + WASIX. Store optional GUI → wasm P1 / WASIX lanes.
-
+recipes. GTK toolkit → WASIX **`pkgs/libraries/`** (not `programs/`) plus deb
+on `repo.wawona.io`. Store optional GUI → wasm P1 / WASIX lanes. See
+`libraries-vs-programs.md`.
 Termux Android debs: Google NDK clang (Bionic `aarch64`, prefix
 `/data/data/com.termux/files/usr`). Recipe helper:
 `repo.wawona.io/lib/androidNdk.nix`. Never pack glibc Linux ELFs. Do not use
