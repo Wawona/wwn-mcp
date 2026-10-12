@@ -12,7 +12,7 @@ libraries. harfbuzz does not replace cairo. cairo does not include harfbuzz
 and does not provide GLES. On Android and wasm there is no system cairo.
 Each text library is built for that libc.
 
-GPU is L1 `wwn-iland` (one hop: ANGLE or MoltenVK to Metal, Android system or
+GPU is L1 `iLand` (one hop: ANGLE or MoltenVK to Metal, Android system or
 SwiftShader). watchOS is `wl_shm` plus SpriteKit. Never open `/dev/dri`.
 
 `nix build` exiting 0 is not green. Verdict is `package-doctor`

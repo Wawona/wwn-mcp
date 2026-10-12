@@ -18,7 +18,7 @@ Wawona development is split across the **Wawona GitHub organization**
 ├── Wawona/           # integration (compositor, apps, flake inputs)
 ├── wwn-mcp/          # this retrieval server (stdio)
 ├── wwn-toolchain/
-├── wwn-iland/
+├── iLand/
 ├── wwn-kmscube/
 ├── wwn-weston/
 ├── wwn-niri/
@@ -56,7 +56,7 @@ Wawona development is split across the **Wawona GitHub organization**
 | zsh exec patch, RootFS | `wwn-zsh` |
 | Weston patches | `wwn-weston` |
 | Niri recipe | `wwn-niri` |
-| iland / ANGLE / ICDs | `wwn-iland` |
+| iland / ANGLE / ICDs | `iLand` |
 | kmscube | `wwn-kmscube` |
 | waypipe-rs | `wwn-waypipe` |
 | Wawona Swinging Bridge | `Wawona-Swinging-Bridge` |

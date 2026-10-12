@@ -5,7 +5,7 @@ from `repo.wawona.io`.
 
 ## Keep in the app
 
-- Smithay compositor + wwn-iland (ANGLE / MoltenVK as needed)
+- Smithay compositor + iLand (ANGLE / MoltenVK as needed)
 - Relay wasm runtime + `hello-wasi-gui` smoke
 - zsh, uutils safe subset, fastfetch (App Store patches stay here only)
 

@@ -1,4 +1,4 @@
-# wwn-iland graphics stack
+# iLand graphics stack
 
 Indexed mirror of the architecture and acceptance contract in
 `Wawona/docs/iland-graphics-stack.md`. Repository ownership is defined by
@@ -7,7 +7,7 @@ Indexed mirror of the architecture and acceptance contract in
 
 ## Architecture and ownership
 
-`wwn-iland` is the L1 graphics layer. Stock clients keep standard libdrm, GBM,
+`iLand` is the L1 graphics layer. Stock clients keep standard libdrm, GBM,
 EGL, Vulkan, and Wayland interfaces:
 
 ```text
@@ -24,7 +24,7 @@ they do not replace GBM. The virtual device must provide the connector,
 encoder, CRTC, plane, property, framebuffer, modeset, and page-flip behavior
 used by accepted stock clients.
 
-`wwn-iland.registryFragment` is the sole registry owner of ANGLE, SwiftShader,
+`iLand.registryFragment` is the sole registry owner of ANGLE, SwiftShader,
 MoltenVK, and KosmicKrisp. Cairo, pango, pixman,
 libwayland, and other text/2D/toolkit substrate remain in L0 `wwn-toolchain`.
 Wawona consumes solved L1 registry entries rather than instantiating

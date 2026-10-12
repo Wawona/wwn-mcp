@@ -36,7 +36,7 @@ _PATCH_SOURCE_NAMES = frozenset({
     "wwn-toolchain",
     "wwn-zsh",
     "wwn-weston",
-    "wwn-iland",
+    "iLand",
     "wwn-waypipe",
     "wwn-coreutils",
     "wwn-foot",

@@ -19,7 +19,7 @@ This is the only engine Wawona calls for Linux guests and Mode A WASI.
 - tvOS / watchOS / visionOS: VM and container kinds forbidden. Wasm remains required.
 
 Guest GUI is vsock + waypipe into Wawona (iland). Not Spice, virgl, or virtio-gpu into a second window.
-Every Relay VM GUI uses `wwn-iland` userspace DRM/KMS/GBM framebuffer services
+Every Relay VM GUI uses `iLand` userspace DRM/KMS/GBM framebuffer services
 and Wawona Wayland. This is mandatory on every target that supports VM machines.
 NixOS MicroVM profiles are mandatory Relay machines. Their virtual disks resize
 only while stopped and only grow; Relay owns the validation plan and native UI

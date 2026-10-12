@@ -25,7 +25,7 @@ Wawona merges:
 
 ```nix
 registry = wwn-toolchain.lib.baseRegistry
-  // wwn-iland.registryFragment
+  // iLand.registryFragment
   // wwn-weston.registryFragment
   // …;
 ```
@@ -50,6 +50,6 @@ path, so moving recipes out of the monorepo does not break the build graph.
 | Weston terminal | wwn-weston | `terminal-patches/patch-terminal.py`, `compositor-apple-mobile.nix` |
 | waypipe | wwn-waypipe | `patch-waypipe-source.sh`, `waypipe-patched-src.nix` |
 | coreutils | wwn-coreutils | `patch-coreutils-source.sh`, `multicall.nix` |
-| iland shims | wwn-iland | upstream/shims/* (not a single patch file. Vendored compat layer) |
+| iland shims | iLand | upstream/shims/* (not a single patch file. Vendored compat layer) |
 | foot | wwn-foot | platform `.nix` recipes + any `patch-*` scripts |
 | fastfetch | wwn-fastfetch | `patch-fastfetch-apple-mobile.py`, `apply-wawona-wayland-macos.py` |

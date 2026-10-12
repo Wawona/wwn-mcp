@@ -36,7 +36,7 @@ Each `[[source]]` entry supports:
   Path B watchdog safety, Aqua vs Classic compositor backends, platform
   capability matrix, toolkit
   readiness/software SHM fallback, plus multi-repo and device/debug workflows
-  (`knowledge/wawona/`; start with `wwn-iland-graphics-stack.md`,
+  (`knowledge/wawona/`; start with `iland-graphics-stack.md`,
   `platform-capability-matrix.md`, and `ios-device-dev-workflow.md`).
 
 ### Wawona patched-software repos (Wawona org)
@@ -48,7 +48,7 @@ inputs and merges each repo's `registryFragment` over `wwn-toolchain`'s
 - `wwn-toolchain` (`project=wawona`) — L0 cross-compile framework + common
   substrate (including cairo/pango/pixman/libwayland) + `wawona-pty`; exposes
   `lib.mkToolchains` / `lib.baseRegistry`.
-- `wwn-iland` (`project=iland`) — L1 DRM/KMS/EGL/GBM compat layer plus ANGLE,
+- `iLand` (`project=iland`) — L1 DRM/KMS/EGL/GBM compat layer plus ANGLE,
   SwiftShader, MoltenVK, macOS-only KosmicKrisp, and Android Vulkan hooks;
   depended on by `wwn-weston`. License `UNKNOWN`.
 - `wwn-weston` (`project=weston`) — Weston Apple ports + `weston-simple-shm` +

@@ -19,15 +19,15 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | Change | Repo |
 |--------|------|
 | Substrate (cairo/pango/pixman/libwayland) | `wwn-toolchain` |
-| ANGLE / MoltenVK / iland DRM/KMS/GBM | `wwn-iland` |
-| iOS min OS 11.0 vs latest iPhoneOS SDK | `wwn-toolchain` (`deploymentTarget`) + `wwn-iland` (ANGLE/MoltenVK patches) + `Wawona` (`@available`) |
+| ANGLE / MoltenVK / iland DRM/KMS/GBM | `iLand` |
+| iOS min OS 11.0 vs latest iPhoneOS SDK | `wwn-toolchain` (`deploymentTarget`) + `iLand` (ANGLE/MoltenVK patches) + `Wawona` (`@available`) |
 | kmscube, weston, niri, foot, fastfetch, phoon, neovim | `repo.wawona.io` `catalog/` |
 | waypipe | `wwn-waypipe` |
 | Wawona Swinging Bridge bridge | `Wawona-Swinging-Bridge` |
 | SSH / libssh2 | `wwn-ssh` |
 | IOWatchdog Path B / claim-ok | `wwn-iowatchdog` |
 | Classic VTs / igettyd / iOS TrollStore zsh PTYs | `wwn-igetty` |
-| Desktop Replacement Settings / Take Over helper | `Wawona` (dylib: `wwn-iland`) |
+| Desktop Replacement Settings / Take Over helper | `Wawona` (dylib: `iLand`) |
 | zsh / RootFS | `wwn-zsh` |
 | Machines UI, SwiftUI, Android app, Smithay | `Wawona` |
 | Public docs site | `wawona.io` |

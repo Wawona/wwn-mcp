@@ -33,7 +33,7 @@ Cairo / Qt raster / SDL software / Weston pixman
 ```
 
 Pixman remains L0 `wwn-toolchain` substrate because Cairo and Weston consume
-it. `wwn-iland` may link pixman helpers but does not own pixman. The soft path
+it. `iLand` may link pixman helpers but does not own pixman. The soft path
 must not become fake GLES, Zink, or an unconditional second full-frame copy.
 
 waypipe may intentionally fall back to SHM/compression when GPU transport is
@@ -42,6 +42,6 @@ tvOS/watchOS deliberately use the software path while still launching their
 real native Weston and Niri bundles. They must not acquire Vulkan/OpenGL
 artifacts to satisfy toolkit tests.
 
-See [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md) for the GPU
+See [`iland-graphics-stack.md`](iland-graphics-stack.md) for the GPU
 architecture and [`platform-capability-matrix.md`](platform-capability-matrix.md)
 for target exclusions.

@@ -1,4 +1,4 @@
-# wwn-iland lineage and upstream credit
+# iLand lineage and upstream credit
 
 ## Upstream inspiration
 
@@ -17,14 +17,14 @@ CoreBedtime/iland project.
 1. Wawona initially forked iland as **`github.com/Wawona/iland`** (a GitHub fork
    of CoreBedtime/iland).
 2. That fork was **deleted** after extraction into the dedicated flake repo
-   **`github.com/Wawona/wwn-iland`**. The current home for all iland-related
+   **`github.com/Wawona/iLand`**. The current home for all iland-related
    Nix packaging, shims, and Wawona-specific extensions.
 
-Do not reference `Wawona/iland`; use **`wwn-iland`**.
+Do not reference `Wawona/iland`; use **`iLand`**.
 
-## What wwn-iland adds beyond upstream macOS iland
+## What iLand adds beyond upstream macOS iland
 
-Upstream iland targeted **macOS only**. `wwn-iland` implements substantial
+Upstream iland targeted **macOS only**. `iLand` implements substantial
 Wawona-specific work:
 
 - **KMS/DRM on iOS** and across the Apple platform family (iPadOS, tvOS,
@@ -35,7 +35,7 @@ Wawona-specific work:
 - Vendored upstream sources + extended shim tree under
   `dependencies/libs/iland/upstream/shims/` (DRM, EGL, GBM, udev stubs).
 - Consumed by **`wwn-weston`** for the apple-mobile compositor DRM/GL path via
-  flake input `wwn-iland` and `extraArgs.ilandSrc = wwn-iland`.
+  flake input `iLand` and `extraArgs.ilandSrc = iLand`.
 - **Mode B dylib** (`registryFragment.iland-baremetal` →
   `libwayland-mac.dylib`): macOS-only Desktop Replacement path, SIP-gated in
   Wawona Settings (`WWNSipStatus` + `DesktopReplacementEnabled`). Bundled only
@@ -46,12 +46,12 @@ Wawona-specific work:
 
 ## Indexing note (WWN-MCP)
 
-- **`project=iland`, source `wwn-iland`**. Wawona's packaging + shims (edit here).
+- **`project=iland`, source `iLand`**. Wawona's packaging + shims (edit here).
 - **`project=iland`, source `iland` (CoreBedtime/iland)**. Upstream reference
   implementation (read-only context; do not edit for Wawona patches).
 
-When answering "how does iland work in Wawona?", prefer **`wwn-iland`** recipes
+When answering "how does iland work in Wawona?", prefer **`iLand`** recipes
 and knowledge docs over vanilla CoreBedtime/iland behavior. The mobile/Android
-paths exist only in `wwn-iland`.
+paths exist only in `iLand`.
 
-Architecture: [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md).
+Architecture: [`iland-graphics-stack.md`](iland-graphics-stack.md).

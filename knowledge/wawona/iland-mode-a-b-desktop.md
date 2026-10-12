@@ -51,7 +51,7 @@ LockScreen APIs are still planned.
 
 ## Mode B (macOS desktop-host)
 
-- Artifact: `libwayland-mac.dylib` from `wwn-iland` `iland-baremetal` /
+- Artifact: `libwayland-mac.dylib` from `iLand` `iland-baremetal` /
   `macos-baremetal.nix` (CMake + Dobby; CoreBedtime load model).
 - Ships only in `.#wawona-macos-desktop-host` at
   `Contents/Library/Wawona/iland/libwayland-mac.dylib`.
@@ -152,5 +152,5 @@ iOS Mode B tipa / Mode A firewall:
 How-to: [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 Watchdog: [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).
 Aqua vs Classic backends: [`compositor-backend-aqua-classic.md`](compositor-backend-aqua-classic.md).
-Graphics: [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md).
+Graphics: [`iland-graphics-stack.md`](iland-graphics-stack.md).
 Target scope: [`platform-capability-matrix.md`](platform-capability-matrix.md).

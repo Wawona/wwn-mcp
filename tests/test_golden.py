@@ -62,7 +62,7 @@ def test_contribute_capability_gates():
     assert macos_desktop["state"] == "planned"
     assert "Classic Take Over" in macos_desktop["note"]
     assert get_capability("macos", "desktop_replacement")["state"] == "planned"
-    assert where_to_edit("ANGLE ownership")["repo"] == "wwn-iland"
+    assert where_to_edit("ANGLE ownership")["repo"] == "iLand"
     assert where_to_edit("IPHONEOS_DEPLOYMENT_TARGET")["repo"] == "wwn-toolchain"
     assert where_to_edit("iOS minimum OS version")["repo"] == "wwn-toolchain"
     assert where_to_edit("niri recipe")["repo"] == "wwn-niri"
@@ -146,7 +146,7 @@ def test_golden_knowledge_search(knowledge_index):
                 "host-csd",
                 "multi-repo",
                 "wwn-repos-catalog",
-                "wwn-iland-graphics",
+                "iland-graphics-stack",
                 "repo-wawona-io",
             )
         ), f"unexpected paths for {query!r}: {paths}"

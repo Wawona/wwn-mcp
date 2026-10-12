@@ -7,7 +7,7 @@ compositor/shell/toolchain development.
 |------|-------|------|----------------------|
 | **Wawona** | L4 | Integration: Smithay, SwiftUI/Android, flake merge, xcodegen | Product gates |
 | **wwn-toolchain** | L0 | Cross-compile + substrate (cairo/pango/pixman/libwayland/…) + pty | No wwn-* inputs |
-| **wwn-iland** | L1 | DRM/KMS/EGL/GBM + ANGLE/SwiftShader/MoltenVK/KosmicKrisp | Mode A/B |
+| **iLand** | L1 | DRM/KMS/EGL/GBM + ANGLE/SwiftShader/MoltenVK/KosmicKrisp | Mode A/B |
 | **wwn-waypipe** | L3′ | waypipe-rs remote | |
 | **Wawona-Swinging-Bridge** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
 | **Relay** (`wwn-relay`) | L3′ | Linux VMs + OCI-in-VM + Mode A WASI | Never QEMU/UTM. Edit here, not wwn-vms/containers/wasm |
@@ -28,7 +28,7 @@ compositor/shell/toolchain development.
 
 ```text
 L0 wwn-toolchain
-  └─ L1 wwn-iland
+  └─ L1 iLand
 L0 ──► repo.wawona.io catalog (wasm/deb x cli/gui/lib)
 L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty
 L4 Wawona ──► iland + catalog registryFragment + L3'
@@ -39,7 +39,7 @@ How to contribute: [`contribute.md`](contribute.md).
 
 ## Deleted / renamed
 
-- **`Wawona/iland`**. Deleted; use **wwn-iland** (credits CoreBedtime/iland).
+- **`Wawona/iland`**. Deleted; use **iLand** (credits CoreBedtime/iland).
 - **`Wawona/Wawona-repo`** → **repo.wawona.io** (store wasm `/wasm/v1`; Sileo iOS jailbreak APT + Termux Android sideload APT at repo root; humans search at `/search/`).
 - **`Wawona/wawona.github.io`** → **wawona.io**.
 - **2026-10-12 port collapse.** Deleted: `wwn-weston`, `wwn-niri`, `wwn-foot`,
@@ -52,7 +52,7 @@ How to contribute: [`contribute.md`](contribute.md).
 
 ```sh
 cd ~/Wawona/wwn-zsh    && nix build .#zsh-ios
-cd ~/Wawona/wwn-iland  && nix build .#iland-ios
+cd ~/Wawona/iLand  && nix build .#iland-ios
 cd ~/Wawona/Wawona     && nix eval .#packages.aarch64-darwin.niri-ios.name
 cd ~/Wawona/Wawona     && nix build .#wawona-macos
 ```

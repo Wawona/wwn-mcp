@@ -67,7 +67,7 @@ product targets.
 macOS uses AppKit zoom/fullscreen/miniaturize. iOS/iPadOS/tvOS/visionOS and
 Android use fill-primary. watchOS ignores host-WM requests.
 
-Graphics: [`wwn-iland-graphics-stack.md`](wwn-iland-graphics-stack.md).
+Graphics: [`iland-graphics-stack.md`](iland-graphics-stack.md).
 Mode B: [`iland-mode-a-b-desktop.md`](iland-mode-a-b-desktop.md).
 How-to: [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 Watchdog: [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).

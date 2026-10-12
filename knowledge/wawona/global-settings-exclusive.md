@@ -8,12 +8,15 @@ Settings.bundle / Settings-Watch.bundle / App Info Preferences as the catalog.
 
 | Target | Sole host |
 |---|---|
-| macOS | In-app Machines sidebar (`WWNSettingsSectionView`) |
-| iOS / iPadOS | In-app Machines sidebar |
+| macOS | In-app `WWNGlobalSettingsHostView` (gear / ⌘,) |
+| iOS / iPadOS | In-app `WWNGlobalSettingsHostView` (gear; not Machines home sidebar) |
 | watchOS | In-app `WatchGlobalSettingsView` |
-| tvOS / visionOS | In-app Machines sidebar |
+| tvOS / visionOS | In-app `WWNGlobalSettingsHostView` |
 | Android | Compose `SettingsDialog` |
 | Linux | In-app libadwaita dialog |
+
+iOS / tvOS / visionOS text and password rows push a Settings.app-style editor
+page (Save / back). Not sheets. Not inline fields in the section list.
 
 Storage: app container (`UserDefaults.standard` / SharedPreferences). No PrefPane
 suite. No `group.com.wawona.global`.

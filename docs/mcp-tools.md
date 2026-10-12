@@ -33,7 +33,7 @@ Find a function/type/symbol definition by name across code.
 Wawona architecture / multi-repo dev docs (`project` fan-out across `wawona`,
 `ios-shell`, `weston`, `iland`, `waypipe`, `coreutils`, `niri`, `kmscube`,
 `ssh`). Good topics: `multi-repo dev model`, `registryFragment`, `patch-overlay`,
-`wwn-iland upstream`, `where to edit zsh patches`, **`lldb-mcp`**,
+`iLand upstream`, `where to edit zsh patches`, **`lldb-mcp`**,
 `ios device dev workflow`, `fastfetch in-process crash`.
 
 ### `list_repos()`

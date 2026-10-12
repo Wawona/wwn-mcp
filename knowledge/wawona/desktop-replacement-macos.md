@@ -22,8 +22,8 @@ Android Home/LockScreen is still planned.
 
 | Piece | Repo | Role |
 |---|---|---|
-| Mode A archive | `wwn-iland` | `libiland_userland.a`, in-window present |
-| Mode B dylib | `wwn-iland` `iland-baremetal` | `libwayland-mac.dylib`, Mach → `framebufferd` |
+| Mode A archive | `iLand` | `libiland_userland.a`, in-window present |
+| Mode B dylib | `iLand` `iland-baremetal` | `libwayland-mac.dylib`, Mach → `framebufferd` |
 | IOWatchdog Path B | `wwn-iowatchdog` | Sticky Disable ACK before unloading `watchdogd` |
 | VTs / getty | `wwn-igetty` | `igettyd`, Doorman PAM console, F1-F9. Not a Machines profile |
 | SIP + Settings + Take Over | `Wawona` L4 | `WWNSipStatus`, `WWNDesktopReplacementController`, `WWNWaypipeRunner` |

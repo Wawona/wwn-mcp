@@ -10,13 +10,14 @@ one Global Settings host per platform. That host is **in-app**.
 ## What shipped
 
 - Live Apple shell lives in `Sources/WawonaUI` (`WawonaMainWindowView`,
-  `WWNSettingsSectionView`). iOS / iPadOS / tvOS / visionOS host
-  `WawonaRootView` (welcome, then the split). macOS unified window hosts
-  the same `WawonaMainWindowView`. Watch stays compact; Global Settings are
-  `WatchGlobalSettingsView` on the wrist.
-- **Global Settings (all Apple targets except Watch):** Machines sidebar
-  full catalog (`GlobalSettingsCatalog.visibleSections`). Toolbar / `⌘,` /
-  menubar open that sidebar. Never System Settings or Settings.app.
+  `WWNGlobalSettingsHostView`, `WWNSettingsSectionView`). iOS / iPadOS /
+  tvOS / visionOS host `WawonaRootView` (welcome, then the split). macOS
+  unified window hosts the same `WawonaMainWindowView`. Watch stays compact;
+  Global Settings are `WatchGlobalSettingsView` on the wrist.
+- **Global Settings (all Apple targets except Watch):** dedicated
+  `WWNGlobalSettingsHostView` (section sidebar + detail). Gear / `⌘,` /
+  menubar open it. Machines home sidebar stays Machines / Project / Tags.
+  Never System Settings or Settings.app.
 - **watchOS Global Settings:** in-app `WatchGlobalSettingsView`. Same
   `wawona.pref.*` keys in the watch container.
 - **Android:** Compose `SettingsDialog` only. No `APPLICATION_PREFERENCES`.
@@ -24,7 +25,7 @@ one Global Settings host per platform. That host is **in-app**.
 - PrefPane / Settings.bundle / Settings-Watch.bundle are **retired**. Install
   removes stale PreferencePanes copies.
 - iOS Settings → Desktop sidebar is **Mode B only** (`WWN_MODE_B`). Store
-  IPA must not. Engage is wwn-iland IOMFB plus wwn-igetty.
+  IPA must not. Engage is iLand IOMFB plus wwn-igetty.
 
 ## Rust owns the section list
 
