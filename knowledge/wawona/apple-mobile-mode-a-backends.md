@@ -22,6 +22,8 @@ Wawona L4 links + SwiftUI only. Must use `wwn-coreutils.lib.coreutilsSrc` /
 - Real POSIX `system()` of unsigned Mach-O
 - Mega App Store SDK owning every tool
 - Raising min OS above 13.0 for convenience
+- Native Shell Terminal Start that only shows a splash
+  (`ios-native-shell-terminal.md`). Wire `wwn_pty` + `wwn_term` + inject
 
 ## Patch budget
 

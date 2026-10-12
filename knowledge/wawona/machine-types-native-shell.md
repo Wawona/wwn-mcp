@@ -32,6 +32,10 @@ Legacy Wayland client id `custom` migrates to Terminal.
 - Infer Use SSH from leftover `sshHost` alone
 - Offer `wawona-shell` / `wawona-wasm` in the Wayland client picker
 - Offer Custom Command as a Wayland client (use Terminal session)
+- Ship Apple-mobile Terminal Start as a **"Native Shell starting"** splash
+  (must run in-process zsh + Wawona Terminal UI). See
+  `ios-native-shell-terminal.md` / rule `wawona-ios-native-shell`
+- Treat tip `weston_terminal_main` (mobile fake SHM chrome) as Native Shell
 
 ## Code
 
