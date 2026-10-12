@@ -20,7 +20,7 @@ SwiftShader). watchOS is `wl_shm` plus SpriteKit. Never open `/dev/dri`.
 `--wayland` stays red without a socket trace.
 
 New deb program: copy `pkgs/wayland/TEMPLATE.nix`, add one line in
-`pkgs/wayland/clients.nix`, take Android libs from `pkgs/wayland/ndkLibs.nix`.
+`catalog/deb/<kind>/<name>/`. `builtins.readDir` is the index. Android libs stay `pkgs/wayland/ndkLibs.nix`.
 New toolkit: one `*-android` recipe plus one `libs` name in `ndkLibs.nix`.
 Do not import `lib/androidNdk.nix` from a package file. Termux apt unpack
 stays `lib/termuxSysroot.nix`. Do not link the new toolkit into the store
