@@ -12,8 +12,12 @@ call Termux jailbreak.
 
 | Deb audience | Client | Architecture | Jailbreak? | Store/Play? |
 |--------------|--------|--------------|------------|-------------|
-| Jailbroken iOS | Sileo / Zebra | `iphoneos-arm64` rootless, `iphoneos-arm` rootful, optional RootHide | Yes | No |
+| Jailbroken iOS | Any APT client | `iphoneos-arm64` rootless, `iphoneos-arm` rootful, optional RootHide | Yes | No |
 | Sideloaded Android | Termux `apt` | `aarch64` | **No** | **No** |
+| Linux | host apt / dpkg | `amd64` / `arm64` | No | No |
+
+Optional Wayland clients (weston, niri, foot, toys) ship as debs without App
+Store patches. See `optional-software.md` / `wawona-optional-software`.
 
 `/wasm/`, `/deb/`, `/jailbreak/` (Sileo iOS), and `/termux/` (Termux Android) are
 HTML landings onto `/search/`. APT does **not** live under `/jailbreak/`. Store

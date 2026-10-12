@@ -11,12 +11,13 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
   `.searchable(text:)` (default placement) plus toolbar
   `DefaultToolbarItem(kind: .search, placement: .bottomBar)`,
   `ToolbarSpacer(.flexible, placement: .bottomBar)`, then
-  `ToolbarItem(placement: .bottomBar)` with `Label(..., "plus")`,
-  `.buttonStyle(.glassProminent)`, `.buttonBorderShape(.circle)`,
-  `.tint(accent)`, `.sharedBackgroundVisibility(.hidden)`.
-  Blue filled compose background (not accent glyph on clear glass).
-  No custom capsule. No fixed 44/56pt frame on the +. The system sizes
-  search and + to the same bottom chrome.
+  `ToolbarItem(placement: .bottomBar)` with `Image(systemName: "plus")`,
+  `.backport.composeCircleButton()` (`.labelStyle(.iconOnly)` +
+  `.glassProminent` + `.circle` + accent tint),
+  `.sharedBackgroundVisibility(.hidden)`.
+  Blue filled compose bubble (not a bare + glyph). Toolbar `Label` often
+  drops the circle. No custom capsule. No fixed 44/56pt frame on the +.
+  System sizes search and + to the same bottom chrome.
 - Top-trailing sort/Settings: `.buttonStyle(.automatic)` only. Do not put
   `.buttonStyle(.glass)` on toolbar items (glass-on-glass Liquid Glass bug).
 - Pre-iOS 26 fallback: 36pt capsule + 36pt circular + via
