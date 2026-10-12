@@ -14,5 +14,9 @@ wasinix splits two trees. Do not mix them.
 Standing split example: `libraries.ncurses` (`--without-progs`) vs
 `programs.ncurses` (`--with-progs`).
 
+Programs on tip: `wayland-bridge-smoke`, `gtk4-hello` (link toolkit; Relay
+host `wawona_wayland_*`). Smoke: `wasinix/scripts/smoke-wayland-relay.sh`.
+Library CI: `gtk-wasix-libs.yml` on `development`/`main`.
+
 Docs: `wasinix/docs/libraries-vs-programs.md`, `wasinix/docs/gtk4-wayland.md`.
 Rules: `wawona-wasm-cli-ports`, `wawona-optional-software`.
