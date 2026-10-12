@@ -27,6 +27,13 @@ Debs may fork/exec/JIT. Do not copy `apple-mobile.nix`, renamed `*_main`, or
 in-process cairo skips into deb recipes. Unlink from the app, then delete that
 client's App Store patch set.
 
+## Stale xcodegen (2026-10-12)
+
+After unlink, tip `xcodegen.nix` must drop `-force_load libfoot.a` /
+`libfuzzel.a`. Leftover `Wawona.xcodeproj` still force_loads them;
+prebuild does not build those archives. Lab: ios-sim stubs for
+`foot_main` / `fuzzel_main`, or regenerate from tip Nix.
+
 ## Rules
 
 `wawona-optional-software`, `wawona-native-compositors`, `repo-wawona-io-channels`,

@@ -45,6 +45,16 @@ Hard gate: `Wawona/docs/agent-rules/wawona-ios-app-entry.md` (Cursor
    `launchWasmModule` (bundled `hello-wasi-gui.wasm` or `wasmModulePath`).
    A bare `break` marks Connected without running the module.
 
+## Later build traps (2026-10-12)
+
+- Waypipe `video` needs `ffmpeg` in Apple-mobile `nativeDeps` or
+  `waypipe-ffmpeg-wrapper` dies on `libavutil` (only jq on
+  `PKG_CONFIG_PATH`). See `ios-sim-backend-ffmpeg-watch.md`.
+- `wawona-ios-app-sim` Watch Ld ≠ phone UI proof. Use
+  `.#wawona-ios-sim-backend` + `WAWONA_BACKEND_OUT`.
+- Machine editor: sheet with `Sheet Grabber` / medium detent, not
+  fullScreenCover. Skill `wawona-ios-sim-runtime`.
+
 ## Verify snippets
 
 ```bash
