@@ -11,17 +11,18 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
   `.searchable(text:)` (default placement) plus toolbar
   `DefaultToolbarItem(kind: .search, placement: .bottomBar)`,
   `ToolbarSpacer(.flexible, placement: .bottomBar)`, then
-  `ToolbarItem(placement: .bottomBar)` with `Image(systemName: "plus")`,
-  `.backport.composeCircleButton()` (`.labelStyle(.iconOnly)` +
-  `.glassProminent` + `.circle` + accent tint),
-  `.sharedBackgroundVisibility(.hidden)`.
-  Blue filled compose bubble (not a bare + glyph). Toolbar `Label` often
-  drops the circle. No custom capsule. No fixed 44/56pt frame on the +.
-  System sizes search and + to the same bottom chrome.
+  `ToolbarItem(placement: .bottomBar)` with a plain
+  `Button { Image(systemName: "plus") }`. Default toolbar styling only.
+  No custom circle fill, glassProminent, fixed frame, shadow, or
+  `sharedBackgroundVisibility` hacks. System sizes the +.
 - Top-trailing on phone: sort + Settings only. **Never** a second Add there.
-  Exactly one `+` (bottom compose on phone).
-- Top-trailing sort/Settings: `.buttonStyle(.automatic)` only. Do not put
-  `.buttonStyle(.glass)` on toolbar items (glass-on-glass Liquid Glass bug).
+  Exactly one `+` (bottom toolbar on phone).
+- Top-trailing sort/Settings: `.buttonStyle(.automatic)` only
+  (`glassToolbarButton`). Do not put `.buttonStyle(.glass)` on toolbar
+  items (glass-on-glass Liquid Glass bug).
+- Machine editor sheet toolbar: plain `ToolbarItem` leading `xmark` and
+  trailing `checkmark`. Default system size/spacing. No custom circles,
+  font weights, or shared-background overrides.
 - Pre-iOS 26 fallback: 36pt capsule + 36pt circular + via
   `safeAreaInset` (sole phone Add on those OS versions). Not the iPad FAB.
   Not `GlassEffectContainer`.
@@ -33,11 +34,10 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
 ## Hard rejects
 
 - **Two Add Machine buttons** (top-trailing + bottom compose on phone)
-- Custom glass capsule + oversized circular + (44/56pt) next to search on
-  iOS 26 (or forcing `usesNativePhoneSearchToolbar = false` on 26+)
+- Custom opaque / glassProminent / fixed-frame FAB for iOS 26 toolbar Add
+- Custom circle / padding / font weight on editor sheet xmark/checkmark
 - `.buttonStyle(.glass)` on top-trailing toolbar items on iOS 26
 - `DefaultToolbarItem(kind: .search)` **without** `ToolbarSpacer` before
   the compose + (search goes full-width and overlaps the button)
 - Putting this chrome on iPad / visionOS
-- Gray / secondary tint on the new-machine +
-- Accent tint alone on Add (blue foreground / no filled background)
+- Forcing `usesNativePhoneSearchToolbar = false` on iOS 26+
