@@ -1,22 +1,20 @@
-# wasinix: libraries vs programs
+# WASIX libraries vs programs
 
-wasinix splits two trees. Do not mix them.
+Implementation lives in `repo.wawona.io` `catalog/wasm/src/wasinix`.
+The card kind is the public split. Do not mix them.
 
-| Tree | Path | Flake | What |
-|------|------|-------|------|
-| Libraries / toolkits | `pkgs/libraries/` | `.#wasix.libraries.<profile>.<name>` | Linkable `.a` / headers: zlib, cairo, **GTK4** |
-| Programs | `pkgs/programs/` | `.#wasix.<name>` / `.#wasmer.<name>` | Runnable CLIs/apps: grep, nano |
+| Kind | Card | Implementation | What |
+|------|------|----------------|------|
+| lib | `catalog/wasm/lib/<name>/` | `pkgs/libraries/` | Linkable `.a` / headers: zlib, cairo, **GTK4** |
+| cli | `catalog/wasm/cli/<name>/` | `pkgs/programs/` | Runnable tools: grep, nano |
+| gui | `catalog/wasm/gui/<name>/` | `pkgs/programs/` when it draws | gtk4-hello, wayland-bridge-smoke |
 
-**GTK4 is a library/toolkit**, not a program. Recipe: `pkgs/libraries/gtk.nix`
-(closure + Wawona Wayland fd bridge). A GTK demo app would be a separate
-`pkgs/programs/` consumer that links `libraries.gtk4`. Never `programs/gtk4`.
+**GTK4 is a library**, card `catalog/wasm/lib/gtk4`, recipe `pkgs/libraries/gtk.nix`.
+A GTK demo is `gui`. Never a program named gtk4.
 
-Standing split example: `libraries.ncurses` (`--without-progs`) vs
-`programs.ncurses` (`--with-progs`).
+`Wawona/wasinix` is deleted. Upstream `xtyxtyx/wasinix` stays.
+Flake output `legacyWasix` is `{ system, nixpkgs }: ...`.
+Smoke: `catalog/wasm/src/wasinix/scripts/smoke-wayland-relay.sh` and `smokes.toml`.
 
-Programs on tip: `wayland-bridge-smoke`, `gtk4-hello` (link toolkit; Relay
-host `wawona_wayland_*`). Smoke: `wasinix/scripts/smoke-wayland-relay.sh`.
-Library CI: `gtk-wasix-libs.yml` on `development`/`main`.
-
-Docs: `wasinix/docs/libraries-vs-programs.md`, `wasinix/docs/gtk4-wayland.md`.
 Rules: `wawona-wasm-cli-ports`, `wawona-optional-software`.
+Grid: `catalog-grid.md`.

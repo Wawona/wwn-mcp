@@ -10,9 +10,10 @@ L1  wwn-iland. Complete graphics stack:
     iland Mode A/B, DRM/KMS/GBM/EGL, ANGLE, SwiftShader, MoltenVK,
     macOS-only KosmicKrisp, and Android Vulkan ICD hooks.
     Depends on wwn-toolchain only.
-L2  wwn-kmscube. Graphics acceptance clients. Depends on toolchain + iland.
-L3  wwn-weston / wwn-niri. Compositors. Depends on toolchain + iland + kmscube
-    (weston); niri merges toolchain (+ iland when GPU requires it).
+catalog  repo.wawona.io. wasm and deb, each cli, gui, and lib.
+    One registryFragment for weston, niri, foot, kmscube, fastfetch, phoon.
+    Inputs wwn-toolchain only. Wawona inputs this flake. Toolchain does not
+    input the catalog. The old L2/L3 port repos are deleted.
 L3' wwn-waypipe / Wawona-Swinging-Bridge / wwn-relay / wwn-ssh /
     wwn-iowatchdog / wwn-vphone / wwn-iomfb-rs / wwn-igetty /
     ToolbarKeys / Ghostty.

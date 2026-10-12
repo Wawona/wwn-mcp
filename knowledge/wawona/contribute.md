@@ -21,9 +21,7 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | Substrate (cairo/pango/pixman/libwayland) | `wwn-toolchain` |
 | ANGLE / MoltenVK / iland DRM/KMS/GBM | `wwn-iland` |
 | iOS min OS 11.0 vs latest iPhoneOS SDK | `wwn-toolchain` (`deploymentTarget`) + `wwn-iland` (ANGLE/MoltenVK patches) + `Wawona` (`@available`) |
-| kmscube acceptance | `wwn-kmscube` |
-| Weston | `wwn-weston` |
-| Niri | `wwn-niri` |
+| kmscube, weston, niri, foot, fastfetch, phoon, neovim | `repo.wawona.io` `catalog/` |
 | waypipe | `wwn-waypipe` |
 | Wawona Swinging Bridge bridge | `Wawona-Swinging-Bridge` |
 | SSH / libssh2 | `wwn-ssh` |
@@ -33,8 +31,7 @@ usually `nixos`) in your editor’s MCP config before relying on an agent.
 | zsh / RootFS | `wwn-zsh` |
 | Machines UI, SwiftUI, Android app, Smithay | `Wawona` |
 | Public docs site | `wawona.io` |
-| Store WASI P1 builds (GHA) | `wasm-packages` |
-| Nixpkgs → WASIX / WebC | `wasinix` |
+| Store WASI P1 and WASIX recipes | `repo.wawona.io` `catalog/wasm` (`abi` field) |
 | Wasm / Sileo / Termux catalogs (`/search/`, `/wasm/v1`, APT) | `repo.wawona.io` |
 | This RAG / corpus | `wwn-mcp` |
 | GitHub issues / milestones / PRs / `gh run` | `Wawona/Wawona` via local `gh` (Shell). No GitHub MCP. Repo `Wawona/issues` does not exist |

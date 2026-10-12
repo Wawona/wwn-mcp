@@ -6,10 +6,10 @@ Build law: rule/skill `wawona-wasm-cli-ports`. Catalog host rule:
 
 ## Two build lanes
 
-| Lane | When | Repo | CI smoke |
+| Lane | When | Where | CI smoke |
 |------|------|------|----------|
-| WASI P1/P2 (store / Pulley) | Fits Preview 1/2 | `Wawona/wasm-packages` GHA | **Wasmtime** |
-| WASIX | Needs POSIX process/socket/TTY | `Wawona/wasinix` (nixpkgs override + wasixcc) | **Wasmer** |
+| WASI P1/P2 (store / Pulley) | Fits Preview 1/2 | `repo.wawona.io` `catalog/wasm` `abi = wasi-p1` | **Wasmtime** |
+| WASIX | Needs POSIX process/socket/TTY | same tree, `abi = wasix` | **Wasmer** |
 
 Never auto-mirror nixpkgs. Never revive `nixpkgs2wasi` / `n2w` (GitHub
 #172-#177 closed wontfix). A live `Wawona/nixpkgs2wasi` repo is not the
@@ -23,7 +23,7 @@ producer. Never publish a stub under `sed` / `jq` / `grep` at invented `0.1.0`.
   `upstream_is_bootstrap` only when upstream itself is that bootstrap.
 - Field **`homepage`**: upstream project URL (nixpkgs `meta.homepage`). Not
   `website`. Never blanket `wawona.io/docs/wasm/`.
-- Field **`source`**: port / packaging tree (wasm-packages or wasinix).
+- Field **`source`**: port tree under `catalog/wasm/src/p1` or `catalog/wasm/src/wasinix`.
 
 ## Where
 
@@ -31,8 +31,9 @@ producer. Never publish a stub under `sed` / `jq` / `grep` at invented `0.1.0`.
 |-------|------|
 | Build decision rule | `wawona-wasm-cli-ports` |
 | Catalog gate | `repo.wawona.io/scripts/check-packages.py` |
-| P1 allowlist | `wasm-packages/allowlist.toml` |
-| WASIX recipes | `wasinix/pkgs/programs/<name>/` |
+| P1 allowlist | `catalog/wasm/src/p1/allowlist.toml` |
+| WASIX recipes | `catalog/wasm/src/wasinix/pkgs/programs/<name>/` |
+| Card | `catalog/wasm/<kind>/<name>/default.nix` |
 | ABI prose | `repo.wawona.io/docs/wasm-abi.md`, this file’s sibling `wasm-abi-registry.md` |
 
 Exception: reverse-DNS first-party Mode B app ids

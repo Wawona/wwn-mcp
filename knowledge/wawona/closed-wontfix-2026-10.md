@@ -7,8 +7,9 @@ reopen them. Do not implement the old plan under a new title.
 
 Milestone **Support nixpkgs2wasi** is closed. `n2w` is not the producer.
 
-- Store WASI P1: `Wawona/wasm-packages` (GHA, Wasmtime smoke) to `/wasm/v1`.
-- Nixpkgs to WASIX: `Wawona/wasinix` (Wasmer smoke). Not store Pulley.
+- Store WASI P1: `repo.wawona.io` `catalog/wasm` `abi = wasi-p1` (Wasmtime smoke) to `/wasm/v1`.
+- Nixpkgs to WASIX: same catalog, `abi = wasix` (Wasmer smoke). Not store Pulley.
+  `Wawona/wasm-packages` and `Wawona/wasinix` are deleted. Do not recreate them.
 - `Wawona/Wawona` `flake.nix` / `flake.lock` do not input `nixpkgs2wasi`.
 - `github.com/Wawona/nixpkgs2wasi` may still exist. That is not permission to
   revive it. Do not add it back as a flake input.

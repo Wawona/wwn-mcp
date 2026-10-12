@@ -33,3 +33,22 @@ neovim. Wawona inputs `github:Wawona/repo.wawona.io/development` only.
 
 Add a package by creating `catalog/<channel>/<kind>/<name>/default.nix`.
 Copy `pkgs/wayland/TEMPLATE.nix` for a deb.
+
+## Hard rejects
+
+- Recreate these GitHub repos. They were deleted on 2026-10-12 after the
+  catalog eval: `wwn-xfce`, `wwn-sway`, `wwn-kde`, `wwn-gnome`, `wwn-hyprland`
+  (stubs, not copied), `wwn-weston`, `wwn-niri`, `wwn-foot`, `wwn-kmscube`,
+  `wwn-fastfetch`, `wwn-phoon-rs`, `wwn-neovim`, `wasm-packages`, `wasinix`.
+- Touch upstream `xtyxtyx/wasinix`. That fork is not this catalog.
+- Put a recipe tree in `packages/`. The repo-root APT index is the file
+  `Packages`. Case-insensitive disks cannot also have that directory.
+- Import `apple-mobile.nix` or rename `main` to `*_main` inside a deb.
+  In-app `*_main` files stay in `in-app/` and are a different artifact.
+- Give `wwn-toolchain` a flake input of `repo.wawona.io`.
+- Label WASIX as `wasi-p1`. Smoke P1/P2 with Wasmtime and WASIX with Wasmer.
+- Treat `wayland: yes` as green from instantiate alone. `cli` sets `wayland: no`.
+- Copy a stub-only desktop (xfce, sway, kde, gnome, hyprland) into the catalog.
+
+kmscube has an `in-app/` tree and registry keys. It does not yet have a
+process-deb `default.nix`. Weston, niri, foot, and weston-simple-shm do.

@@ -36,13 +36,14 @@ Wasm ABI labels and later Wasmer/WebC/wasinix:
 
 ## Wasm builds (two lanes)
 
-| Lane | Repo | Lands here |
+| Lane | Where | Lands here |
 |------|------|------------|
-| Store P1 | `Wawona/wasm-packages` GHA | `/wasm/v1` |
-| Nixpkgs → WASIX | `Wawona/wasinix` | Wasmer/WebC (not Pulley P1 rows) |
+| Store P1 | `catalog/wasm` `abi = wasi-p1` | `/wasm/v1` |
+| WASIX | `catalog/wasm` `abi = wasix` | Wasmer/WebC (not Pulley P1 rows) |
 
-Law: `wawona-wasm-cli-ports`. P1: curated `allowlist.toml` → GHA →
-`publish-to-repo.yml` → `development`. Pages deploys `development`.
+Law: `wawona-wasm-cli-ports`. Grid: `catalog-grid.md`.
+`Wawona/wasm-packages` and `Wawona/wasinix` are deleted. Do not recreate them.
+Pages deploys `development`.
 
 Hard rejects: laptop blobs; revive `nixpkgs2wasi`; auto-mirror nixpkgs; stub
 CLIs under upstream names; mix wasm + deb search lists; claim WASIX on Pulley.

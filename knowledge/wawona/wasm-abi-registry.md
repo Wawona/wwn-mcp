@@ -6,10 +6,10 @@ Canonical registry prose:
 Two build lanes (hard law): rule `wawona-wasm-cli-ports`, skill
 `wawona-wasm-cli-ports`. Catalog identity: `repo-wawona-io-ports`.
 
-| Lane | Repo | ABI | Catalog |
+| Lane | Where | ABI | Catalog |
 |------|------|-----|---------|
-| Store P1 | [`Wawona/wasm-packages`](https://github.com/Wawona/wasm-packages) GHA | `wasm32-wasip1` | `/wasm/v1` for `wpm` / Pulley |
-| Nixpkgs → WASIX | [`Wawona/wasinix`](https://github.com/Wawona/wasinix) | `wasm32-wasix` | Wasmer/WebC → `repo.wawona.io/wasm` (not store Pulley) |
+| Store P1 | `repo.wawona.io` `catalog/wasm` `abi = wasi-p1` | `wasm32-wasip1` | `/wasm/v1` for `wpm` / Pulley |
+| WASIX | same tree, `abi = wasix` (`catalog/wasm/src/wasinix`) | `wasm32-wasix` | Wasmer/WebC (not store Pulley) |
 
 `nixpkgs2wasi` / `n2w` are **retired**. GitHub #172-#177 closed wontfix.
 Do not revive. Do not auto-mirror nixpkgs. A live `Wawona/nixpkgs2wasi`
@@ -20,19 +20,19 @@ Do not ship stub CLIs under upstream names.
 
 | | Today | Later (planned) |
 |---|---|---|
-| Machine API | `/wasm/v1/index.json` + `.wasm` | Wasmer/WebC via wasinix; keep store `wpm` clients working |
-| Store P1 producer | **GHA allowlist** in `Wawona/wasm-packages` (`ubuntu-24.04`) | same; real upstream recipes only |
-| WASIX producer | `wasinix` recipes (`nix build .#wasix.*` / `.#wasmer.*`) | `wawona` publish profile to registry |
+| Machine API | `/wasm/v1/index.json` + `.wasm` | Wasmer/WebC from `catalog/wasm` `abi = wasix`; keep store `wpm` clients working |
+| Store P1 producer | `catalog/wasm/src/p1` allowlist | same; real upstream recipes only |
+| WASIX producer | `catalog/wasm/src/wasinix` via flake `legacyWasix` | `wawona` publish profile to registry |
 | Unit | `.wasm` (`component.wasm`) for P1 | `.webc` (`wasmer publish`) for WASIX |
 | Converter | None | Do not revive `n2w` |
 
 ## How to port a CLI
 
 1. Native-all-targets? Stop (`wawona-native-over-wasm`).
-2. Needs POSIX process/socket/TTY? → wasinix: override nixpkgs pkg with wasixcc,
-   patches beside recipe, `makeWasmerPackage`, upstream `homepage` + version.
-3. Fits P1 and must run on Pulley? → wasm-packages allowlist + real upstream
-   recipe on GHA. Not a 30-line toy.
+2. Needs POSIX process/socket/TTY? → `catalog/wasm` `abi = wasix`: override nixpkgs
+   pkg with wasixcc, patches beside recipe, `makeWasmerPackage`, upstream `homepage` + version.
+3. Fits P1 and must run on Pulley? → `catalog/wasm/src/p1/allowlist.toml` + real upstream
+   recipe. Not a 30-line toy. Do not recreate `Wawona/wasm-packages`.
 4. Catalog: `homepage` = upstream project URL; `source` = packaging tree;
    `version` = upstream release.
 
@@ -75,10 +75,11 @@ plus `ci.suites` (`smoke`, later `terminal` / `socket` / `wayland`). Summary
 file: `/wasm/v1/ci.json`. Search UI shows a green/red/gray dot beside the
 package version on `/search/?channel=wasm`.
 
-WASIX CI (`wasinix` on `development`/`main`): matrix over active `smokes.toml`
-rows → `nix build .#wasmer.<name>` → `wasmer run` smoke → summary artifact.
+WASIX smoke: `catalog/wasm/src/wasinix/smokes.toml` and
+`scripts/smoke-wasix-package.sh`. `Wawona/wasinix` is deleted.
 
-Secret: `WAWONA_REPO_TOKEN` on `Wawona/wasm-packages`.
+Secret: `WAWONA_REPO_TOKEN` on `Wawona/repo.wawona.io` when a publish workflow
+runs from that repo. Do not set it on the deleted `wasm-packages` repo.
 
 Active P1 today: Wawona Runtime smokes (`hello-wasi`, `wasi-true`,
 `wasi-false`, …) plus real ports when they land (e.g. `chess` with upstream
@@ -87,12 +88,10 @@ upstream tree is packaged. WASIX queue (curl, git, tar, …) stays
 `build = wasinix` blocked in the allowlist until published via wasinix.
 
 ```bash
-gh secret set WAWONA_REPO_TOKEN --repo Wawona/wasm-packages
-python3 scripts/sync-recipes-from-allowlist.py
-gh workflow run build-wasm.yml --repo Wawona/wasm-packages
-# WASIX:
-nix build github:Wawona/wasinix#wasmer.grep
-./scripts/smoke-wasix-package.sh grep result/pkg/grep/bin/grep.wasm
+# from repo.wawona.io
+python3 catalog/wasm/src/p1/scripts/sync-recipes-from-allowlist.py
+nix eval .#catalogIndex.hello-wasi.abi
+nix eval .#legacyWasix --apply 'f: builtins.isFunction f'
 ```
 
 Local `cargo` is recipe debug only. Never publish laptop blobs as production.

@@ -8,9 +8,6 @@ compositor/shell/toolchain development.
 | **Wawona** | L4 | Integration: Smithay, SwiftUI/Android, flake merge, xcodegen | Product gates |
 | **wwn-toolchain** | L0 | Cross-compile + substrate (cairo/pango/pixman/libwayland/…) + pty | No wwn-* inputs |
 | **wwn-iland** | L1 | DRM/KMS/EGL/GBM + ANGLE/SwiftShader/MoltenVK/KosmicKrisp | Mode A/B |
-| **wwn-kmscube** | L2 | Graphics acceptance clients | Must not depend on weston |
-| **wwn-weston** | L3 | Weston compositor + clients | Mandatory native bundle |
-| **wwn-niri** | L3 | Niri compositor | Mandatory native bundle |
 | **wwn-waypipe** | L3′ | waypipe-rs remote | |
 | **Wawona-Swinging-Bridge** | L3′ | Host-app → Wayland bridge (not Desktop) | Planned |
 | **Relay** (`wwn-relay`) | L3′ | Linux VMs + OCI-in-VM + Mode A WASI | Never QEMU/UTM. Edit here, not wwn-vms/containers/wasm |
@@ -22,13 +19,8 @@ compositor/shell/toolchain development.
 | **wwn-igetty** | L3′ | VT / Doorman getty after Classic Take Over | not the Mode B dylib |
 | **wwn-zsh** | L3′ | In-process App Store zsh + RootFS | |
 | **wwn-coreutils** | L3′ | uutils in-process multicall | |
-| **wwn-foot** | L3′ | foot terminal | |
-| **wwn-fastfetch** | L3′ | fastfetch port | |
-| **wwn-phoon-rs** | L3′ | phoon client | |
 | **wwn-wasm** (legacy) | L3′ | Merged into **Relay**. Do not start new work here | Redirect |
-| **wasm-packages** | tooling | GHA store WASI P1 builds for `/wasm/v1` | Pulley / `wpm`; not laptop publish |
-| **wasinix** | tooling | Nix → WASIX / WebC (nixpkgs override + wasixcc) | Wasmer; not store Pulley P1 |
-| **repo.wawona.io** | docs | Dual catalog: store wasm `/wasm/v1`; Sileo iOS jailbreak debs + Termux Android sideload debs at APT root | Never one mixed list. Termux is not jailbreak. |
+| **repo.wawona.io** | catalog | Two channels (`wasm`, `deb`) and three kinds (`cli`, `gui`, `lib`) under `catalog/`. One `registryFragment` for the in-app ports. APT index file is `Packages`. | Never one mixed search list. Termux is not jailbreak. Do not recreate deleted port repos. |
 | **wwn-mcp** | tooling | Stdio RAG + MCP for agents | This repo |
 | **wawona.io** | docs | Public site | Not a product flake input |
 
@@ -37,10 +29,9 @@ compositor/shell/toolchain development.
 ```text
 L0 wwn-toolchain
   └─ L1 wwn-iland
-       └─ L2 wwn-kmscube
-            └─ L3 wwn-weston / wwn-niri
-L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty / ports
-L4 Wawona ──► all required lower layers
+L0 ──► repo.wawona.io catalog (wasm/deb x cli/gui/lib)
+L0 ──► L3' waypipe / Wawona Swinging Bridge / Relay / ssh / iowatchdog / igetty
+L4 Wawona ──► iland + catalog registryFragment + L3'
 ```
 
 Canonical layering: [`wwn-repo-dag.md`](wwn-repo-dag.md).
@@ -51,12 +42,17 @@ How to contribute: [`contribute.md`](contribute.md).
 - **`Wawona/iland`**. Deleted; use **wwn-iland** (credits CoreBedtime/iland).
 - **`Wawona/Wawona-repo`** → **repo.wawona.io** (store wasm `/wasm/v1`; Sileo iOS jailbreak APT + Termux Android sideload APT at repo root; humans search at `/search/`).
 - **`Wawona/wawona.github.io`** → **wawona.io**.
+- **2026-10-12 port collapse.** Deleted: `wwn-weston`, `wwn-niri`, `wwn-foot`,
+  `wwn-kmscube`, `wwn-fastfetch`, `wwn-phoon-rs`, `wwn-neovim`, `wwn-xfce`,
+  `wwn-sway`, `wwn-kde`, `wwn-gnome`, `wwn-hyprland`, `wasm-packages`,
+  `wasinix`. Recipes are `repo.wawona.io` `catalog/`. Do not recreate them.
+  Upstream `xtyxtyx/wasinix` was not this fork.
 
 ## Standalone build examples
 
 ```sh
 cd ~/Wawona/wwn-zsh    && nix build .#zsh-ios
 cd ~/Wawona/wwn-iland  && nix build .#iland-ios
-cd ~/Wawona/wwn-niri   && nix build .#niri-ios   # when attribute exists
+cd ~/Wawona/Wawona     && nix eval .#packages.aarch64-darwin.niri-ios.name
 cd ~/Wawona/Wawona     && nix build .#wawona-macos
 ```

@@ -23,12 +23,12 @@ Linux, watchOS, Classic igetty).
 | Linux Machines | `src/core/weston_ini.rs` via `src/linux/launcher.rs` |
 | macOS CLI `Wawona weston` | `scripts/macos-register-cli-bins.sh` |
 | Classic Mode B TTY | `wwn-igetty` `libexec/wwn-modeb-session/weston` |
-| In-process desktop-shell default | L3 `wwn-weston` `ios.nix` / `android.nix` (`WESTON_DATA_DIR/background.png`) |
+| In-process desktop-shell default | `repo.wawona.io` `catalog/deb/gui/weston/in-app` `ios.nix` / `android.nix` (`WESTON_DATA_DIR/background.png`) |
 
 Shared Rust writer: `Wawona/src/core/weston_ini.rs`.
 Needs `git add` before crate2nix sees a new `.rs` file.
 
-L3 desktop-shell default reaches L4 only after the `wwn-weston` flake input
+Desktop-shell default reaches L4 only after the `repo.wawona.io` input
 is bumped. L4 ini writers do not wait on that bump.
 
 `pattern.png` stays bundled for `weston-image` / toytoolkit, not wallpaper.
