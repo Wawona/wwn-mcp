@@ -4,6 +4,18 @@ Authority: `Wawona/docs/testing/appium-ui-matrix.md`, skill `wawona-appium`,
 rule `wawona-appium-ui-gh`. Launcher:
 `Wawona/scripts/appium/launch-wayland-client.sh`.
 
+## Tip host app (hard)
+
+Before any Darwin catalog capture:
+
+```bash
+eval "$(scripts/appium/ensure-tip-wawona-macos.sh)"
+```
+
+Rebuilds when `git HEAD` drifts, quits leftovers, launches tip
+`/tmp/wawona-macos-tip/…/Wawona.app`. Never `/Applications/Wawona.app`.
+Rule: `wawona-test-tip-app`. `capture-catalog-gallery.sh` calls this first.
+
 ## Guest policy
 
 | Host | Catalog guest | Notes |
