@@ -28,11 +28,17 @@ local-bundle for catalog proof.
 
 ## Present / Mac2
 
-1. Host Wawona owns `$WAWONA_RUNTIME/wayland-0`.
+1. Host Wawona owns a **live** `$WAWONA_RUNTIME/wayland-0` (stale sock file
+   is not enough).
 2. Colima guest launches client via `waypipe-ssh-colima-lab.sh`.
 3. Close Wawona Terminal / Focus so Present exposes `wwn.compositor.surface`.
 4. `CompositorPage.screenshot_surface` → `require_client_screenshot` →
    `catalog-gallery/<client>.png`.
+
+Mac2 needs TCC: Accessibility for `WebDriverAgentRunner-Runner`. Without
+it WDA reports `Not authorized for performing UI testing actions` and
+cannot see `wwn.machines.root`. Keep `WAWONA_MAC2_MANAGE_APP=1` so
+bundleId is set (`MANAGE_APP=0` is desktop-wide AX only).
 
 ## Nested weston on host (debug only)
 
@@ -44,9 +50,14 @@ must use Colima weston instead.
 ## Commands
 
 ```bash
-colima start
+# Agent shells often lack brew; ensure-colima.sh falls back to nixpkgs#colima.
+colima start   # or: nix shell nixpkgs#colima nixpkgs#lima -c colima start
 ./scripts/appium/ensure-colima.sh
-# Wawona running with wayland-0:
+# Wawona running with live wayland-0 (stale sock file is not enough):
 ./scripts/appium/capture-catalog-gallery.sh foot
 python3 scripts/appium/verify-catalog-gallery.py
 ```
+
+`ensure-colima.sh` prepends `~/.nix-profile` and, if needed, resolves
+`nixpkgs#colima` / `nixpkgs#lima` so PATH-less agent shells still work when
+Colima is already installed via nix.
