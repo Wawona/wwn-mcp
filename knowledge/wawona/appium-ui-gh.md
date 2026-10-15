@@ -36,11 +36,11 @@ dark blank gate, no local-bundle).
 ## CI artifact upload
 
 CI writes under `test-artifacts/appium/` via
-`scripts/appium/ci-prepare-artifacts.sh` (non-hidden). Local dogfood stays
-`.agent-device/test-artifacts/appium`. `upload-artifact` v4+ drops hidden
-`.agent-device/` by default. Gallery artifacts upload only when `*.png`
-exists. Without a staged host app, CI writes `SKIPPED.txt` (not a catalog
-claim). Pass `products_ready` after Gate products for real PNGs.
+`scripts/appium/ci-prepare-artifacts.sh` (non-hidden). Catalog green is PNG
+only. macOS tip+Colima smoke fail-closed (never `exit 0` + `SKIPPED.txt`;
+that false-greened tip `a58384fc`). Linux catalog only when
+`products_ready`. Gallery upload `if-no-files-found: error` after catalog.
+
 
 ## Hard rejects
 
