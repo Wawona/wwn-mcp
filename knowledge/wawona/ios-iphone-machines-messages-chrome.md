@@ -41,3 +41,25 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
   the compose + (search goes full-width and overlaps the button)
 - Putting this chrome on iPad / visionOS
 - Forcing `usesNativePhoneSearchToolbar = false` on iOS 26+
+
+## Android mirror (`MachineHomeScreen.kt`)
+
+Same catalog chrome contract on Compose. Breakpoint: `isWide` when
+`screenWidthDp >= 840` (tablet / large fold).
+
+| Host | Search | Add | Tags / Pin |
+|---|---|---|---|
+| Phone (`!isWide`) | Scaffold `bottomBar` search field + IME/`navigationBars` padding | One `FilledTonalIconButton` beside search. No top Add, no FAB | Card long-press `DropdownMenu` |
+| Tablet (`isWide`) | TopAppBar expand-into-title search | Top-trailing Add only. **No** bottom search chrome | Same long-press menu |
+
+Card chrome:
+
+- Assigned tags are **read-only** chips on the card. No inline Tags
+  button or Pin `IconButton`.
+- Long-press menu order matches iOS: Start/Focus+Stop → Edit… / Delete →
+  Tags submenu (checkmarks + **Create Tag…**) → Pin / Unpin (6-pin cap
+  toast). Never "create from the sidebar" copy.
+- Pinned machines show a visual-only pin badge on the banner.
+
+Hard rejects (Android): two Adds on phone; bottom search on tablet;
+Tags/Pin only via NavigationDrawer; empty-tags sidebar-only copy.

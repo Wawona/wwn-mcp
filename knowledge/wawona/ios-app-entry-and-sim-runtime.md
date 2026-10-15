@@ -20,7 +20,8 @@ Hard gate: `Wawona/docs/agent-rules/wawona-ios-app-entry.md` (Cursor
 5. Host compositor bind used `/tmp/wawona-<uid>` and failed on Simulator.
    Set `XDG_RUNTIME_DIR` to `preferredSharedRuntimeDir()`
    (`/tmp/wawona_sim_<uid>`) before `WWNCoreStart`.
-6. `Label { } icon:` in Settings hub is iOS 14+. Use `HStack` + iconTile.
+6. `Label { } icon:` in Settings hub is iOS 14+. Use `HStack` + plain
+   `WawonaSettingsHubChrome.sidebarIcon` (never colored icon tiles).
 7. Nesting a `UIView` under `UIHostingController.view` triggers a SwiftUI
    runtime warning. Host chrome only.
 

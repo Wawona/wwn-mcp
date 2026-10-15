@@ -13,7 +13,7 @@ window. Otherwise always New Tab.
 ## UX
 
 - Prompt: macOS `NSAlert`; iOS/iPad/visionOS action sheet; Android dialog
-- New Window: dedicated session `NSWindow` / `UIWindowScene` / `SessionActivity`
+- New Window: Wawona Terminal gets its own window (`WWNMacGuestConsole`, iPad/visionOS terminal scene, Android `TerminalActivity`). Wayland clients still get a compositor window. New Tab keeps the terminal in the current window.
 - In-window session return: sidebar Machines (no floating Machines button)
 
 ## Code

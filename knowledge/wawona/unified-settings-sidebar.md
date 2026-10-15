@@ -36,6 +36,12 @@ one Global Settings host per platform. That host is **in-app**.
 frozen field-visibility mirror. Do not grow section order only in Swift
 or Kotlin.
 
+## Sidebar icons (Apple)
+
+Machines and Global Settings sidebars use **plain SF Symbols**. Never colored
+rounded-square tiles with white glyphs. Section accents tint Settings detail
+controls only. See `apple-sidebar-icons.md` / skill `wawona-apple-sidebar-icons`.
+
 ## Hard rejects
 
 - Dual Global Settings hosts (OS + in-app) on the same target
@@ -43,3 +49,4 @@ or Kotlin.
 - UniFFI callbacks on `WWNCore*` (compositor ABI stays C + Swift/JNI poll)
 - Claiming ObjC is gone. Scene, compositor view, IME, Mode B constructors stay
 - New feature SwiftUI under `src/platform/macos/ui/*`
+- Colored rounded-square sidebar icon tiles on Apple Machines or Settings

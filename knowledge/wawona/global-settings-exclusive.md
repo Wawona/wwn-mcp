@@ -30,13 +30,21 @@ Reject Gemini toys (`wawona_sync_interval`, …).
 
 Machine editors. One-shot actions (Watch send, import, log copy).
 
+## Sidebar icons (Apple)
+
+Plain SF Symbols in the Settings sidebar. Section accent colors tint detail
+controls only. Never colored rounded-square icon tiles. See
+`apple-sidebar-icons.md` / `wawona-apple-sidebar-icons`.
+
 ## Hard rejects
 
 - PrefPane / Settings.bundle / Settings-Watch.bundle as Global Settings
 - Opening System Settings or Settings.app for the catalog
 - Dual OS Settings inject and in-app catalog for the same keys
+- Colored rounded-square tiles with white SF Symbols in the Settings sidebar
 
-Rules: `wawona-global-settings-exclusive`. Docs: `Wawona/docs/settings.md`.
+Rules: `wawona-global-settings-exclusive`, `wawona-apple-sidebar-icons`.
+Docs: `Wawona/docs/settings.md`.
 Verify: `Wawona/scripts/verify-settings-bundle-keys.py`.
 
 ## History
