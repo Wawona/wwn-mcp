@@ -33,15 +33,14 @@ dark blank gate, no local-bundle).
 3. Fix suite, selectors, caps, guest launcher, or product a11y.
 4. Re-run until green evidence. No skip stubs / `|| true`.
 
-## CI artifact upload (hidden path)
+## CI artifact upload
 
-Artifacts live under `.agent-device/test-artifacts/appium/`.
-`actions/upload-artifact` v4+ **excludes hidden paths by default**. Without
-`include-hidden-files: true`, upload steps stay green (`if-no-files-found:
-warn`) and the run shows **zero** artifacts even when junit/PNGs exist.
-Same gotcha as product-macos-app foot embeds. macOS catalog must call
-`capture-catalog-gallery.sh` (tip + Colima); do not exit early on a missing
-`wayland-0` before tip ensure.
+CI writes under `test-artifacts/appium/` via
+`scripts/appium/ci-prepare-artifacts.sh` (non-hidden). Local dogfood stays
+`.agent-device/test-artifacts/appium`. `upload-artifact` v4+ drops hidden
+`.agent-device/` by default. Gallery artifacts upload only when `*.png`
+exists. Without a staged host app, CI writes `SKIPPED.txt` (not a catalog
+claim). Pass `products_ready` after Gate products for real PNGs.
 
 ## Hard rejects
 
@@ -51,4 +50,4 @@ Same gotcha as product-macos-app foot embeds. macOS catalog must call
 - Claim catalog client OK without Present surface screenshot
 - Cancel tip `ui-appium` / Gate UI jobs (`wawona-ci-no-cancel`)
 - Darwin catalog via local-bundle / Apple Containerization
-- Appium upload steps without `include-hidden-files: true` for `.agent-device/`
+- Appium CI artifacts under `.agent-device/` (use ci-prepare-artifacts.sh)
