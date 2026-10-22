@@ -522,6 +522,16 @@ license = "MIT"
 include = ["src/**/*.rs", "**/*.md"]
 
 [[source]]
+name = "wlcs"
+project = "wlcs"
+kind = "git"
+url = "https://github.com/canonical/wlcs"
+ref = "main"
+description = "Wayland Conformance Test Suite; Wawona's strict Linux conformance gate (libwawona_wlcs.so)."
+license = "GPL-3.0"
+include = ["include/**/*.h", "src/**/*.{cpp,h}", "tests/**/*.{cpp,h}", "**/*.md"]
+
+[[source]]
 name = "sway"
 project = "sway"
 kind = "git"
