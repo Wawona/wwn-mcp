@@ -43,8 +43,9 @@ L4 Wawona ──► all required lower layers
 Canonical layering: [`wwn-repo-dag.md`](wwn-repo-dag.md).
 How to contribute: [`contribute.md`](contribute.md).
 
-## Deleted / renamed
-
+- **`Wawona/Sileo-Android`** -> **wwn-sileo-android** (fork of Sileo/Sileo; unofficial Android port).
+- **`Wawona/AsteroidOS-SDK`** -> **wwn-asteroidos-sdk** (AsteroidOS SDK Nix flake for watch cross-compilation).
+- **`Wawona/UTM`** -> **wwn-UTM** (fork of utmapp/UTM for hypervisor and Wayland research).
 - **`Wawona/wwn-coreutils`** -> **wwn-uutils-rs**.
 - **`Wawona/wwn-igetty`** -> **iGetty**.
 - **`Wawona/doorman`** -> **Doorman**.
