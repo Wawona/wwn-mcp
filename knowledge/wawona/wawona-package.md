@@ -7,6 +7,20 @@ Android Termux libc is Bionic, not glibc and not musl. Use NDK clang from
 `repo.wawona.io/lib/androidNdk.nix`. Do not use host pkg-config. Do not use
 the nixpkgs Android GCC bootstrap.
 
+Android static libraries cross-built on Darwin must set `dontStrip = true`.
+Nix's host Darwin fixup runs cctools on the archive, adding a BSD symbol table
+while leaving GNU `/` and `//` members. Android `ld.lld` then rejects those
+members as non-object files. Verify the linked consumer, for example the
+Android `fuzzel` target, not only each library derivation.
+
+When a Darwin product references a Linux artifact, prebuild the exact pinned
+Linux output on a native Linux runner and let the shared CI cache publish it
+before the Darwin job starts. Add a job dependency so the Darwin product cannot
+race the cache push. Nix on macOS can consume cached Linux store paths, but it
+cannot build a missing `aarch64-linux` dependency. Keep the product artifact
+when fixing this gate; do not silently drop the Linux guest feature to avoid
+the platform mismatch.
+
 pixman, freetype, fontconfig, harfbuzz, cairo, and pango are separate L0
 libraries. harfbuzz does not replace cairo. cairo does not include harfbuzz
 and does not provide GLES. On Android and wasm there is no system cairo.
