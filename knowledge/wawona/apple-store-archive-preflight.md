@@ -47,6 +47,7 @@ was uploaded. The version bump and lockfile update were then validated with
 | `ios beta` lane | PREFLIGHTS_ALL_IPAS_BEFORE | ASC version creation and TestFlight upload | `fastlane/Fastfile` |
 | `ios beta` lane | REQUIRES_COMPLETE_FOR | Newly submitted ASC build upload | `fastlane/lib/asc_build_upload_gate.rb`, `fastlane/Fastfile` |
 | TestFlight transport success | DOES_NOT_PROVE | ASC processing acceptance | Apple `buildUploads` state vs Fastlane upload action return |
+| Fastlane or release workflow changes | TRIGGER | Gate: products, then store workflow on green master | `.github/workflows/device-gate.yml`, `.github/workflows/release-beta.yml` |
 
 ## Durable gate
 
@@ -57,7 +58,9 @@ the exact IPAs it preflighted, snapshots matching upload IDs, and polls Apple's
 must reach `COMPLETE`; `FAILED`, missing record, or timeout fails CI. Transport
 success and local `altool` validation are not server-side acceptance. This
 catches archive, embedded Watch compile, signing, export, local IPA invariant,
-and ASC processing failures. A green simulator product matrix alone is not
+and ASC processing failures. Changes to the release lane trigger Gate: products
+on both release branches so a green master product result starts the store
+preflight and upload workflow. A green simulator product matrix alone is not
 evidence that the App Store device archive is buildable.
 
 Reproduce the iOS plus Watch device archive without uploading with
