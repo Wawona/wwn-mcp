@@ -84,23 +84,29 @@ assumption. The next run, `40206179352`, exposed the underlying stale VM state:
 `colima ssh-config` failed because Lima's per-profile `ssh.config` was missing
 at `$HOME/.colima/_lima/colima/ssh.config`.
 
+Run `40207684901` exposed a deeper corruption case: both `ssh.config` and
+`lima.yaml` were missing, so `colima stop --force` could not recover the
+profile. The macOS CI step now creates unique `COLIMA_HOME` and `LIMA_HOME`
+directories under `runner.temp` before starting Colima. This prevents reuse of
+stale prestarted runner metadata. Local runs keep their normal profile and must
+not reset it automatically.
+
 Fix: honor `COLIMA_HOME` and `COLIMA_SSH_CONFIG`, refresh the config from the
 running profile with `colima ssh-config`, and connect through that file with
 `ssh -F <config> colima`. On the disposable GitHub macOS runner only, set
-`WAWONA_COLIMA_RECOVER=1`: when config generation or the SSH probe fails, the
-helper runs `colima stop --force`, starts the VM, then regenerates and probes
-the SSH config. Guest package checks, binary resolution, and waypipe's SSH
-transport use the same profile config. Do not hardcode Colima's private
-identity file, port, host, or user. Do not enable recovery on developer Macs.
+Guest package checks, binary resolution, and waypipe's SSH transport use the
+same generated profile config. Do not hardcode Colima's private identity file,
+port, host, or user. CI isolates the profile by run; developer machines keep
+their normal Colima state.
 
 Typed graph:
 
 ```text
-Failure(40194195258/macOS/ensure-colima.sh)
+Failure(40207684901/macOS/ensure-colima.sh)
   --observed-at--> CI(Watch: Appium UI matrix)
-  --caused-by--> Failure(missing Lima per-profile ssh.config while stale Colima status says running)
+  --caused-by--> Failure(missing Lima ssh.config and lima.yaml while stale Colima status says running)
   --first-misdiagnosed-as--> Assumption(fixed Colima identity path)
   --prevented--> Gate(catalog Wayland guest screenshots)
-  --fixed-by--> Implementation(refresh generated config and recover disposable stale VM)
+  --fixed-by--> Implementation(isolated COLIMA_HOME and LIMA_HOME per CI run)
   --validated-by--> Gate(Watch: Appium UI matrix rerun)
 ```
