@@ -45,15 +45,20 @@ was uploaded. The version bump and lockfile update were then validated with
 | Wawona-watchOS arm64_32 | OMITS | Nix Rust, PTY, terminal archives | `dependencies/generators/xcodegen.nix` link settings |
 | WatchTerminalScreen | CALLS | WatchShellABI.termStringFree | `Sources/WawonaWatch/WatchTerminalScreen.swift` |
 | `ios beta` lane | PREFLIGHTS_ALL_IPAS_BEFORE | ASC version creation and TestFlight upload | `fastlane/Fastfile` |
+| `ios beta` lane | REQUIRES_COMPLETE_FOR | Newly submitted ASC build upload | `fastlane/lib/asc_build_upload_gate.rb`, `fastlane/Fastfile` |
+| TestFlight transport success | DOES_NOT_PROVE | ASC processing acceptance | Apple `buildUploads` state vs Fastlane upload action return |
 
 ## Durable gate
 
 The Apple beta lane archives, exports, and validates every selected Apple IPA
 before creating ASC version records or the first TestFlight upload. It uploads
-the exact IPAs it preflighted. This catches archive, embedded Watch compile,
-signing, export, and local IPA invariant failures before any upload begins. A
-green simulator product matrix alone is not evidence that the App Store device
-archive is buildable.
+the exact IPAs it preflighted, snapshots matching upload IDs, and polls Apple's
+`buildUploads` endpoint by version, build number, and platform. A new record
+must reach `COMPLETE`; `FAILED`, missing record, or timeout fails CI. Transport
+success and local `altool` validation are not server-side acceptance. This
+catches archive, embedded Watch compile, signing, export, local IPA invariant,
+and ASC processing failures. A green simulator product matrix alone is not
+evidence that the App Store device archive is buildable.
 
 Reproduce the iOS plus Watch device archive without uploading with
 `CI=true WAWONA_DEBUG_SCHEME=Wawona-iOS fastlane ios debug_export`.
