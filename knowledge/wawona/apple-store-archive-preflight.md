@@ -21,6 +21,12 @@ terminal archives, while Swift still emitted references to their symbols.
 Complete weak fail-closed definitions in `WWNWatchStubs.c` resolve the
 compatibility slice; arm64 continues using real libraries.
 
+On 2026-10-25, Master Store preflight reached the same embedded Watch phase and
+stopped on the fail-closed CalVer check because `VERSION`, `Cargo.toml`, and
+`Cargo.lock` still said `26.10.24` while the runner date was `26.10.25`. No IPA
+was uploaded. The version bump and lockfile update were then validated with
+`verify-calver-today.sh` and `cargo metadata --locked`.
+
 ## Entities and relations
 
 | Entity | Type | Provenance |
@@ -38,15 +44,16 @@ compatibility slice; arm64 continues using real libraries.
 | Wawona-iOS archive | EMBEDS_AND_COMPILES | Wawona-watchOS | XcodeGen generated scheme and failed archive log |
 | Wawona-watchOS arm64_32 | OMITS | Nix Rust, PTY, terminal archives | `dependencies/generators/xcodegen.nix` link settings |
 | WatchTerminalScreen | CALLS | WatchShellABI.termStringFree | `Sources/WawonaWatch/WatchTerminalScreen.swift` |
-| `ios beta` lane | PREFLIGHTS_ALL_IPAS_BEFORE | TestFlight upload | `fastlane/Fastfile` |
+| `ios beta` lane | PREFLIGHTS_ALL_IPAS_BEFORE | ASC version creation and TestFlight upload | `fastlane/Fastfile` |
 
 ## Durable gate
 
 The Apple beta lane archives, exports, and validates every selected Apple IPA
-before the first TestFlight upload. It uploads the exact IPAs it preflighted.
-This catches archive, embedded Watch compile, signing, export, and local IPA
-invariant failures before any upload begins. A green simulator product matrix
-alone is not evidence that the App Store device archive is buildable.
+before creating ASC version records or the first TestFlight upload. It uploads
+the exact IPAs it preflighted. This catches archive, embedded Watch compile,
+signing, export, and local IPA invariant failures before any upload begins. A
+green simulator product matrix alone is not evidence that the App Store device
+archive is buildable.
 
 Reproduce the iOS plus Watch device archive without uploading with
 `CI=true WAWONA_DEBUG_SCHEME=Wawona-iOS fastlane ios debug_export`.
