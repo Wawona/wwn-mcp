@@ -74,28 +74,33 @@ python3 scripts/appium/verify-catalog-gallery.py
 `nixpkgs#colima` / `nixpkgs#lima` so PATH-less agent shells still work when
 Colima is already installed via nix.
 
-## Runner SSH identity regression
+## Runner stale Colima state
 
 2026-10-25 Master Appium failure `40194195258`, macOS job `121171494304`:
-Colima reported the VM was already running, but `ensure-colima.sh` failed before
-guest launch because it required the private key at the guessed path
-`$HOME/.colima/_lima/_config/user`. The check ignored Colima's generated SSH
-config and non-default Colima homes/profiles.
+Colima reported the VM was already running, but guest setup failed. The first
+log showed that `ensure-colima.sh` required a guessed key path
+`$HOME/.colima/_lima/_config/user`; using the generated config removed that
+assumption. The next run, `40206179352`, exposed the underlying stale VM state:
+`colima ssh-config` failed because Lima's per-profile `ssh.config` was missing
+at `$HOME/.colima/_lima/colima/ssh.config`.
 
 Fix: honor `COLIMA_HOME` and `COLIMA_SSH_CONFIG`, refresh the config from the
 running profile with `colima ssh-config`, and connect through that file with
-`ssh -F <config> colima`.
-Guest package checks, binary resolution, and waypipe's SSH transport must use
-the same generated profile config. Do not hardcode Colima's private identity
-file, port, host, or user.
+`ssh -F <config> colima`. On the disposable GitHub macOS runner only, set
+`WAWONA_COLIMA_RECOVER=1`: when config generation or the SSH probe fails, the
+helper runs `colima stop --force`, starts the VM, then regenerates and probes
+the SSH config. Guest package checks, binary resolution, and waypipe's SSH
+transport use the same profile config. Do not hardcode Colima's private
+identity file, port, host, or user. Do not enable recovery on developer Macs.
 
 Typed graph:
 
 ```text
 Failure(40194195258/macOS/ensure-colima.sh)
   --observed-at--> CI(Watch: Appium UI matrix)
-  --caused-by--> Assumption(fixed Colima identity path)
+  --caused-by--> Failure(missing Lima per-profile ssh.config while stale Colima status says running)
+  --first-misdiagnosed-as--> Assumption(fixed Colima identity path)
   --prevented--> Gate(catalog Wayland guest screenshots)
-  --fixed-by--> Implementation(generated Colima SSH config)
+  --fixed-by--> Implementation(refresh generated config and recover disposable stale VM)
   --validated-by--> Gate(Watch: Appium UI matrix rerun)
 ```
