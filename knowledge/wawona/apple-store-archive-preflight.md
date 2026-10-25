@@ -1,0 +1,52 @@
+# Apple store archive preflight
+
+## Incident
+
+On 2026-10-24, the TestFlight store workflow passed Gate: products and then
+failed while archiving `Wawona-iOS` with its embedded `Wawona-watchOS` target.
+The simulator product matrix did not compile this signed device archive path.
+The reported `Build Rust Backend via Nix` failure was first addressed by
+clearing `NIX_BUILD_TOP` in `scripts/release-env.sh`: `nix develop` exports the
+marker for its shell, but the host Fastlane/Xcode process is outside a Nix
+derivation and must realize missing backends through the daemon.
+
+The detailed local archive then surfaced a Swift function convention mismatch at two calls to
+`wwn_term_string_free`. `WatchTerminalScreen.swift` declared the native symbol
+at file scope while `WatchNativeShell.swift` declared the same native symbol as
+`WatchShellABI.termStringFree`. Consolidating call sites onto the shared ABI
+wrapper removes the duplicate symbol declaration and resolves the Swift compile
+error. The next archive then linked `arm64_32` and exposed missing Watch C ABI
+fallbacks: that compatibility slice intentionally omits the Nix Rust, PTY, and
+terminal archives, while Swift still emitted references to their symbols.
+Complete weak fail-closed definitions in `WWNWatchStubs.c` resolve the
+compatibility slice; arm64 continues using real libraries.
+
+## Entities and relations
+
+| Entity | Type | Provenance |
+|---|---|---|
+| Gate: products | CI workflow | `.github/workflows/device-gate.yml` |
+| Ship: beta (stores) | CI workflow | `.github/workflows/release-beta.yml` |
+| Wawona-iOS | Device archive target | `fastlane/Fastfile`, `APPLE_BETA_TARGETS` |
+| Wawona-watchOS | Embedded Watch target | XcodeGen iOS companion target |
+| WatchShellABI.termStringFree | Swift native ABI declaration | `Sources/WawonaWatch/WatchNativeShell.swift` |
+| TestFlight upload | External side effect | `fastlane/Fastfile`, `upload_to_testflight` |
+
+| Subject | Relation | Object | Evidence |
+|---|---|---|---|
+| Gate: products | BUILDS_SIMULATOR_ONLY_FOR | Apple product matrix | `.github/workflows/device-gate.yml` |
+| Wawona-iOS archive | EMBEDS_AND_COMPILES | Wawona-watchOS | XcodeGen generated scheme and failed archive log |
+| Wawona-watchOS arm64_32 | OMITS | Nix Rust, PTY, terminal archives | `dependencies/generators/xcodegen.nix` link settings |
+| WatchTerminalScreen | CALLS | WatchShellABI.termStringFree | `Sources/WawonaWatch/WatchTerminalScreen.swift` |
+| `ios beta` lane | PREFLIGHTS_ALL_IPAS_BEFORE | TestFlight upload | `fastlane/Fastfile` |
+
+## Durable gate
+
+The Apple beta lane archives, exports, and validates every selected Apple IPA
+before the first TestFlight upload. It uploads the exact IPAs it preflighted.
+This catches archive, embedded Watch compile, signing, export, and local IPA
+invariant failures before any upload begins. A green simulator product matrix
+alone is not evidence that the App Store device archive is buildable.
+
+Reproduce the iOS plus Watch device archive without uploading with
+`CI=true WAWONA_DEBUG_SCHEME=Wawona-iOS fastlane ios debug_export`.
