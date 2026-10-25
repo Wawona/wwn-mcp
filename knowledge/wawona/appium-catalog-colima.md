@@ -86,10 +86,11 @@ at `$HOME/.colima/_lima/colima/ssh.config`.
 
 Run `40207684901` exposed a deeper corruption case: both `ssh.config` and
 `lima.yaml` were missing, so `colima stop --force` could not recover the
-profile. The macOS CI step now creates unique `COLIMA_HOME` and `LIMA_HOME`
-directories under `runner.temp` before starting Colima. This prevents reuse of
-stale prestarted runner metadata. Local runs keep their normal profile and must
-not reset it automatically.
+profile. Run `40212035327` showed that unique `COLIMA_HOME` and `LIMA_HOME`
+alone were insufficient: Colima still selected profile `colima`, then could
+not find `ssh.config` under the isolated Lima home. Set `COLIMA_PROFILE` to a
+run-unique name as well as both homes. Local runs keep their normal profile and
+must not reset it automatically.
 
 Fix: honor `COLIMA_HOME` and `COLIMA_SSH_CONFIG`, refresh the config from the
 running profile with `colima ssh-config`, and connect through that file with
@@ -107,6 +108,12 @@ Failure(40207684901/macOS/ensure-colima.sh)
   --caused-by--> Failure(missing Lima ssh.config and lima.yaml while stale Colima status says running)
   --first-misdiagnosed-as--> Assumption(fixed Colima identity path)
   --prevented--> Gate(catalog Wayland guest screenshots)
-  --fixed-by--> Implementation(isolated COLIMA_HOME and LIMA_HOME per CI run)
+  --fixed-by--> Implementation(isolated COLIMA_HOME, LIMA_HOME, and COLIMA_PROFILE per CI run)
   --validated-by--> Gate(Watch: Appium UI matrix rerun)
 ```
+
+The same matrix run's visionOS job also failed during `xcodebuild
+-downloadPlatform visionOS` with `Unable to connect to simulator`. That job
+only runs the Appium dry unit gate and does not use a visionOS runtime. Remove
+the unrelated SDK download from this dry lane; visionOS simulator product
+builds remain covered by Gate: products.
