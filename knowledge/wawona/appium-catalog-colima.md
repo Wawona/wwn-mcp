@@ -82,8 +82,9 @@ guest launch because it required the private key at the guessed path
 `$HOME/.colima/_lima/_config/user`. The check ignored Colima's generated SSH
 config and non-default Colima homes/profiles.
 
-Fix: honor `COLIMA_HOME` and `COLIMA_SSH_CONFIG`, generate a missing config with
-`colima ssh-config`, and connect through that file with `ssh -F <config> colima`.
+Fix: honor `COLIMA_HOME` and `COLIMA_SSH_CONFIG`, refresh the config from the
+running profile with `colima ssh-config`, and connect through that file with
+`ssh -F <config> colima`.
 Guest package checks, binary resolution, and waypipe's SSH transport must use
 the same generated profile config. Do not hardcode Colima's private identity
 file, port, host, or user.
