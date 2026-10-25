@@ -73,3 +73,28 @@ python3 scripts/appium/verify-catalog-gallery.py
 `ensure-colima.sh` prepends `~/.nix-profile` and, if needed, resolves
 `nixpkgs#colima` / `nixpkgs#lima` so PATH-less agent shells still work when
 Colima is already installed via nix.
+
+## Runner SSH identity regression
+
+2026-10-25 Master Appium failure `40194195258`, macOS job `121171494304`:
+Colima reported the VM was already running, but `ensure-colima.sh` failed before
+guest launch because it required the private key at the guessed path
+`$HOME/.colima/_lima/_config/user`. The check ignored Colima's generated SSH
+config and non-default Colima homes/profiles.
+
+Fix: honor `COLIMA_HOME` and `COLIMA_SSH_CONFIG`, generate a missing config with
+`colima ssh-config`, and connect through that file with `ssh -F <config> colima`.
+Guest package checks, binary resolution, and waypipe's SSH transport must use
+the same generated profile config. Do not hardcode Colima's private identity
+file, port, host, or user.
+
+Typed graph:
+
+```text
+Failure(40194195258/macOS/ensure-colima.sh)
+  --observed-at--> CI(Watch: Appium UI matrix)
+  --caused-by--> Assumption(fixed Colima identity path)
+  --prevented--> Gate(catalog Wayland guest screenshots)
+  --fixed-by--> Implementation(generated Colima SSH config)
+  --validated-by--> Gate(Watch: Appium UI matrix rerun)
+```
