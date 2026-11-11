@@ -21,7 +21,7 @@ Linux, watchOS, Classic igetty).
 | watchOS | `WWNWatchCompositorBridge` `launchWeston` |
 | Android | `android_jni.c` + `WWNWriteWestonHoneycombIni` |
 | Linux Machines | `src/core/weston_ini.rs` via `src/linux/launcher.rs` |
-| macOS CLI `Wawona weston` | `scripts/macos-register-cli-bins.sh` |
+| macOS CLI `Wawona weston` | `xtask/src/install.rs` (`cargo xtask cli`) |
 | Classic Mode B TTY | `wwn-igetty` `libexec/wwn-modeb-session/weston` |
 | In-process desktop-shell default | `repo.wawona.io` `catalog/deb/gui/weston/in-app` `ios.nix` / `android.nix` (`WESTON_DATA_DIR/background.png`) |
 

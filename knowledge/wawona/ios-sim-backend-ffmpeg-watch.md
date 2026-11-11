@@ -11,10 +11,11 @@ Package libavutil was not found
 PKG_CONFIG_PATH …/jq-…/lib/pkgconfig
 ```
 
-`rust-backend-c2n.nix` only forwards pkg-config when
+The slice lists ffmpeg's `.pc` directory in `slice.json` only when
 `nativeDeps ? ffmpeg`. Mirror standalone `wwn-waypipe` `ios.nix`.
 
-Prove: `nix build .#wawona-ios-sim-backend`.
+Prove: `cargo xtask deps get iphonesimulator --nix`, then
+`cargo xtask backend iphonesimulator`.
 
 ## Watch companion ≠ phone UI
 

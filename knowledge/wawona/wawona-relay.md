@@ -34,7 +34,7 @@ Linux-first breadth on the Mac without a native port of every app: microvm.nix
 `WAWONA_RELAY_READY=1`). Preferred host command:
 `nix run .#wawona-microvm-session` (supervises bridge + microvm). Machines
 `virtual_machine` Start on macOS uses `WWNVirtualMachineRunner` for that
-session. Smoke: `Wawona/scripts/microvm-waypipe-session-smoke.sh`. Prose:
+session. Prose:
 `Wawona/docs/2026-nixos-vm-bridge.md`. Product engine remains Relay
 (VZ/StaticCpu/KVM). Never QEMU/UTM Start. Never treat vfkit as the iOS path.
 
@@ -1153,3 +1153,19 @@ existing-disk migration, per-machine growth/restart/guest-data acceptance,
 flake apply/rollback, authenticated graphics, OCI/device lifecycle, exact signed
 physical-device/distribution checks and guest AOT remain open. Phone Simulator
 still has3 saved profiles and QA disk9GiB; no new profile or growth was saved.
+
+## Mode A SHM tip / MiniCompositor (2026-10-15)
+
+Hard-won Simulator tip loop. Full recipe: `staticcpu-shm-tip.md`.
+Skill / rule: `wawona-staticcpu-shm-tip`. Code: `shm_import.rs`.
+
+waypipe often delivers `OPEN_FILE → BUFFER_DIFF → PROTOCOL` (DIFF before
+create_buffer). Importing with an empty `buffers` map causes
+`all buffers are held by the server`. Fixes: skip-empty, release-all,
+create_buffer catch-up, attach synthesize from `last_file`, dim prefer
+200x200 over 64xN for 160000-byte remote files.
+
+Lab-synth guest Bundle directory must be `wawona-nixos-guest-4k` (not
+`guest-4k`). Use per-UDID `XDG_RUNTIME_DIR`. Completely complete remains 0%.
+AUTH + continuous 64x625 Mode A present is proven on tip; 800x600 /
+1.92MiB OPEN_FILE still open (`unhandled wl_shm PROTOCOL opcode` path).

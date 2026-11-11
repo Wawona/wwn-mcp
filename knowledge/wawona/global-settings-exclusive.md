@@ -45,7 +45,7 @@ controls only. Never colored rounded-square icon tiles. See
 
 Rules: `wawona-global-settings-exclusive`, `wawona-apple-sidebar-icons`.
 Docs: `Wawona/docs/settings.md`.
-Verify: `Wawona/scripts/verify-settings-bundle-keys.py`.
+Verify: `cargo xtask verify settings-in-app`.
 
 ## History
 

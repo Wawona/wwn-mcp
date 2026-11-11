@@ -8,13 +8,14 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
 - Phone idiom only (`UIDevice` phone, not size class). The split forces
   regular width, so size class cannot detect phone.
 - iOS 26 native row (required, `usesNativePhoneSearchToolbar`):
-  `.searchable(text:)` (default placement) plus toolbar
-  `DefaultToolbarItem(kind: .search, placement: .bottomBar)`,
-  `ToolbarSpacer(.flexible, placement: .bottomBar)`, then
-  `ToolbarItem(placement: .bottomBar)` with a plain
-  `Button { Image(systemName: "plus") }`. Default toolbar styling only.
-  No custom circle fill, glassProminent, fixed frame, shadow, or
-  `sharedBackgroundVisibility` hacks. System sizes the +.
+  `.searchable(text:)` at default placement so the visible controller's
+  `navigationItem` owns the `UISearchController`. The bottom slot is
+  `WWNPhoneIntegratedSearchToolbar`: that same navigation item's
+  `searchBarPlacementBarButtonItem` copied into the controller's
+  `toolbarItems`, then a flexible space and one prominent `+`
+  (`UIBarButtonItem.Style.prominent`, accessibility id `wwn.machines.add`).
+  Tab Overview uses stacked navigation-bar search and turns toolbar
+  integration off so it does not reuse the Machines placement button.
 - Top-trailing on phone: sort + Settings only. **Never** a second Add there.
   Exactly one `+` (bottom toolbar on phone).
 - Top-trailing sort/Settings: `.buttonStyle(.automatic)` only
@@ -37,8 +38,11 @@ Liquid Glass: system search at the bottom, new-machine + to the right.
 - Custom opaque / glassProminent / fixed-frame FAB for iOS 26 toolbar Add
 - Custom circle / padding / font weight on editor sheet xmark/checkmark
 - `.buttonStyle(.glass)` on top-trailing toolbar items on iOS 26
-- `DefaultToolbarItem(kind: .search)` **without** `ToolbarSpacer` before
-  the compose + (search goes full-width and overlaps the button)
+- `DefaultToolbarItem(kind: .search, placement: .bottomBar)` on the
+  split detail. UIKit ignores that button (vending navigation item does
+  not match the controller) and SwiftUI inserts a zero-height
+  `UIKitToolbar` under `UIHostingController.view` (full-width 0-height
+  image slot, kern failure)
 - Putting this chrome on iPad / visionOS
 - Forcing `usesNativePhoneSearchToolbar = false` on iOS 26+
 

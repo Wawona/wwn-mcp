@@ -52,18 +52,18 @@ honest warnings for tools that are not yet pinned on Ubuntu 24.04 GHA.
 | You are changing… | Open first | Local script |
 |---|---|---|
 | Relay VM / MMU / virtio | `Relay/verification/PROOF_OBLIGATIONS.md` | `Relay/scripts/verify-formal.sh` |
-| Clamp / sanitize / generation counter | `src/core/invariants.rs` | `scripts/verify-formal.sh` |
-| Owned C helpers / JNI bounds | `src/platform/cproof/wawona_cproof.h` | `scripts/verify-c.sh` |
-| SSH host string policy | `src/domain/validation.rs` + `verification/ssh_host_vector.tsv` | `verify-swift.sh` / `verify-kotlin.sh` |
-| Android MachineInputSanitizer | Kotlin + `verification/kotlin/SanitizeHarness.java` | `scripts/verify-kotlin.sh` |
-| Flake / `.nix` parse | `flake.nix` | `scripts/verify-nix.sh` |
+| Clamp / sanitize / generation counter | `src/core/invariants.rs` | `cargo xtask prove formal` |
+| Owned C helpers / JNI bounds | `src/platform/cproof/wawona_cproof.h` | `cargo xtask prove c` |
+| SSH host string policy | `src/domain/validation.rs` + `verification/ssh_host_vector.tsv` | `cargo xtask prove swift` / `cargo xtask prove kotlin` |
+| Android MachineInputSanitizer | Kotlin + `verification/kotlin/SanitizeHarness.java` | `cargo xtask prove kotlin` |
+| Flake / `.nix` parse | `flake.nix` | `cargo xtask prove nix` |
 | Org small Rust flake | `rust-repo-floor.yml` | cargo clippy/deny/test |
 | Org small Nix flake | `nix-repo-floor.yml` | parse + floor |
 
 Operator ruleset (needs wrapped `gh` via pass; unset a stale `GH_TOKEN`):
 
 ```bash
-# scripts/enable-verification-ruleset.sh Wawona/Wawona
+# cargo xtask secrets ruleset Wawona/Wawona
 ```
 
 OrganizationAdmin may bypass so the workflow that produces the check can land.
@@ -80,7 +80,7 @@ Do not leave enforcement disabled after bootstrap.
 | JBMC / JPF missing on runner | `warning` | No |
 | flake.nix statix/deadnix style debt (repeated follows keys) | `warning` | No |
 
-`scripts/verification-report.py summarize` fails only on `severity: error`.
+`cargo xtask report summarize` fails only on `severity: error`.
 Silent skip of a **pinned** tool is still forbidden.
 
 ## Running today (wired)
@@ -103,12 +103,12 @@ Push and PR on `development` / `master`. Final job name **Verification report**
 
 | Script | Surface |
 |---|---|
-| `scripts/verify-formal.sh` | clippy, deny, proptest, Kani, Miri, Loom, Verus (rect + sanitize) |
-| `scripts/verify-heavy.sh` | cargo-fuzz ASan 60s (helpers-check); research installs warn |
-| `scripts/verify-c.sh` | cproof ASan/UBSan, clang-tidy (cert/bugprone on cproof TU), scan-build, CBMC, Valgrind, MSan, CDSChecker, TSan; Frama-C/KLEE/CPA warn if missing |
-| `scripts/verify-swift.sh` | SSH vector, SwiftCheck, strict concurrency, ASan/UBSan/TSan |
-| `scripts/verify-kotlin.sh` | Kotest, detekt, lint; SpotBugs/JBMC/JPF warn if unwired/missing |
-| `scripts/verify-nix.sh` | parse all `.nix`, alejandra on `flake.nix`, flake metadata; full-tree format and `nix flake check` stay in Gate: packages |
+| `cargo xtask prove formal` | clippy, deny, proptest, Kani, Miri, Loom, Verus (rect + sanitize) |
+| `cargo xtask prove heavy` | cargo-fuzz ASan 60s (helpers-check); research installs warn |
+| `cargo xtask prove c` | cproof ASan/UBSan, clang-tidy (cert/bugprone on cproof TU), scan-build, CBMC, Valgrind, MSan, CDSChecker, TSan; Frama-C/KLEE/CPA warn if missing |
+| `cargo xtask prove swift` | SSH vector, SwiftCheck, strict concurrency, ASan/UBSan/TSan |
+| `cargo xtask prove kotlin` | Kotest, detekt, lint; SpotBugs/JBMC/JPF warn if unwired/missing |
+| `cargo xtask prove nix` | parse all `.nix`, alejandra on `flake.nix`, flake metadata; full-tree format and `nix flake check` stay in Gate: packages |
 
 Helpers: `src/core/invariants.rs`, `src/core/generation_counter.rs`,
 `src/platform/cproof/wawona_cproof.h`, `verification/ssh_host_vector.tsv`,
@@ -134,7 +134,7 @@ Reusable floors (other flakes call these; job names are **not**
 Promote only with Gate: packages, Verification report, and Gate: products green.
 
 Auth: use the pass-wrapped `gh` from nix-darwin (unset a bad agent `GH_TOKEN`).
-See `scripts/enable-verification-ruleset.sh` (OrganizationAdmin bypass allowed).
+See `cargo xtask secrets ruleset` (OrganizationAdmin bypass allowed).
 
 ## Miri callers
 
@@ -167,7 +167,7 @@ No Astrée, Polyspace, Coverity, SonarQube, Helix QAC, VCC.
 
 ## Nix
 
-On **Wawona** (`scripts/verify-nix.sh`):
+On **Wawona** (`cargo xtask prove nix`):
 
 - `nix-instantiate --parse` on every `*.nix` (error if broken)
 - alejandra `--check flake.nix` (error)
@@ -183,7 +183,7 @@ skip is a red report entry.
 
 ## Failure report
 
-Aggregator: `scripts/verification-report.py`. NDJSON fields:
+Aggregator: `cargo xtask report`. NDJSON fields:
 `tool`, `file`, `line`, `rule`, `failure`, `fix`, `severity`.
 
 ## Hard rejects

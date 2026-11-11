@@ -1,36 +1,47 @@
-# Machine card action chips (Focus / Stop / Edit / Delete)
+# Machines: select then act (detail-first)
 
-Indexed summary. Incident 2026-10-13: iPhone Machines grid clipped Delete
-(and sometimes Edit) off the bottom of the running-machine card.
+Indexed summary. Machines grid cards are select-only. Start, Stop, Focus,
+Edit, Delete, Tags, and Pin live on the machine detail screen.
 
-## Root cause
+Also covers the older incident 2026-10-13 (action chips clipped on the card
+when they still lived on the grid): `MachineActionFlow` must not measure at
+infinite width. That layout rule still applies **inside detail**.
 
-`MachineActionBar` used `ViewThatFits` with a single-line `HStack` first and
-`MachineActionFlow` second. Under `LazyVGrid`, the Flow often measured with
-**nil / infinite width**, so `sizeThatFits` reported **one-row height**. At
-place time the same chips **wrapped** onto a second row. The card frame was
-locked to the one-row height and **clipped** the overflow.
+## Contract
 
-## Fix (keep)
+1. Tap / click a card → open machine detail.
+2. No action chips on the card face.
+3. tvOS (no context menu): Tags and Pin on detail.
+
+| Host | Detail |
+|---|---|
+| Apple | `WWNMachineDetailView` via `detailMachineId` |
+| watchOS | `QuickConnectView` |
+| Android | `MachineDetailScreen` |
+| Linux | Adw dialog from card click |
+
+A11y: `wwn.machines.detail`, `wwn.machines.detail.back`.
+
+## Detail action wrap (keep)
 
 1. Always use `MachineActionFlow` for `.flow` (no `ViewThatFits` HStack).
 2. `resolvedMaxWidth`: when proposal width is unknown, assume ~2 chips per
    line for 3-4 actions so measurement height includes wrap.
-3. `WWNMachineCardView`: `.fixedSize(horizontal: false, vertical: true)`
-   before `.frame(maxHeight: .infinity)` so the grid row grows with content.
+3. tvOS / watchOS: `.stack`.
 
-## Code
+## Appearance
 
-- `Wawona/Sources/WawonaUI/Machines/MachineActionBar.swift`
-- `Wawona/Sources/WawonaUI/Machines/WWNMachineCardView.swift`
+Each machine card keeps a visible one-point outline in both appearances.
+macOS uses the system separator, iOS/iPadOS use `Color.primary` at 16%/28%,
+Android uses `outlineVariant`.
 
 ## Hard rejects
 
-- Restoring `ViewThatFits(HStack)` for card actions without finite-width
-  measure that matches place height
-- Treating nil proposal width as infinity in wrap `Layout.sizeThatFits`
+- Action chips on grid cards
+- Tags/Pin only via context menu on tvOS
+- Nested `NavigationStack` on macOS split for detail
+- Restoring `ViewThatFits(HStack)` for detail action wrap without finite width
 - Truncating or omitting Delete/Edit to keep one row
 
 Rule: `wawona-machine-card-actions`. Skill: `wawona-machine-card-actions`.
-Related: `wawona-machine-types`, `wawona-apple-swift`,
-`ios-iphone-machines-messages-chrome.md`.
+Related: `wawona-machine-types`, `wawona-apple-swift`.

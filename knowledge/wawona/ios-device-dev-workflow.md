@@ -35,32 +35,22 @@ and the proven fastfetch SIGBUS investigation on STARDUST.
 When automating via xcodebuild-mcp, select this device for install/run. When debugging
 via lldb-mcp, attach to the Wawona process on this device after install.
 
-## Step 1. Enter the dev shell (Xcode signing)
+## Step 1. Signing team
 
-From the **Wawona integration repo** (`~/Wawona/Wawona`):
+Export the team id (in ignored `.envrc.local`, or the shell). Nothing else
+needs a dev shell: Xcode is the one `xcode-select` names.
 
 ```bash
 cd ~/Wawona/Wawona
-nix develop
+export TEAM_ID=G6EJA4DJKW
 ```
 
-The Darwin dev shell (`dependencies/wawona/devshells.nix`) automatically:
-
-- Loads **`TEAM_ID`** from `.envrc` (currently `G6EJA4DJKW`) and exports
-  **`DEVELOPMENT_TEAM`** for codesigning.
-- Locates Xcode via `find-xcode`, sets **`DEVELOPER_DIR`**, and puts `xcodebuild` on
-  **`PATH`**.
-
-For signed release artifacts (IPA), export `TEAM_ID` and build with **`--impure`** so
-Nix can see the team id:
+`cargo xtask deps get iphoneos` then writes `.deps/signing.xcconfig`
+(`DEVELOPMENT_TEAM`). For a signed release IPA:
 
 ```bash
-TEAM_ID=G6EJA4DJKW nix build .#wawona-ios-ipa --impure
+TEAM_ID=G6EJA4DJKW cargo xtask archive ios --export app-store-connect
 ```
-
-**Rule:** always work inside `nix develop` (or a child shell that inherited its env)
-when driving xcodebuild or MCP build tools. Do not rely on a bare shell
-missing `DEVELOPMENT_TEAM` / `DEVELOPER_DIR`.
 
 ## Step 2. Link the SDK slices
 
@@ -68,15 +58,15 @@ missing `DEVELOPMENT_TEAM` / `DEVELOPER_DIR`.
 ldflags, embedded rootfs, framework lists), relink what it reads:
 
 ```bash
-nix run .#deps -- iphoneos        # device; also links watchos
-nix run .#deps -- iphonesimulator macosx
+cargo xtask deps get iphoneos        # device; also links watchos
+cargo xtask deps get iphonesimulator macosx
 ```
 
 Implementation: `dependencies/wawona/deps.nix` → `.deps/<sdk>` (backend,
-bundle, `Wawona.xcconfig`, UniFFI). With `TEAM_ID` set, `nix run .#deps`
+bundle, `Wawona.xcconfig`, UniFFI). With `TEAM_ID` set, `cargo xtask deps get`
 writes `.deps/signing.xcconfig` (`DEVELOPMENT_TEAM`).
 
-After a Rust edit, `scripts/build-backend.sh <sdk>` rebuilds the working tree
+After a Rust edit, `cargo xtask backend <sdk>` rebuilds the working tree
 into `.build/backend/<sdk>`, which the prebuild phase links.
 
 ## Step 3. Build and install on device (xcodebuild-mcp)
@@ -136,16 +126,13 @@ Point the Wawona flake at the sibling checkout without pushing:
 
 ```bash
 cd ~/Wawona/Wawona
-nix run .#deps -- iphoneos \
+cargo xtask deps get iphoneos -- \
   --override-input wwn-fastfetch "path:../wwn-fastfetch"
-
-# or for a full build:
-nix build .#wawona-ios \
-  --override-input wwn-fastfetch "path:../wwn-fastfetch" --impure
+cargo xtask build ios --device
 ```
 
 Same pattern works for any `wwn-*` input (see
-`.github/scripts/nix-build-android-meson-sandbox-gate.sh` for
+`cargo xtask ci nix-gate android-meson` for
 `WWN_TOOLCHAIN_ROOT` / `WWN_WESTON_ROOT` env-var style).
 
 ### Option B. Push upstream + flake lock (shared/CI path)
@@ -158,7 +145,7 @@ Same pattern works for any `wwn-*` input (see
    nix flake lock --update-input wwn-fastfetch
    ```
 
-3. Relink `.deps` (`nix run .#deps -- iphoneos`) and rebuild.
+3. Relink `.deps` (`cargo xtask deps get iphoneos`) and rebuild.
 
 **Rule:** if you skip both override and lock update, Wawona still builds the **old**
 pinned fastfetch from `flake.lock`. A common source of “fix didn't land” confusion.
@@ -201,9 +188,9 @@ Deploy path after editing knowledge:
 
 | Goal | Command / tool |
 |------|----------------|
-| Signed dev env | `nix develop` in `~/Wawona/Wawona` |
-| Link SDK slices | `nix run .#deps -- iphoneos` |
-| Local fastfetch changes | `--override-input wwn-fastfetch path:../wwn-fastfetch` |
+| Signing | `export TEAM_ID=…` before `cargo xtask deps get iphoneos` |
+| Link SDK slices | `cargo xtask deps get iphoneos` |
+| Local fastfetch changes | `cargo xtask deps get iphoneos -- --override-input wwn-fastfetch path:../wwn-fastfetch` |
 | Shared fastfetch changes | push `wwn-fastfetch` → `nix flake lock --update-input wwn-fastfetch` |
 | Install to device | xcodebuild-mcp → **8amps iPhone Air** |
 | Debug on device | `lldb` MCP: start → attach Wawona → backtrace (see lldb-mcp guide) |

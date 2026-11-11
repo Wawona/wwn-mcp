@@ -32,7 +32,7 @@ client's App Store patch set.
 After unlink, `deps.nix` must drop `-force_load libfoot.a` /
 `libfuzzel.a` from `WWN_LDFLAGS` in the same change. A stale
 `.deps/<sdk>` still force_loads them and prebuild does not build those
-archives: re-run `nix run .#deps -- <sdk>`.
+archives: re-run `cargo xtask deps get <sdk>`.
 
 ## Link-line fallout of an unlink (2026-10-12)
 

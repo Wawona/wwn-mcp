@@ -16,7 +16,7 @@ Wawona-owned Apple product code has three layers only:
 ## Hard rejects
 
 - New `.m` / `.mm` product classes. CI allowlist is empty
-  (`scripts/verify-no-objc-glue.py`).
+  (`cargo xtask verify no-objc-glue`).
 - New `.swift` under `src/platform/{macos,ios,watchos}`.
 - `Sources/WawonaApple` files over 400 lines.
 - Policy engines duplicated in Swift (prefs, profiles, launch argv).

@@ -32,7 +32,7 @@ Android Home/LockScreen is still planned.
 
 Helper at `/Library/Application Support/Wawona/run-modeb.sh` is a **copy**.
 A new nix store path does nothing for Take Over until
-`nix run .#install` restages the helper.
+`cargo xtask install` restages the helper.
 
 ## Friends: use Classic
 
@@ -43,7 +43,7 @@ once for stage / Path B.
 1. Settings → Desktop → Enable Desktop Replacement
    (doctor + heal + Path B; Restart sheet; no screen takeover)
 2. Reboot. Confirm claim-ok path=b sticky=1 and live Disable.
-3. nix run .#install   # restages helper + dylib for this store
+3. cargo xtask install   # restages helper + dylib for this store
 4. Choose Desktop machine: weston or niri
 5. Settings or menubar → Replace now
 6. Logout, or Ctrl+Option+Backspace, to return Aqua

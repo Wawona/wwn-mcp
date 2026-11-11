@@ -54,5 +54,5 @@ How to contribute: [`contribute.md`](contribute.md).
 cd ~/Wawona/wwn-zsh    && nix build .#zsh-ios
 cd ~/Wawona/iLand  && nix build .#iland-ios
 cd ~/Wawona/Wawona     && nix eval .#packages.aarch64-darwin.niri-ios.name
-cd ~/Wawona/Wawona     && nix build .#wawona-macos
+cd ~/Wawona/Wawona     && cargo xtask deps get macosx --nix && cargo xtask build macos
 ```

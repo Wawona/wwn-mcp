@@ -34,8 +34,8 @@ LockScreen APIs are still planned.
 - **Wrong:** Enable Desktop Replacement takes over the screen.
 - **Right:** Enable arms Path B (doctor, heal, claim-install). **Replace now**
   (Settings or menubar) is the only activate step.
-- **Wrong:** `nix run .#install` does not sync the Mode B helper.
-- **Right:** `nix run .#install` always syncs helper + dylib. Opening
+- **Wrong:** `cargo xtask install` does not sync the Mode B helper.
+- **Right:** `cargo xtask install` always syncs helper + dylib. Opening
   desktop-host Wawona also syncs when the helper is stale.
 - **Wrong:** Mode B is kernel DRM / a kernel module.
 - **Right:** Userspace only. Virtual `/dev/dri` terminates in iland.
@@ -141,13 +141,13 @@ routes. See `Wawona/docs/linux-dmabuf-zero-copy.md`.
 
 ## Verify
 
-`Wawona/.github/scripts/verify-iland-mode-b-bundle.sh --mode present|absent <root>`
+`cargo xtask artifact mode-b --mode present|absent <root>`
 
 iOS Mode B tipa / Mode A firewall:
 
-`Wawona/.github/scripts/verify-ios-modeb-artifacts.sh --mode-a Wawona.app`
+`cargo xtask artifact ios mode-a Wawona.app`
 
-`Wawona/.github/scripts/verify-ios-modeb-artifacts.sh --mode-b Wawona-YY.M.D-iOS-arm64.tipa`
+`cargo xtask artifact ios mode-b Wawona-YY.M.D-iOS-arm64.tipa`
 
 How-to: [`desktop-replacement-macos.md`](desktop-replacement-macos.md).
 Watchdog: [`mode-b-watchdog-safety.md`](mode-b-watchdog-safety.md).

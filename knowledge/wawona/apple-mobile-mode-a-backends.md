@@ -32,7 +32,7 @@ Pin hard. Prefer configure over patches. Anchor CI per `wwn-*`. See
 
 ## Verify
 
-`Wawona/.github/scripts/verify-ios-shell-tools.py` (safe-subset sync + no
+`cargo xtask verify ios-shell-tools` (safe-subset sync + no
 Swift shell imports).
 
 Canonical rule: `Wawona/docs/agent-rules/wawona-apple-mobile-mode-a-backends.md`.

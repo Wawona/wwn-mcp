@@ -4,9 +4,9 @@ Aqua nested weston is an NSTask: `Resources/bin/weston --backend=wayland`
 plus `lib/libweston-13/wayland-backend.*`, `lib/weston/desktop-shell.*`,
 `share/weston`, and `weston-desktop-shell` next to the binary.
 
-`nix build .#wawona-macos` verifies those (`verifyAquaClientBins`).
-`/Applications/Wawona.app` and incremental Xcode Debug
-(`WAWONA_SKIP_NIX_PREBUILD=1`) can lack them. Then Machines Start logs
+The macOS slice (`.deps/macosx/bundle`) carries them and the Xcode embed
+phase copies them. A stale `.deps/macosx` or `/Applications/Wawona.app`
+can lack them. Then Machines Start logs
 "Could not find weston executable" and `wwnValidateNestedWestonEnv` fails.
 
 Heal: copy weston* / foot / libweston-13 / lib/weston / share/weston /

@@ -25,7 +25,7 @@ On 2026-10-25, Master Store preflight reached the same embedded Watch phase and
 stopped on the fail-closed CalVer check because `VERSION`, `Cargo.toml`, and
 `Cargo.lock` still said `26.10.24` while the runner date was `26.10.25`. No IPA
 was uploaded. The version bump and lockfile update were then validated with
-`verify-calver-today.sh` and `cargo metadata --locked`.
+`cargo xtask verify calver` and `cargo metadata --locked`.
 
 ## Entities and relations
 

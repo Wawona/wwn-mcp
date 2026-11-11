@@ -26,6 +26,10 @@ product targets.
 | Desktop / LockScreen replacement | **planned** (Classic Take Over implemented; LockScreen unfinished) | planned | **forbidden** in App Store. TrollStore Mode B tipa is the current IOMFB Desktop product | forbidden | **forbidden** in App Store. TrollStore Mode B tipa is the current IOMFB Desktop product | forbidden | forbidden |
 | Wawona Swinging Bridge | planned | planned | **forbidden** (App Store; Sileo Mode B later) | forbidden | **forbidden** (App Store; Sileo Mode B later) | forbidden | forbidden |
 | Relay Wasm (WASI / wpm) | available | available | available | available | available | available | available |
+| iCloud Sync (CloudKit) | available | forbidden | available | available | available | available | available |
+| iCloud Drive HOME | available | forbidden | available | available | available | **blocked** (QA1935) | **blocked** (QA1935) |
+
+iCloud Sync is CloudKit on every Apple target: see `cloudkit-sync.md`.
 
 ## Non-negotiable target rules
 

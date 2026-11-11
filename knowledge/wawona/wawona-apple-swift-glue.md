@@ -13,19 +13,19 @@ Wawona-owned Apple product code has three layers only:
 
 ## Done means (do not claim early)
 
-`scripts/verify-no-objc-glue.py` exits 0 with an **empty allowlist and zero
+`cargo xtask verify no-objc-glue` exits 0 with an **empty allowlist and zero
 scanned `.m` files**. An empty allowlist file alone is not done if product
 `.m` files still exist on disk. Prior agents overclaimed this cutover.
 
 Darwin CLI argv policy lives in Rust `src/domain/darwin_cli.rs`. Swift
 Lifecycle (`WawonaDarwinCLI`, `WawonaLaunchMode`, menubar Desktop row)
-applies host ops. Prefer Nix-staged UniFFI (`nix run .#deps -- <sdk>`,
+applies host ops. Prefer Nix-staged UniFFI (`cargo xtask deps get <sdk>`,
 `.deps/<sdk>/uniffi`) and fall back to C trampolines (`WawonaDomainBridge`).
 
 ## Hard rejects
 
 - New `.m` / `.mm` product classes. CI allowlist is empty
-  (`scripts/verify-no-objc-glue.py`). Claiming done while `.m` remain.
+  (`cargo xtask verify no-objc-glue`). Claiming done while `.m` remain.
 - New `.swift` under `src/platform/{macos,ios,watchos}`.
 - `Sources/WawonaApple` files over 400 lines.
 - Policy engines duplicated in Swift (prefs, profiles, launch argv,

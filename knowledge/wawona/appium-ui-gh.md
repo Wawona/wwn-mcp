@@ -18,9 +18,28 @@ Catalog green is a **machine Present PNG** in
 `.agent-device/test-artifacts/appium/catalog-gallery/<client>.png` (non-blank).
 DRY packaging cards are not proof.
 
+## Cross-workflow product artifact source
+
+- Event: Appium run `40295903502` failed Android Appium at
+  `Download product-android-apk`, Linux Appium at `Download product AppImage`
+  and its required gallery upload, and macOS Appium at
+  `Download product-macos-app` and its required gallery upload.
+- Cause: manual `workflow_dispatch` set `products_ready=true`, but
+  `actions/download-artifact` defaulted to the current Appium run, which did
+  not own the Gate: products artifacts.
+- Fixed by: require a `products_run_id`, validate that it is a successful
+  `Gate: products` run for the same commit, then pass its run ID, repository,
+  and `github.token` to every cross-run artifact download.
+- Regression condition: setting `products_ready=true` without the successful
+  source run ID must fail early. Never treat missing product artifacts or a
+  missing gallery as UI success.
+- Provenance: Gate: products run `40284441344` passed on commit
+  `bebdeca5`; Appium run `40295903502` used that same commit but attempted to
+  download from its own run ID.
+
 | Host | Guest |
 |------|-------|
-| Darwin | **Colima + waypipe only** (`ensure-colima.sh`) |
+| Darwin | **Colima + waypipe only** (`cargo xtask appium colima`) |
 | Linux CI | nested (`WAWONA_WAYLAND_GUEST=nested`) |
 
 See `appium-catalog-colima.md` for false-green lessons (Terminal vs Present,
@@ -36,7 +55,7 @@ dark blank gate, no local-bundle).
 ## CI artifact upload
 
 CI writes under `test-artifacts/appium/` via
-`scripts/appium/ci-prepare-artifacts.sh` (non-hidden). Catalog green is PNG
+`cargo xtask appium prepare` (non-hidden). Catalog green is PNG
 only. macOS tip+Colima smoke fail-closed (never `exit 0` + `SKIPPED.txt`;
 that false-greened tip `a58384fc`). Linux catalog only when
 `products_ready`. Gallery upload `if-no-files-found: error` after catalog.
@@ -50,4 +69,4 @@ that false-greened tip `a58384fc`). Linux catalog only when
 - Claim catalog client OK without Present surface screenshot
 - Cancel tip `ui-appium` / Gate UI jobs (`wawona-ci-no-cancel`)
 - Darwin catalog via local-bundle / Apple Containerization
-- Appium CI artifacts under `.agent-device/` (use ci-prepare-artifacts.sh)
+- Appium CI artifacts under `.agent-device/` (use cargo xtask appium prepare)

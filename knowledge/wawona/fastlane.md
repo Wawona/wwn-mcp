@@ -20,11 +20,11 @@ Canonical maintainer doc: `Wawona/docs/maintainers/secrets.md`.
    `git@github.com:aspauldingcode/apple-signing.git`.
 4. Bootstrap signing repo:
    ```bash
-   ./scripts/bootstrap-apple-signing.sh
+   cargo xtask secrets bootstrap-signing
    ```
 5. Sync GitHub Environment secrets on `Wawona/Wawona`:
    ```bash
-   ./scripts/sync-github-secrets.sh
+   cargo xtask secrets sync
    ```
 
 ## GitHub Environment: `release-beta`
@@ -48,15 +48,27 @@ Canonical maintainer doc: `Wawona/docs/maintainers/secrets.md`.
 ```bash
 nix develop .#release
 secretspec check -P local
-./scripts/release-env.sh fastlane ios beta      # TestFlight
-./scripts/release-env.sh fastlane android beta  # Play internal
-./scripts/release-env.sh fastlane beta          # both
+cargo xtask secrets run -- fastlane ios beta      # TestFlight
+cargo xtask secrets run -- fastlane android beta  # Play internal
+cargo xtask secrets run -- fastlane beta          # both
 ```
 
 ## CI
 
 `.github/workflows/release-beta.yml`. Trigger via `workflow_dispatch`, push to
 `master`, or tag `v*` (CalVer `vYY.M.D`).
+
+Store beta failure notes:
+
+- Play internal `versionCode` must increase across all release mechanisms.
+  `github.run_number` is only local to one workflow and can be below a release
+  already on Play. Use a monotonic UTC epoch value and stay below Android's
+  `2100000000` maximum.
+- The Watch companion has its own App ID and provisioning profile. If its
+  target carries CloudKit entitlements, enable iCloud on both the iPhone and
+  Watch App IDs, then force-regenerate and sync the App Store match profiles.
+  Treat capability enablement errors as fatal. CI reads the profiles from
+  `apple-signing` and cannot repair them read-only.
 
 macOS GitHub DMG assets need Developer ID sign + notarize (separate from
 TestFlight).

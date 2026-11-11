@@ -51,8 +51,8 @@ Hard gate: `Wawona/docs/agent-rules/wawona-ios-app-entry.md` (Cursor
 - Waypipe `video` needs `ffmpeg` in Apple-mobile `nativeDeps` or
   `waypipe-ffmpeg-wrapper` dies on `libavutil` (only jq on
   `PKG_CONFIG_PATH`). See `ios-sim-backend-ffmpeg-watch.md`.
-- `wawona-ios-app-sim` Watch Ld ≠ phone UI proof. Use
-  `.#wawona-ios-sim-backend` + `WAWONA_BACKEND_OUT`.
+- `cargo xtask build ios` Watch Ld ≠ phone UI proof. Use
+  `cargo xtask backend iphonesimulator` + `cargo xtask tip ios`.
 - Machine editor: sheet with `Sheet Grabber` / medium detent, not
   fullScreenCover. Skill `wawona-ios-sim-runtime`.
 

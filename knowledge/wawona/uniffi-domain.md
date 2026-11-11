@@ -20,8 +20,8 @@ Rust `src/domain` is now the schema + store (list/get/put/delete) + validation.
 Mirrors are frozen. Keep `wawona.machineProfiles.v1` JSON keys.
 
 UniFFI: `MachineProfileStoreApi`, `settings_visible_sections`,
-`capability_gate`, `session_is_forbidden_client_id`. Bindings are Nix
-`$out/uniffi`, never git. Hosts that lack imported Swift call
+`capability_gate`, `session_is_forbidden_client_id`. Bindings come from
+`cargo xtask backend` (`.deps/uniffi`), never git. Hosts that lack imported Swift call
 `wawona_profiles_v1_*` / `wawona_settings_visible_sections` /
 `wawona_capability_gate` (not `WWNCore*`).
 

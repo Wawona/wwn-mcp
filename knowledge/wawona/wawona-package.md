@@ -13,6 +13,12 @@ while leaving GNU `/` and `//` members. Android `ld.lld` then rejects those
 members as non-object files. Verify the linked consumer, for example the
 Android `fuzzel` target, not only each library derivation.
 
+Android product Gradle runs offline. When Gradle resolves Kotlin stdlib or
+reflect versions missing from the pinned Maven cache, stage the exact POM,
+JAR, and `.module` metadata in `dependencies/wawona/android.nix` using
+hash-pinned `fetchurl` entries and the existing local `file://` Maven overlay.
+Use the exact coordinate from the resolver error and keep Gradle offline.
+
 When a Darwin product references a Linux artifact, prebuild the exact pinned
 Linux output on a native Linux runner and let the shared CI cache publish it
 before the Darwin job starts. Add a job dependency so the Darwin product cannot
