@@ -5,7 +5,7 @@ compositor/shell/toolchain development.
 
 | Repo | Layer | Role | Patch-anchor / notes |
 |------|-------|------|----------------------|
-| **Wawona** | L4 | Integration: Smithay, SwiftUI/Android, flake merge, xcodegen | Product gates |
+| **Wawona** | L4 | Integration: Smithay, SwiftUI/Android, flake merge, Xcode + Gradle projects | Product gates |
 | **wwn-toolchain** | L0 | Cross-compile + substrate (cairo/pango/pixman/libwayland/…) + pty | No wwn-* inputs |
 | **iLand** | L1 | DRM/KMS/EGL/GBM + ANGLE/SwiftShader/MoltenVK/KosmicKrisp | Mode A/B |
 | **wwn-waypipe** | L3′ | waypipe-rs remote | |

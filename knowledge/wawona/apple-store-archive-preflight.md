@@ -34,15 +34,15 @@ was uploaded. The version bump and lockfile update were then validated with
 | Gate: products | CI workflow | `.github/workflows/device-gate.yml` |
 | Ship: beta (stores) | CI workflow | `.github/workflows/release-beta.yml` |
 | Wawona-iOS | Device archive target | `fastlane/Fastfile`, `APPLE_BETA_TARGETS` |
-| Wawona-watchOS | Embedded Watch target | XcodeGen iOS companion target |
+| Wawona-watchOS | Embedded Watch target | Embedded in Wawona-iOS (Embed Watch Content) |
 | WatchShellABI.termStringFree | Swift native ABI declaration | `Sources/WawonaWatch/WatchNativeShell.swift` |
 | TestFlight upload | External side effect | `fastlane/Fastfile`, `upload_to_testflight` |
 
 | Subject | Relation | Object | Evidence |
 |---|---|---|---|
 | Gate: products | BUILDS_SIMULATOR_ONLY_FOR | Apple product matrix | `.github/workflows/device-gate.yml` |
-| Wawona-iOS archive | EMBEDS_AND_COMPILES | Wawona-watchOS | XcodeGen generated scheme and failed archive log |
-| Wawona-watchOS arm64_32 | OMITS | Nix Rust, PTY, terminal archives | `dependencies/generators/xcodegen.nix` link settings |
+| Wawona-iOS archive | EMBEDS_AND_COMPILES | Wawona-watchOS | Shared scheme and failed archive log |
+| Wawona-watchOS arm64_32 | OMITS | Nix Rust, PTY, terminal archives | `dependencies/generators/deps.nix` link settings |
 | WatchTerminalScreen | CALLS | WatchShellABI.termStringFree | `Sources/WawonaWatch/WatchTerminalScreen.swift` |
 | `ios beta` lane | PREFLIGHTS_ALL_IPAS_BEFORE | ASC version creation and TestFlight upload | `fastlane/Fastfile` |
 | `ios beta` lane | REQUIRES_COMPLETE_FOR | Newly submitted ASC build upload | `fastlane/lib/asc_build_upload_gate.rb`, `fastlane/Fastfile` |

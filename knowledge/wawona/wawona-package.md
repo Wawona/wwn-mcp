@@ -38,7 +38,7 @@ New deb program: copy `pkgs/wayland/TEMPLATE.nix`, add one line in
 New toolkit: one `*-android` recipe plus one `libs` name in `ndkLibs.nix`.
 Do not import `lib/androidNdk.nix` from a package file. Termux apt unpack
 stays `lib/termuxSysroot.nix`. Do not link the new toolkit into the store
-app (`xcodegen.nix`). In-app stays compositor, Relay wasm, zsh, uutils,
+app (`deps.nix`). In-app stays compositor, Relay wasm, zsh, uutils,
 fastfetch.
 
 Skill and rule: `wawona-package`.

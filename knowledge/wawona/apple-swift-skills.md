@@ -20,5 +20,5 @@ Install with `npx skills@latest add … -g -a cursor -y`. Paths:
 
 Skill `wawona-apple-swift`. Rule `wawona-apple-swift-skills` (alwaysApply).
 Before editing `Sources/WawonaApple`, `WawonaUI`, `WawonaWatch`, or `Darwin/`,
-read `swiftui-pro` + `swiftui-expert-skill`. iOS 13 + `WawonaBackport` and
+read `swiftui-pro` + `swiftui-expert-skill`. iOS 15 + `WawonaBackport` and
 `wawona-apple-swift-glue` override upstream modernization advice.

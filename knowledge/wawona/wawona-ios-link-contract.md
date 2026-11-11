@@ -1,22 +1,22 @@
 # iOS link contract
 
-`scripts/xcode-prebuild.sh` runs `scripts/verify-link-contract.py` before the
-Apple app compile.
+An undefined symbol at Ld is a failed contract, not a linker surprise.
 
-Membership: every file the xcodegen source globs would compile for the target
-must be in that target's Sources phase. A dropped `.m` or `.swift` shows up
-later as an undefined ObjC class or Swift type.
+## Membership
 
-Symbols: every Relay C ABI function the target calls, and every non-weak
-`extern` that is actually used, must occur as an exported name in an archive
-on that SDK's link line (`libwawona.a` included). Weak shims and declarations
-that nothing calls are not required. Apple `nm` cannot read Rust nightly
-objects, so the check searches the archive bytes.
+`Wawona.xcodeproj/project.xcproj` uses synchronized folders: every source
+under a target's folders compiles for that target unless the project lists it
+as an exception. Adding a file needs no project edit. Moving a file out of a
+folder, or adding an exception, is a project change to review.
 
-Measured miss, 2026-10-04: simulator `Ld` undefined `_wwn_waypipe_client_fd`
-because the linked `libwawona.a` was built from waypipe that does not define
-it. The contract fails that symbol before compile. Do not stub it. Rebuild
-the iOS backend from waypipe that exports `wwn_waypipe_client_fd`.
+## Symbols
 
-A stale `.nix-deps` `libwawona_relay.a` misses `relay_nix_editor` and
-`relay_start_host_waypipe` the same way.
+Every C function the target calls (Relay ABI, and non-weak `extern` uses)
+must be exported by an archive on that SDK's link line, including
+`libwawona.a` from `.deps/<sdk>/backend`. The link of each scheme is the
+check: build every scheme a change can reach (macOS, the four simulator
+schemes, and a device archive through Nix) before claiming it links.
+
+A stale `.deps/<sdk>` slice (`nix run .#deps -- <sdk>` refreshes it), or a
+backend built from waypipe that does not export `wwn_waypipe_client_fd`,
+fails here. Do not stub the symbol. Rebuild the archive that owns it.

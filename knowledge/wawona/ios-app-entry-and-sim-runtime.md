@@ -10,8 +10,8 @@ Hard gate: `Wawona/docs/agent-rules/wawona-ios-app-entry.md` (Cursor
    never appeared.
 2. Renaming archive `main` to `gbm_es2_demo_cli_main` fixed the steal, then
    the iOS target had **no** `_main` because `Darwin/Sources/Main.swift` was
-   only on the macOS xcodegen target.
-3. Putting SwiftUI `App` / `Scene` on iOS failed the **13.0** floor
+   only on the macOS target.
+3. Putting SwiftUI `App` / `Scene` on iOS failed the then **13.0** floor (now 15.0; the UIKit entry stays for CarPlay and external display)
    (`scenePhase`, `UIApplicationDelegateAdaptor` need iOS 14). Mobile entry
    is `UIApplicationMain` + `WWNSceneDelegate` hosting `WawonaRootView`.
 4. `-Dmain=gbm_es2_demo_main` **redefines** the existing

@@ -66,7 +66,7 @@ Wawona development is split across the **Wawona GitHub organization**
 | Store WASI P1 package builds (GHA) | `wasm-packages` |
 | Nixpkgs → WASIX / WebC | `wasinix` |
 | Wasm / Sileo / Termux catalog host | `repo.wawona.io` |
-| XcodeGen, Android APK, Rust backend, Machines | `Wawona` |
+| Xcode + Gradle projects, Rust backend, Machines | `Wawona` |
 | Public website | `wawona.io` |
 | Agent RAG / corpus | `wwn-mcp` |
 

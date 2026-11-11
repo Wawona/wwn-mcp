@@ -59,36 +59,25 @@ TEAM_ID=G6EJA4DJKW nix build .#wawona-ios-ipa --impure
 ```
 
 **Rule:** always work inside `nix develop` (or a child shell that inherited its env)
-when driving xcodebuild, xcodegen, or MCP build tools. Do not rely on a bare shell
+when driving xcodebuild or MCP build tools. Do not rely on a bare shell
 missing `DEVELOPMENT_TEAM` / `DEVELOPER_DIR`.
 
-## Step 2. Regenerate the Xcode project
+## Step 2. Link the SDK slices
 
-After Nix recipe changes (new static libs, ldflags, embedded rootfs, framework lists),
-regenerate `.xcodeproj` from the Wawona flake:
-
-```bash
-# all Apple targets (CI default)
-nix run .#xcodegen
-
-# faster iteration. IOS + iPadOS only
-nix run .#xcodegen-ios
-
-# macOS only
-nix run .#xcodegen-macos
-```
-
-Implementation: `dependencies/generators/xcodegen.nix` → `project.yml` → XcodeGen.
-Output: `dependencies/generators/xcodegen/output/Wawona.xcodeproj`.
-
-When `TEAM_ID` is set, xcodegen injects `DEVELOPMENT_TEAM` into iOS/iPadOS/tvOS
-targets automatically.
-
-For UI-only Swift/ObjC edits without dependency changes:
+`Wawona.xcodeproj` is committed. After Nix recipe changes (new static libs,
+ldflags, embedded rootfs, framework lists), relink what it reads:
 
 ```bash
-export WAWONA_SKIP_NIX_PREBUILD=1   # skip full Nix prebuild; faster UI loop
+nix run .#deps -- iphoneos        # device; also links watchos
+nix run .#deps -- iphonesimulator macosx
 ```
+
+Implementation: `dependencies/wawona/deps.nix` → `.deps/<sdk>` (backend,
+bundle, `Wawona.xcconfig`, UniFFI). With `TEAM_ID` set, `nix run .#deps`
+writes `.deps/signing.xcconfig` (`DEVELOPMENT_TEAM`).
+
+After a Rust edit, `scripts/build-backend.sh <sdk>` rebuilds the working tree
+into `.build/backend/<sdk>`, which the prebuild phase links.
 
 ## Step 3. Build and install on device (xcodebuild-mcp)
 
@@ -104,7 +93,7 @@ Typical agent flow:
    XcodeBuildMCP config if tools are missing).
 4. Capture logs / verify launch on device.
 
-Requires macOS + Xcode 16+ and a USB/Wi‑Fi paired, trusted device.
+Requires macOS 27 + Xcode 27 and a USB/Wi‑Fi paired, trusted device.
 
 ## Step 4. Debug on device (lldb-mcp)
 
@@ -147,7 +136,7 @@ Point the Wawona flake at the sibling checkout without pushing:
 
 ```bash
 cd ~/Wawona/Wawona
-nix run .#xcodegen-ios \
+nix run .#deps -- iphoneos \
   --override-input wwn-fastfetch "path:../wwn-fastfetch"
 
 # or for a full build:
@@ -169,7 +158,7 @@ Same pattern works for any `wwn-*` input (see
    nix flake lock --update-input wwn-fastfetch
    ```
 
-3. Regenerate Xcode project (`nix run .#xcodegen-ios`) and rebuild.
+3. Relink `.deps` (`nix run .#deps -- iphoneos`) and rebuild.
 
 **Rule:** if you skip both override and lock update, Wawona still builds the **old**
 pinned fastfetch from `flake.lock`. A common source of “fix didn't land” confusion.
@@ -213,7 +202,7 @@ Deploy path after editing knowledge:
 | Goal | Command / tool |
 |------|----------------|
 | Signed dev env | `nix develop` in `~/Wawona/Wawona` |
-| Regenerate Xcode project | `nix run .#xcodegen-ios` |
+| Link SDK slices | `nix run .#deps -- iphoneos` |
 | Local fastfetch changes | `--override-input wwn-fastfetch path:../wwn-fastfetch` |
 | Shared fastfetch changes | push `wwn-fastfetch` → `nix flake lock --update-input wwn-fastfetch` |
 | Install to device | xcodebuild-mcp → **8amps iPhone Air** |
